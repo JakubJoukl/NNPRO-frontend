@@ -1,0 +1,16 @@
+.mainStack {
+    /*TODO SOME BACKGROUND IMAGE?*/
+    background-color: white;
+    width: 100%;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    background-image: url("../../loginPage.webp");
+    background-size: cover;
+    background-position: center;
+}
+
+.card {
+    background-color: whitesmoke;
+}
