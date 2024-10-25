@@ -4,7 +4,7 @@ import {
 } from "react-router-dom";
 import Root from "./routes/root.jsx";
 import ErrorPage from "./components/errorPage.jsx";
-import Register from "./components/visual/register.jsx";
+import RegisterForm from "./components/functional/registerForm.jsx";
 
 function RouterRoot() {
 
@@ -14,12 +14,15 @@ function RouterRoot() {
             element: <Root/>,
             errorElement: <ErrorPage/>,
             children: [
-                {
-                    path: "/register",
-                    element: <Register/>,
-                },
+                {},
             ],
         },
+        {
+            path: "/register",
+            element: <RegisterForm/>,
+            errorElement: <ErrorPage/>,
+
+        }
     ]);
     return (
         <RouterProvider router={router}/>

@@ -1,19 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-.inline-link{
+
+.inline-link {
     font-weight: bold;
     text-decoration: none;
     color: navy;
 }
-.inline-link:hover{
+
+.inline-link:hover {
     text-decoration: underline;
-}
-.button {
-    color: navy;
 }
