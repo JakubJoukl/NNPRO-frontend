@@ -22,7 +22,7 @@ function LoginForm({setLoggedUser, openAlert, closeAlert}) {
             ).catch((err) => {
                 setCallInProgress(false)
                 if (openAlert) {
-                    openAlert("Error occured during login", "error");
+                    openAlert("Unknown error occurred during login", "error");
                 }
                 if (err.message === "unauthorized") {
                     //TODO different message
