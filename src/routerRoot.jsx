@@ -5,8 +5,10 @@ import {
 import Root from "./routes/root.jsx";
 import ErrorPage from "./components/errorPage.jsx";
 import RegisterForm from "./components/functional/registerForm.jsx";
+import {GlobalAlertContext} from "./context/globalAlertContext.js";
+import withAlert from "./components/visual/withAlert.jsx";
 
-function RouterRoot() {
+function RouterRoot({openAlert, closeAlert}) {
 
     const router = createBrowserRouter([
         {
@@ -25,8 +27,10 @@ function RouterRoot() {
         }
     ]);
     return (
-        <RouterProvider router={router}/>
+        <GlobalAlertContext.Provider value={{openAlert, closeAlert}}>
+            <RouterProvider router={router}/>
+        </GlobalAlertContext.Provider>
     )
 }
 
-export default RouterRoot
+export default withAlert(RouterRoot)

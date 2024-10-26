@@ -1,18 +1,21 @@
 import * as Calls from "../../constants/calls.js";
-import {useState} from "react";
-import withAlert from "./withAlert.jsx";
+import {useContext, useState} from "react";
 import RegisterFormUI from "../visual/registerFormUI.jsx";
+import {GlobalAlertContext} from "../../context/globalAlertContext.js";
+import { useNavigate } from "react-router-dom";
 
-function RegisterForm({openAlert, closeAlert}) {
+function RegisterForm() {
     const [callInProgress, setCallInProgress] = useState(false);
+    const {openAlert} = useContext(GlobalAlertContext);
+    const navigate = useNavigate();
 
     function register(username, password, email) {
         if (!callInProgress) {
             setCallInProgress(true)
-            console.log(username, password, email);
             Calls.register({username, password, email}).then((dtoOut) => {
-                    setCallInProgress(false);
-                    closeAlert()
+                    //setCallInProgress(false); we actually want to wait for user to be redirected.
+                    openAlert("Registration successful. You can now login.");
+                    navigate("/");
                 }
             ).catch((err) => {
                 setCallInProgress(false)
@@ -21,7 +24,7 @@ function RegisterForm({openAlert, closeAlert}) {
         }
     }
 
-    return <RegisterFormUI onSubmit={register} disableLoginButton={callInProgress}/>
+    return <RegisterFormUI onSubmit={register} disableRegisterButton={callInProgress}/>
 }
 
-export default withAlert(RegisterForm);
+export default RegisterForm;

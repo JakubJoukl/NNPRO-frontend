@@ -1,4 +1,4 @@
-import PopUpAlert from "../visual/popUpAlert.jsx";
+import PopUpAlert from "./popUpAlert.jsx";
 import {useState} from "react";
 
 export default function WithAlert(OriginalComponent) {

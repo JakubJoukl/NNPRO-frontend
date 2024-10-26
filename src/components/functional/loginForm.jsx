@@ -1,11 +1,12 @@
 import LoginFormUI from "../visual/loginFormUI.jsx";
 import * as Calls from "../../constants/calls.js";
 import {jwtDecode} from "jwt-decode";
-import {useState} from "react";
-import withAlert from "./withAlert.jsx";
+import {useContext, useState} from "react";
+import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 
-function LoginForm({setLoggedUser, openAlert, closeAlert}) {
+function LoginForm({setLoggedUser}) {
     const [callInProgress, setCallInProgress] = useState(false);
+    const {openAlert, closeAlert} = useContext(GlobalAlertContext);
 
     function login(username, password) {
         if (!callInProgress) {
@@ -36,4 +37,4 @@ function LoginForm({setLoggedUser, openAlert, closeAlert}) {
     return <LoginFormUI onSubmit={login} disableLoginButton={callInProgress}/>
 }
 
-export default withAlert(LoginForm);
+export default LoginForm;
