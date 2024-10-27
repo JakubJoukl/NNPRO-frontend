@@ -3,57 +3,79 @@ import * as Calls from "../../constants/calls.js";
 import {jwtDecode} from "jwt-decode";
 import {useContext, useState} from "react";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
+import MailCodeVerificationUI from "../visual/mailCodeVerificationUI.jsx";
 
 function LoginForm({setLoggedUser}) {
     const [callInProgress, setCallInProgress] = useState(false);
-    const [verificationCode, setVerificationCode] = useState(false);
+    // With this we also verify that we have token
+    const [tokenExpirationDate, setTokenExpirationDate] = useState(null);
+    const [username, setUsername] = useState('');
 
     const {openAlert, closeAlert} = useContext(GlobalAlertContext);
 
-    function login(username, password, recaptchaToken) {
+    function handleCancel2FA() {
+        setTokenExpirationDate(null);
+        setUsername(null);
+    }
+
+    function login(username, password, captchaToken) {
         if (!callInProgress) {
-            setCallInProgress(true)
-            Calls.login(username, password, recaptchaToken).then((response) => {
-                    setVerificationCode(response?.verificationCode);
-                }
-            ).catch((err) => {
+            closeAlert();
+            setCallInProgress(true);
+            Calls.login(username, password, captchaToken).then((response) => {
+                setTokenExpirationDate(response?.tokenExpirationDate);
+                setUsername(username);
+                setCallInProgress(false);
+            }).catch((err) => {
                 setCallInProgress(false)
-                if (openAlert) {
-                    openAlert("Unknown error occurred during login", "error");
-                }
+
                 if (err.message === "unauthorized") {
-                    //TODO different message
+                    if (openAlert) {
+                        openAlert("Invalid credentials. Try again.", "error");
+                    }
                 } else {
-                    //TODO different message
+                    if (openAlert) {
+                        openAlert("Unknown error occurred during login. If problem persists, contact support.", "error");
+                    }
                 }
             });
         }
     }
 
-    function submit2Fa(username, password, recaptchaToken) {
+    function submit2Fa(otp, captchaToken) {
         if (!callInProgress) {
-            setCallInProgress(true)
-            Calls.login(username, password, recaptchaToken).then((response) => {
-                    setVerificationCode(response?.verificationCode);
-                }
-            ).catch((err) => {
-                setCallInProgress(false)
-                if (openAlert) {
-                    openAlert("Unknown error occurred during login", "error");
-                }
+            setCallInProgress(true);
+            closeAlert();
+            Calls.verify2fa({username, verificationToken: otp, captchaToken}).then((dtoOut) => {
+                const token = dtoOut?.jwtToken;
+                // Decode the token to get the payload
+                const decodedToken = jwtDecode(token);
+                // Extract the username
+                const username = decodedToken.sub;  // 'sub' usually holds the username in JWT tokens
+                setCallInProgress(false);
+                closeAlert();
+                setLoggedUser({username, token});
+            }).catch((err) => {
+                setCallInProgress(false);
+
                 if (err.message === "unauthorized") {
-                    //TODO different message
+                    if (openAlert) {
+                        openAlert("Invalid 2FA code. Try again.", "error");
+                    }
                 } else {
-                    //TODO different message
+                    if (openAlert) {
+                        openAlert("Unknown error occurred. Try again. If problem persists, contact support.", "error");
+                    }
                 }
             });
         }
     }
 
-    if (!verificationCode) {
+    if (!tokenExpirationDate) {
         return <LoginFormUI onSubmit={login} disableLoginButton={callInProgress}/>
     } else {
-        return <MailCodeVerificationUI onSubmit={submit2Fa} disableVerificationCalls={callInProgress}/>
+        return <MailCodeVerificationUI onSubmit={submit2Fa} disableSubmit={callInProgress}
+                                       callInProgress={callInProgress} cancel2FA={handleCancel2FA}/>
     }
 }
 

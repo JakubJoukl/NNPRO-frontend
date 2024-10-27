@@ -1,6 +1,6 @@
 import classes from '../../styles/loginForm.module.css'
 import {Button, Card, CardContent, TextField, Typography} from "@mui/material";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {NavLink} from "react-router-dom";
 import {useGoogleReCaptcha} from "react-google-recaptcha-v3";
 
@@ -8,8 +8,7 @@ export default function LoginFormUI({onSubmit, disableLoginButton}) {
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
     const {executeRecaptcha} = useGoogleReCaptcha();
-    const [token, setToken] = useState('');
-
+    const tokenRef = useRef('');
 
     // Create an event handler so you can call the verification on button click event or form submit
     const handleReCaptchaVerify = useCallback(async () => {
@@ -18,8 +17,7 @@ export default function LoginFormUI({onSubmit, disableLoginButton}) {
             return;
         }
 
-        const token = await executeRecaptcha('register');
-        setToken(token);
+        tokenRef.current = await executeRecaptcha('login');
         // Do whatever you want with the token
     }, [executeRecaptcha]);
 
@@ -48,7 +46,7 @@ export default function LoginFormUI({onSubmit, disableLoginButton}) {
                         <Button disabled={disableLoginButton} size="large" variant="outlined"
                                 onClick={() => {
                                     handleReCaptchaVerify().then(() => {
-                                        onSubmit(username, password, token);
+                                        onSubmit(username, password, tokenRef.current);
                                     });
                                 }}
                                 color={"primary"}

@@ -4,6 +4,10 @@ async function register(dtoIn) {
     return await callPost(`${BASE_URI}/register`, dtoIn)
 }
 
+async function verify2fa(dtoIn) {
+    return await callPost(`${BASE_URI}/verify2fa`, dtoIn)
+}
+
 async function login(username, password, recaptchaToken) {
     const base64encodedData = btoa(`${username}:${password}`);
 
@@ -50,5 +54,5 @@ async function callPost(uri, dtoIn, pageInfo, token) {
 }
 
 export {
-    login, register,
+    login, register, verify2fa
 }

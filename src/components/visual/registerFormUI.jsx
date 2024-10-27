@@ -1,11 +1,9 @@
 import classes from '../../styles/loginForm.module.css'
-import {Button, Card, CardContent, TextField, Typography} from "@mui/material";
-import {useCallback, useContext, useEffect, useState} from "react";
+import {Backdrop, Button, Card, CardContent, TextField, Typography} from "@mui/material";
+import {useCallback, useContext, useEffect, useRef, useState} from "react";
 import {NavLink} from "react-router-dom";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
-import {
-    useGoogleReCaptcha
-} from 'react-google-recaptcha-v3';
+import {useGoogleReCaptcha} from 'react-google-recaptcha-v3';
 
 export default function RegisterFormUI({onSubmit, disableRegisterButton}) {
     const [username, setUsername] = useState();
@@ -15,7 +13,7 @@ export default function RegisterFormUI({onSubmit, disableRegisterButton}) {
     const [typingTimeouts, setTypingTimeouts] = useState({});
     const {openAlert} = useContext(GlobalAlertContext);
     const {executeRecaptcha} = useGoogleReCaptcha();
-    const [token, setToken] = useState('');
+    const tokenRef = useRef('');
 
     // True means valid, false means invalid
     const [validations, setValidations] = useState({
@@ -32,8 +30,7 @@ export default function RegisterFormUI({onSubmit, disableRegisterButton}) {
             return;
         }
 
-        const token = await executeRecaptcha('register');
-        setToken(token);
+        tokenRef.current = await executeRecaptcha('register');
         // Do whatever you want with the token
     }, [executeRecaptcha]);
 
@@ -153,7 +150,7 @@ export default function RegisterFormUI({onSubmit, disableRegisterButton}) {
                                 const result = validate();
                                 if (result.username && result.email && result.password && result.password2) {
                                     handleReCaptchaVerify().then(() => {
-                                        onSubmit(username, password, email, token);
+                                        onSubmit(username, password, email, tokenRef.current);
                                     });
                                 } else {
                                     openAlert("Registration form is not valid. Please fix errors before proceeding.", "error")
