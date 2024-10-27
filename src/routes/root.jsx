@@ -1,9 +1,9 @@
 import {Outlet} from "react-router-dom";
 import {UserContext} from "../context/userContext.jsx";
 import {useState} from "react";
-import LoginForm from "../components/functional/loginForm.jsx";
 import SideMenu from "../components/visual/sideMenu.jsx";
 import NavMenu from "../components/visual/navMenu.jsx";
+import LoginRoute from "./loginRoute.jsx";
 
 export default function Root() {
     const [loggedUser, setLoggedUser] = useState({});
@@ -21,6 +21,9 @@ export default function Root() {
             <Outlet/>
         </UserContext.Provider>);
     } else {
-        return (<LoginForm setLoggedUser={setLoggedUser}/>)
+        // Not in router so unlogged user is always redirected here
+        return (
+            <LoginRoute setLoggedUser={setLoggedUser}/>
+        )
     }
 }

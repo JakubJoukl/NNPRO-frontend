@@ -7,6 +7,7 @@ import ErrorPage from "./components/errorPage.jsx";
 import RegisterForm from "./components/functional/registerForm.jsx";
 import {GlobalAlertContext} from "./context/globalAlertContext.js";
 import withAlert from "./components/visual/withAlert.jsx";
+import RegisterRoute from "./routes/registerRoute.jsx";
 
 function RouterRoot({openAlert, closeAlert}) {
 
@@ -21,7 +22,7 @@ function RouterRoot({openAlert, closeAlert}) {
         },
         {
             path: "/register",
-            element: <RegisterForm/>,
+            element: <RegisterRoute/>,
             errorElement: <ErrorPage/>,
 
         }

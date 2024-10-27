@@ -6,19 +6,15 @@ import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 
 function LoginForm({setLoggedUser}) {
     const [callInProgress, setCallInProgress] = useState(false);
+    const [verificationCode, setVerificationCode] = useState(false);
+
     const {openAlert, closeAlert} = useContext(GlobalAlertContext);
 
     function login(username, password, recaptchaToken) {
         if (!callInProgress) {
             setCallInProgress(true)
-            Calls.login(username, password, recaptchaToken).then((token) => {
-                    // Decode the token to get the payload
-                    const decodedToken = jwtDecode(token);
-                    // Extract the username
-                    const username = decodedToken.sub;  // 'sub' usually holds the username in JWT tokens
-                    setCallInProgress(false);
-                    closeAlert();
-                    setLoggedUser({username, token});
+            Calls.login(username, password, recaptchaToken).then((response) => {
+                    setVerificationCode(response?.verificationCode);
                 }
             ).catch((err) => {
                 setCallInProgress(false)
@@ -34,7 +30,31 @@ function LoginForm({setLoggedUser}) {
         }
     }
 
-    return <LoginFormUI onSubmit={login} disableLoginButton={callInProgress}/>
+    function submit2Fa(username, password, recaptchaToken) {
+        if (!callInProgress) {
+            setCallInProgress(true)
+            Calls.login(username, password, recaptchaToken).then((response) => {
+                    setVerificationCode(response?.verificationCode);
+                }
+            ).catch((err) => {
+                setCallInProgress(false)
+                if (openAlert) {
+                    openAlert("Unknown error occurred during login", "error");
+                }
+                if (err.message === "unauthorized") {
+                    //TODO different message
+                } else {
+                    //TODO different message
+                }
+            });
+        }
+    }
+
+    if (!verificationCode) {
+        return <LoginFormUI onSubmit={login} disableLoginButton={callInProgress}/>
+    } else {
+        return <MailCodeVerificationUI onSubmit={submit2Fa} disableVerificationCalls={callInProgress}/>
+    }
 }
 
 export default LoginForm;

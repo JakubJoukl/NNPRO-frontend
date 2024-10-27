@@ -1,4 +1,3 @@
-import Stack from '@mui/material/Stack';
 import classes from '../../styles/loginForm.module.css'
 import {Button, Card, CardContent, TextField, Typography} from "@mui/material";
 import {useCallback, useContext, useEffect, useState} from "react";
@@ -100,7 +99,7 @@ export default function RegisterFormUI({onSubmit, disableRegisterButton}) {
     }
 
     return (
-        <Stack className={`${classes.mainStack} p-4`}>
+        <>
             <Card variant="outlined" className={`${classes.card} w-[36rem] max-w-full m-3`}>
                 <>
                     <CardContent className={"!space-y-3"}>
@@ -173,6 +172,6 @@ export default function RegisterFormUI({onSubmit, disableRegisterButton}) {
                     </Typography>
                 </CardContent>
             </Card>
-        </Stack>
+        </>
     )
 }
