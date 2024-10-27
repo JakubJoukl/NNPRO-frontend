@@ -9,10 +9,10 @@ function RegisterForm() {
     const {openAlert} = useContext(GlobalAlertContext);
     const navigate = useNavigate();
 
-    function register(username, password, email) {
+    function register(username, password, email, captchaToken) {
         if (!callInProgress) {
             setCallInProgress(true)
-            Calls.register({username, password, email}).then((dtoOut) => {
+            Calls.register({username, password, email, captchaToken}).then((dtoOut) => {
                     //setCallInProgress(false); we actually want to wait for user to be redirected.
                     openAlert("Registration successful. You can now login.");
                     navigate("/");

@@ -8,10 +8,10 @@ function LoginForm({setLoggedUser}) {
     const [callInProgress, setCallInProgress] = useState(false);
     const {openAlert, closeAlert} = useContext(GlobalAlertContext);
 
-    function login(username, password) {
+    function login(username, password, recaptchaToken) {
         if (!callInProgress) {
             setCallInProgress(true)
-            Calls.login(username, password).then((token) => {
+            Calls.login(username, password, recaptchaToken).then((token) => {
                     // Decode the token to get the payload
                     const decodedToken = jwtDecode(token);
                     // Extract the username

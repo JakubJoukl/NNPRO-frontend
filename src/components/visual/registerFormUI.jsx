@@ -1,11 +1,12 @@
 import Stack from '@mui/material/Stack';
 import classes from '../../styles/loginForm.module.css'
 import {Button, Card, CardContent, TextField, Typography} from "@mui/material";
-import React, {useContext, useState} from "react";
+import {useCallback, useContext, useEffect, useState} from "react";
 import {NavLink} from "react-router-dom";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
-import {ReCAPTCHA} from "react-google-recaptcha";
-import {constants} from "../../constants/constants.js";
+import {
+    useGoogleReCaptcha
+} from 'react-google-recaptcha-v3';
 
 export default function RegisterFormUI({onSubmit, disableRegisterButton}) {
     const [username, setUsername] = useState();
@@ -14,8 +15,8 @@ export default function RegisterFormUI({onSubmit, disableRegisterButton}) {
     const [email, setEmail] = useState();
     const [typingTimeouts, setTypingTimeouts] = useState({});
     const {openAlert} = useContext(GlobalAlertContext);
-    const [recaptchaLoaded, setRecaptchaLoaded] = useState();
-    const recaptchaRef = React.createRef();
+    const {executeRecaptcha} = useGoogleReCaptcha();
+    const [token, setToken] = useState('');
 
     // True means valid, false means invalid
     const [validations, setValidations] = useState({
@@ -24,6 +25,24 @@ export default function RegisterFormUI({onSubmit, disableRegisterButton}) {
         username: true,
         email: true,
     });
+
+    // Create an event handler so you can call the verification on button click event or form submit
+    const handleReCaptchaVerify = useCallback(async () => {
+        if (!executeRecaptcha) {
+            console.log('Execute recaptcha not yet available');
+            return;
+        }
+
+        const token = await executeRecaptcha('register');
+        setToken(token);
+        // Do whatever you want with the token
+    }, [executeRecaptcha]);
+
+    // You can use useEffect to trigger the verification as soon as the component being loaded
+    useEffect(() => {
+        handleReCaptchaVerify();
+    }, [handleReCaptchaVerify]);
+
 
     function validate(changedKey, targetValue) {
         let passwordIsValid = validations.password;
@@ -82,10 +101,6 @@ export default function RegisterFormUI({onSubmit, disableRegisterButton}) {
 
     return (
         <Stack className={`${classes.mainStack} p-4`}>
-            <ReCAPTCHA
-                ref={recaptchaRef}
-                sitekey={constants.recapchaKey}
-            />
             <Card variant="outlined" className={`${classes.card} w-[36rem] max-w-full m-3`}>
                 <>
                     <CardContent className={"!space-y-3"}>
@@ -133,14 +148,14 @@ export default function RegisterFormUI({onSubmit, disableRegisterButton}) {
                     </CardContent>
                     <CardContent className={"flex flex-row-reverse"}>
                         <Button
-                            disabled={disableRegisterButton || !recaptchaLoaded}
+                            disabled={disableRegisterButton}
                             size="large" variant="outlined"
                             onClick={() => {
                                 const result = validate();
-                                recaptchaRef.current.execute();
-                                console.log(recaptchaRef.current.getValue());
                                 if (result.username && result.email && result.password && result.password2) {
-                                    onSubmit(username, password, email)
+                                    handleReCaptchaVerify().then(() => {
+                                        onSubmit(username, password, email, token);
+                                    });
                                 } else {
                                     openAlert("Registration form is not valid. Please fix errors before proceeding.", "error")
                                 }
