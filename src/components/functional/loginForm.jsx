@@ -22,7 +22,7 @@ function LoginForm({setLoggedUser}) {
         if (!callInProgress) {
             closeAlert();
             setCallInProgress(true);
-            Calls.login(username, password, captchaToken).then((response) => {
+            Calls.login({username, password, captchaToken}).then((response) => {
                 setTokenExpirationDate(response?.tokenExpirationDate);
                 setUsername(username);
                 setCallInProgress(false);

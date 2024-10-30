@@ -1,4 +1,8 @@
-const BASE_URI = 'http://localhost:3000';
+const BASE_URI = 'http://localhost:8080';
+
+async function login(dtoIn) {
+    return await callPost(`${BASE_URI}/login`, dtoIn)
+}
 
 async function register(dtoIn) {
     return await callPost(`${BASE_URI}/register`, dtoIn)
@@ -12,7 +16,8 @@ async function listUserConversation(dtoIn, pageInfo, token){
     return await callPost(`${BASE_URI}/listUserConversation`, dtoIn, pageInfo, token);
 }
 
-async function login(username, password, recaptchaToken) {
+/*
+async function login(username, password, captchaToken) {
     const base64encodedData = btoa(`${username}:${password}`);
 
     const response = await fetch(`${BASE_URI}/login`, {
@@ -24,7 +29,7 @@ async function login(username, password, recaptchaToken) {
             "Content-Type": "application/json", 'Authorization': `Basic ${base64encodedData}`
         }, redirect: "follow", // manual, *follow, error
         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify({recaptchaToken}), // body data type must match "Content-Type" header
+        body: JSON.stringify({captchaToken}), // body data type must match "Content-Type" header
     });
     if (response.status !== 200) {
         if (response.status === 401) {
@@ -34,6 +39,8 @@ async function login(username, password, recaptchaToken) {
     }
     return await response.json();
 }
+
+ */
 
 async function callPost(uri, dtoIn, pageInfo, token) {
     const request = {
