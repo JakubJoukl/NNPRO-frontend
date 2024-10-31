@@ -23,7 +23,7 @@ function LoginForm({setLoggedUser}) {
             closeAlert();
             setCallInProgress(true);
             Calls.login({username, password, captchaToken}).then((response) => {
-                setTokenExpirationDate(response?.tokenExpirationDate);
+                setTokenExpirationDate(response?.expirationDate);
                 setUsername(username);
                 setCallInProgress(false);
             }).catch((err) => {
@@ -46,7 +46,7 @@ function LoginForm({setLoggedUser}) {
         if (!callInProgress) {
             setCallInProgress(true);
             closeAlert();
-            Calls.verify2fa({username, verificationToken: otp, captchaToken}).then((dtoOut) => {
+            Calls.verify2fa({username, verificationCode: otp, captchaToken}).then((dtoOut) => {
                 const token = dtoOut?.jwtToken;
                 // Decode the token to get the payload
                 const decodedToken = jwtDecode(token);
