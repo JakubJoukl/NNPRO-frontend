@@ -17,6 +17,7 @@ export function useAccumulatedList(calledMethod, dtoIn, pageInfo) {
 
     function resetErr() {
         previousError.current = isError;
+        previousPageInfo.current = {};
         setIsError(false);
     }
 
@@ -29,7 +30,6 @@ export function useAccumulatedList(calledMethod, dtoIn, pageInfo) {
                 setResultingList((prevState) => {
                     let itemList;
                     itemList = response.itemList.filter((item) => !prevState.itemList.some((prevItem) => prevItem.id !== item.id));
-                    console.log(response?.pageInfo?.total, "total");
                     return {
                         itemList: [...(prevState.itemList), ...(itemList)],
                         total: response?.pageInfo?.total ?? 0
@@ -41,14 +41,17 @@ export function useAccumulatedList(calledMethod, dtoIn, pageInfo) {
                 setCallInProgress(false);
                 previousError.current = isError;
                 setIsError(true);
-                setResultingList([]);
+                setResultingList({
+                    itemList: [],
+                    total: 999999999 // so it is always called
+                });
             });
         }
     }
 
     useEffect(() => {
         loadMore()
-    }, [pageInfo.pageIndex, isError]);
+    }, [pageInfo.pageIndex, isError, calledMethod]);
 
     return {
         resultingList: resultingList.itemList,

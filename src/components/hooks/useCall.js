@@ -1,34 +1,39 @@
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import * as Calls from "../../constants/calls.js";
 import {UserContext} from "../../context/userContext.js";
 
 export function useCall(calledMethod, dtoIn, pageInfo) {
-    const [userInfo, setUserInfo] = useState({});
+    //calledMethod, dtoIn, pageInfo
     const [callInProgress, setCallInProgress] = useState(false);
     const [isError, setIsError] = useState(false);
     const {token} = useContext(UserContext).userContext;
-    const {dtoOut, setDtoOut} = useState({});
+    const [dtoOut, setDtoOut] = useState({});
+    const previousError = useRef(isError);
+    const calledDtoIn = dtoIn ?? {};
+    const calledPageInfo = pageInfo ?? {};
+
+    function resetErr() {
+        previousError.current = isError;
+        setIsError(false);
+    }
 
     useEffect(() => {
-        if (!callInProgress) {
+        if (!callInProgress && !isError) {
             setCallInProgress(true);
-            Calls[calledMethod](dtoIn, pageInfo, token).then((response) => {
+            Calls[calledMethod](calledDtoIn, calledPageInfo, token).then((response) => {
                 setCallInProgress(false);
-                setIsError(false);
-                setUserInfo({
-                    name: response.username,
-                    email: response.email,
-                    publicKey: response.publicKey
-                })
+                setDtoOut(response);
             }).catch((err) => {
-                setCallInProgress(false)
-                setIsError(true)
+                setCallInProgress(false);
+                setIsError(true);
+                previousError.current = isError;
             });
         }
-    }, [dtoIn, pageInfo.pageIndex, isError, callInProgress, calledMethod, pageInfo, token]);
+    }, [calledMethod, dtoIn, isError, pageInfo, token]);
 
     return {
         dtoOut: dtoOut,
         status: {callInProgress, isError},
+        resetErr
     }
 }
