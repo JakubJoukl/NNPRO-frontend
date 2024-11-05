@@ -97,5 +97,5 @@ async function callGet(uri, dtoIn, token) {
 }
 
 export {
-    login, register, verify2fa, listUserConversation
+    login, register, verify2fa, listUserConversation, getCurrentUserProfile
 }

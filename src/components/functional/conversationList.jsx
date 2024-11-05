@@ -10,9 +10,7 @@ export function ConversationList() {
         if (status.isError && !status.callInProgress) {
             resetErr();
             setPageInfo({pageIndex: 0, pageSize: 50});
-        }
-
-        if (!status.callInProgress) {
+        } else if (!status.callInProgress) {
             setPageInfo((previousPageInfo) => {
                 return {
                     ...previousPageInfo,
@@ -22,6 +20,5 @@ export function ConversationList() {
         }
     }
 
-    console.log(resultingList);
     return <ConversationListUI status={status} conversations={resultingList} handleOnLoadMore={handleOnLoadMore}/>
 }

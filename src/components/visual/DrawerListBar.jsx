@@ -12,11 +12,12 @@ import ListItemText from "@mui/material/ListItemText";
 import ContactsIcon from "@mui/icons-material/Contacts";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import {useTheme} from "@mui/material/styles";
-import {Alert} from "@mui/material";
-import {ConversationList} from "../functional/ConversationList.jsx";
+import { useNavigate } from "react-router-dom";
+import {ConversationList} from "../functional/conversationList.jsx";
 
 export default function DrawerListBar({drawerWidth, handleDrawerClose, open}) {
     const theme = useTheme();
+    const navigate = useNavigate();
 
     return (<Drawer
         sx={{
@@ -55,7 +56,7 @@ export default function DrawerListBar({drawerWidth, handleDrawerClose, open}) {
                 </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-                <ListItemButton>
+                <ListItemButton onClick={() => navigate("/accountManagement")}>
                     <ListItemIcon>
                         <ManageAccountsIcon color={"secondary"}/>
                     </ListItemIcon>

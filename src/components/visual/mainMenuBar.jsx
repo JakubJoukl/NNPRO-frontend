@@ -57,8 +57,17 @@ const AppBar = styled(MuiAppBar, {
     ],
 }));
 
+const DrawerHeader = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end',
+}));
+
 export default function MainMenuBar({children, routeHeader}) {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(true);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -93,7 +102,8 @@ export default function MainMenuBar({children, routeHeader}) {
                 </Toolbar>
             </AppBar>
             <DrawerListBar drawerWidth={drawerWidth} handleDrawerClose={handleDrawerClose} open={open}/>
-            <Main open={open}>
+            <Main open={open} className={"flex flex-col h-screen"}>
+                <DrawerHeader/>
                 {children}
             </Main>
         </Box>

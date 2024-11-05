@@ -9,6 +9,7 @@ function RegisterForm() {
     const {openAlert} = useContext(GlobalAlertContext);
     const navigate = useNavigate();
 
+    //use call TODO HOOK!!
     function register(username, password, email, captchaToken) {
         if (!callInProgress) {
             setCallInProgress(true)

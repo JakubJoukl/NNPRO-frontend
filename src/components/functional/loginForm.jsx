@@ -18,6 +18,7 @@ function LoginForm({setLoggedUser}) {
         setUsername(null);
     }
 
+    //use call TODO HOOK!!
     function login(username, password, captchaToken) {
         if (!callInProgress) {
             closeAlert();
