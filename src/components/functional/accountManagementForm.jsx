@@ -6,16 +6,34 @@ import {useState} from "react";
 export function AccountManagementForm() {
     const {dtoOut, status, resetErr} = useCall("getCurrentUserProfile", null, null)
     const [formContext, setFormContext] = useState({
-        username: dtoOut.username,
-        email: dtoOut.email,
-        publicKey: dtoOut.publicKey
+        username: {
+            value: dtoOut.username,
+            edited: false,
+        },
+        email: {
+            value: dtoOut.email,
+            edited: false,
+        },
+        publicKey: {
+            value: dtoOut.publicKey,
+            edited: false,
+        }
     });
 
-    if (dtoOut.username !== formContext.username || dtoOut.email !== formContext.email) {
+    if (dtoOut.username !== formContext.username?.value || dtoOut.email !== formContext.email?.value) {
         setFormContext({
-            username: dtoOut.username,
-            email: dtoOut.email,
-            publicKey: dtoOut.publicKey
+            username: {
+                value: dtoOut.username,
+                edited: false,
+            },
+            email: {
+                value: dtoOut.email,
+                edited: false,
+            },
+            publicKey: {
+                value: dtoOut.publicKey,
+                edited: false,
+            }
         });
     }
 

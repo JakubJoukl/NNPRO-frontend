@@ -1,8 +1,7 @@
 import {Alert, Button, CircularProgress, TextField} from "@mui/material";
 import ListItem from "@mui/material/ListItem";
 import {EditableInputTextField} from "./EditableInputTextField.jsx";
-import {useContext} from "react";
-import {FormContext} from "../../context/formContext.js";
+import {PrivatePublicKeyField} from "./PrivatePublicKeyField.jsx";
 
 export function AccountManagementFormUI({status, resetError}) {
     if (status.isError) {
@@ -35,5 +34,13 @@ export function AccountManagementFormUI({status, resetError}) {
                    id="password"
                    label="Password" variant="filled" type="password"
                    autoComplete="current-password" className={"w-full max-w-2xl"}/>
+        <PrivatePublicKeyField label={"Public key"} id={"publicKey"} className={"w-full max-w-2xl"}/>
+        <Button
+            size="large" variant="outlined"
+            onClick={async () => {
+            }
+            }
+            color={"primary"}
+        >Confirm changes</Button>
     </div>
 }
