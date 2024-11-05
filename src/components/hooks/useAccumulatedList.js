@@ -1,6 +1,6 @@
 import {useContext, useEffect, useRef, useState} from "react";
 import * as Calls from "../../constants/calls.js";
-import {UserContext} from "../../context/userContext.jsx";
+import {UserContext} from "../../context/userContext.js";
 
 // This expects pageSize to increase only, so no previous elements are loaded
 // Fixme - remove duplicates by id.... maybe....
@@ -29,6 +29,7 @@ export function useAccumulatedList(calledMethod, dtoIn, pageInfo) {
                 setResultingList((prevState) => {
                     let itemList;
                     itemList = response.itemList.filter((item) => !prevState.itemList.some((prevItem) => prevItem.id !== item.id));
+                    console.log(response?.pageInfo?.total, "total");
                     return {
                         itemList: [...(prevState.itemList), ...(itemList)],
                         total: response?.pageInfo?.total ?? 0

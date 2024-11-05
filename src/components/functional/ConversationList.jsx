@@ -13,7 +13,12 @@ export function ConversationList() {
         }
 
         if (!status.callInProgress) {
-            setPageInfo(() => pageInfo + 1);
+            setPageInfo((previousPageInfo) => {
+                return {
+                    ...previousPageInfo,
+                    pageIndex: previousPageInfo.pageIndex + 1,
+                }
+            });
         }
     }
 

@@ -12,8 +12,12 @@ async function verify2fa(dtoIn) {
     return await callPost(`${BASE_URI}/verify2fa`, dtoIn)
 }
 
-async function listUserConversation(dtoIn, pageInfo, token){
+async function listUserConversation(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/listUserConversation`, dtoIn, pageInfo, token);
+}
+
+async function getCurrentUserProfile(dtoIn, pageInfo, token) {
+    return await callGet(`${BASE_URI}/getCurrentUserProfile`, dtoIn, token);
 }
 
 /*
@@ -64,7 +68,7 @@ async function callPost(uri, dtoIn, pageInfo, token) {
     return await response.json();
 }
 
-async function callGet(uri, dtoIn) {
+async function callGet(uri, dtoIn, token) {
     if (Object.keys(dtoIn).length > 0) {
         uri += "?";
         for (const key in dtoIn) {
@@ -72,7 +76,7 @@ async function callGet(uri, dtoIn) {
         }
         uri = uri.slice(0, uri.length - 2);
     }
-    const response = await fetch(uri, {
+    const request = {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "default", // *default, no-cache, reload, force-cache, only-if-cached
@@ -81,7 +85,11 @@ async function callGet(uri, dtoIn) {
             "Content-Type": "application/json",
         }, redirect: "follow", // manual, *follow, error
         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    });
+    };
+    if (token) {
+        request.headers.Authorization = `Bearer ${token}`
+    }
+    const response = await fetch(uri, request);
     if (response.status !== 200 && response.status !== 201) {
         throw new Error("Server responded with status " + response.status);
     }

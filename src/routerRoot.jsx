@@ -8,6 +8,7 @@ import RegisterForm from "./components/functional/registerForm.jsx";
 import {GlobalAlertContext} from "./context/globalAlertContext.js";
 import withAlert from "./components/visual/withAlert.jsx";
 import RegisterRoute from "./routes/registerRoute.jsx";
+import {AccountManagementRoute} from "./routes/AccountManagementRoute.jsx";
 
 function RouterRoot({openAlert, closeAlert}) {
 
@@ -17,7 +18,11 @@ function RouterRoot({openAlert, closeAlert}) {
             element: <Root/>,
             errorElement: <ErrorPage/>,
             children: [
-                {},
+                {
+                    path: "/accountManagement",
+                    element: <AccountManagementRoute/>,
+                    errorElement: <ErrorPage/>,
+                }
             ],
         },
         {

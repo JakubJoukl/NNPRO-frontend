@@ -30,7 +30,7 @@ export default function MailCodeVerificationUI({disableSubmit, onSubmit, callInP
     // You can use useEffect to trigger the verification as soon as the component being loaded
     useEffect(() => {
         if (otpValue.length === codeLength && !disableSubmit) {
-            onSubmit(otpValue, tokenRef.current);
+            handleReCaptchaVerify().then(() => onSubmit(otpValue, tokenRef.current));
         }
     }, [otpValue]);
 

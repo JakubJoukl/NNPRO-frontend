@@ -1,11 +1,11 @@
 import {Outlet} from "react-router-dom";
-import {UserContext} from "../context/userContext.jsx";
+import {UserContext} from "../context/userContext.js";
 import {useState} from "react";
 import MainMenuBar from "../components/visual/mainMenuBar.jsx";
 import LoginRoute from "./loginRoute.jsx";
 
 export default function Root({routeName}) {
-    const [loggedUser, setLoggedUser] = useState({});
+    const [loggedUser, setLoggedUser] = useState({token: "sss", name: "MOCK!!!!"}); //FIXME default value
 
     function logout() {
         setLoggedUser({
