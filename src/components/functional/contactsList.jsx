@@ -1,10 +1,10 @@
 import {useAccumulatedList} from "../hooks/useAccumulatedList.js";
-import {ConversationListUI} from "../visual/ConversationListUI.jsx";
 import {useState} from "react";
+import {ContactsListUI} from "../visual/ContactsListUI.jsx";
 
-export function ConversationList() {
+export function ContactsList({displayType}) {
     const [pageInfo, setPageInfo] = useState({pageIndex: 0, pageSize: 50});
-    const {resultingList, status, resetErr} = useAccumulatedList('listUserConversation', {}, pageInfo, "username");
+    const {resultingList, status, resetErr} = useAccumulatedList('listContacts', {}, pageInfo, "username");
 
     function handleOnLoadMore() {
         if (status.isError && !status.callInProgress) {
@@ -20,5 +20,5 @@ export function ConversationList() {
         }
     }
 
-    return <ConversationListUI status={status} conversations={resultingList} handleOnLoadMore={handleOnLoadMore}/>
+    return <ContactsListUI status={status} contacts={resultingList} handleOnLoadMore={handleOnLoadMore} displayType={displayType}/>
 }

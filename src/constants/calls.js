@@ -16,12 +16,21 @@ async function listUserConversation(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/listUserConversation`, dtoIn, pageInfo, token);
 }
 
+async function listContacts(dtoIn, pageInfo, token) {
+    return await callPost(`${BASE_URI}/listContacts`, dtoIn, pageInfo, token);
+}
+
+
 async function getCurrentUserProfile(dtoIn, pageInfo, token) {
     return await callGet(`${BASE_URI}/getCurrentUserProfile`, dtoIn, token);
 }
 
 async function updateUser(dtoIn, pageInfo, token) {
-    return await callPost(`${BASE_URI}/updateUser`, dtoIn, pageInfo, token);
+    return await callPut(`${BASE_URI}/updateUser`, dtoIn, pageInfo, token);
+}
+
+async function searchUsers(dtoIn, pageInfo, token) {
+    return await callPost(`${BASE_URI}/searchUsers`, dtoIn, pageInfo, token);
 }
 
 /*
@@ -72,6 +81,28 @@ async function callPost(uri, dtoIn, pageInfo, token) {
     return await response.json();
 }
 
+async function callPut(uri, dtoIn, pageInfo, token) {
+    const request = {
+        method: "PUT", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "default", // *default, no-cache, reload, force-cache, only-if-cached
+        //  credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+        }, redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify({...dtoIn, pageInfo}), // body data type must match "Content-Type" header
+    }
+    if (token) {
+        request.headers.Authorization = `Bearer ${token}`
+    }
+    const response = await fetch(uri, request);
+    if (response.status !== 200 && response.status !== 201) {
+        throw new Error("Server responded with status " + response.status);
+    }
+    return await response.json();
+}
+
 async function callGet(uri, dtoIn, token) {
     if (Object.keys(dtoIn).length > 0) {
         uri += "?";
@@ -101,5 +132,5 @@ async function callGet(uri, dtoIn, token) {
 }
 
 export {
-    login, register, verify2fa, listUserConversation, getCurrentUserProfile, updateUser
+    login, register, verify2fa, listUserConversation, getCurrentUserProfile, updateUser, listContacts, searchUsers
 }

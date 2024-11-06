@@ -9,6 +9,7 @@ import {GlobalAlertContext} from "./context/globalAlertContext.js";
 import withAlert from "./components/visual/withAlert.jsx";
 import RegisterRoute from "./routes/registerRoute.jsx";
 import {AccountManagementRoute} from "./routes/AccountManagementRoute.jsx";
+import {ContactsRoute} from "./routes/contactsRoute.jsx";
 
 function RouterRoot({openAlert, closeAlert}) {
 
@@ -21,6 +22,11 @@ function RouterRoot({openAlert, closeAlert}) {
                 {
                     path: "/accountManagement",
                     element: <AccountManagementRoute/>,
+                    errorElement: <ErrorPage/>,
+                },
+                {
+                    path: "/contacts",
+                    element: <ContactsRoute/>,
                     errorElement: <ErrorPage/>,
                 }
             ],

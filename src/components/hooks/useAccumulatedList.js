@@ -3,33 +3,34 @@ import * as Calls from "../../constants/calls.js";
 import {UserContext} from "../../context/userContext.js";
 
 // This expects pageSize to increase only, so no previous elements are loaded
-// Fixme - remove duplicates by id.... maybe....
-export function useAccumulatedList(calledMethod, dtoIn, pageInfo) {
+// FIXME - this hook is bad :(((
+export function useAccumulatedList(calledMethod, dtoIn, pageInfo, uniqueIndexName) {
     const [callInProgress, setCallInProgress] = useState(false);
     const [resultingList, setResultingList] = useState({
         itemList: [],
         total: 999999999 // so it is always called
     });
     const {token} = useContext(UserContext).userContext;
-    const [isError, setIsError] = useState(false);
+    const isError = useRef(false);
     const previousPageInfo = useRef({});
-    const previousError = useRef(isError);
+    const previousError = useRef(isError.current);
 
     function resetErr() {
-        previousError.current = isError;
+        previousError.current = isError.current;
         previousPageInfo.current = {};
-        setIsError(false);
+        isError.current = false;
     }
 
     function loadMore() {
-        if (!callInProgress && !isError &&
-            (previousError.current !== isError || (previousPageInfo.current.pageSize !== pageInfo.pageSize && previousPageInfo.current.pageIndex !== pageInfo.pageIndex))
+        if (!callInProgress && !isError.current &&
+            (previousError.current !== isError.current || (previousPageInfo.current.pageSize !== pageInfo.pageSize && previousPageInfo.current.pageIndex !== pageInfo.pageIndex))
         ) {
             setCallInProgress(true);
             Calls[calledMethod](dtoIn ?? {}, pageInfo, token).then((response) => {
+
                 setResultingList((prevState) => {
                     let itemList;
-                    itemList = response.itemList.filter((item) => !prevState.itemList.some((prevItem) => prevItem.id !== item.id));
+                    itemList = response.itemList.filter((item) => !prevState.itemList.some((prevItem) => prevItem[uniqueIndexName] !== item[uniqueIndexName]));
                     return {
                         itemList: [...(prevState.itemList), ...(itemList)],
                         total: response?.pageInfo?.total ?? 0
@@ -39,8 +40,8 @@ export function useAccumulatedList(calledMethod, dtoIn, pageInfo) {
                 previousPageInfo.current = pageInfo;
             }).catch((err) => {
                 setCallInProgress(false);
-                previousError.current = isError;
-                setIsError(true);
+                previousError.current = isError.current;
+                isError.current = true;
                 setResultingList({
                     itemList: [],
                     total: 999999999 // so it is always called
@@ -51,11 +52,15 @@ export function useAccumulatedList(calledMethod, dtoIn, pageInfo) {
 
     useEffect(() => {
         loadMore()
-    }, [pageInfo.pageIndex, isError, calledMethod]);
+    }, [pageInfo.pageIndex, isError.current, callInProgress]);
 
     return {
         resultingList: resultingList.itemList,
-        status: {callInProgress, isError, hasMore: resultingList.total > (pageInfo.pageIndex + 1 * pageInfo.pageSize)},
+        status: {
+            callInProgress,
+            isError: isError.current,
+            hasMore: resultingList.total > (pageInfo.pageIndex + 1 * pageInfo.pageSize)
+        },
         resetErr
     }
 }
