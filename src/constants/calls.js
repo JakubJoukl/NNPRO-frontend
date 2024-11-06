@@ -20,6 +20,10 @@ async function getCurrentUserProfile(dtoIn, pageInfo, token) {
     return await callGet(`${BASE_URI}/getCurrentUserProfile`, dtoIn, token);
 }
 
+async function updateUser(dtoIn, pageInfo, token) {
+    return await callPost(`${BASE_URI}/updateUser`, dtoIn, pageInfo, token);
+}
+
 /*
 async function login(username, password, captchaToken) {
     const base64encodedData = btoa(`${username}:${password}`);
@@ -97,5 +101,5 @@ async function callGet(uri, dtoIn, token) {
 }
 
 export {
-    login, register, verify2fa, listUserConversation, getCurrentUserProfile
+    login, register, verify2fa, listUserConversation, getCurrentUserProfile, updateUser
 }

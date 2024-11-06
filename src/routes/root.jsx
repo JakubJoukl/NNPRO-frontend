@@ -10,11 +10,11 @@ export default function Root({routeName}) {
 
     function logout() {
         setLoggedUser({
-            token: null, username: null,
+            token: null, username: null, privateKey: null
         })
     }
 
-    if (loggedUser?.token) {
+    if (loggedUser?.token && loggedUser.privateKey) {
         return (<UserContext.Provider value={{userContext: loggedUser, setUserContext: logout}}>
             <MainMenuBar routeHeader={routeName}>
                 <Paper variant={"outlined"} className={"w-full flex-grow p-3"}>
@@ -25,7 +25,7 @@ export default function Root({routeName}) {
     } else {
         // Not in router so unlogged user is always redirected here
         return (
-            <LoginRoute setLoggedUser={setLoggedUser}/>
+            <LoginRoute setLoggedUser={setLoggedUser} loggedUser={loggedUser}/>
         )
     }
 }

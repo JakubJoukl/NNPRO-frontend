@@ -2,33 +2,35 @@ import {useContext, useEffect, useRef, useState} from "react";
 import * as Calls from "../../constants/calls.js";
 import {UserContext} from "../../context/userContext.js";
 
-export function useCall(calledMethod, dtoIn, pageInfo) {
+export function useFetchCall(calledMethod, dtoIn, pageInfo) {
     //calledMethod, dtoIn, pageInfo
     const [callInProgress, setCallInProgress] = useState(false);
-    const [isError, setIsError] = useState(false);
+    const isError = useRef(false);
     const {token} = useContext(UserContext).userContext;
-    const [dtoOut, setDtoOut] = useState({});
-    const previousError = useRef(isError);
+    const [dtoOut, setDtoOut] = useState({}); //FIXME use REF!!!!!!
     const calledDtoIn = dtoIn ?? {};
     const calledPageInfo = pageInfo ?? {};
 
     function resetErr() {
-        previousError.current = isError;
-        setIsError(false);
+        isError.current = false;
+        fetch();
     }
 
-    useEffect(() => {
-        if (!callInProgress && !isError) {
+    function fetch() {
+        if (!callInProgress) {
             setCallInProgress(true);
             Calls[calledMethod](calledDtoIn, calledPageInfo, token).then((response) => {
                 setCallInProgress(false);
                 setDtoOut(response);
             }).catch((err) => {
                 setCallInProgress(false);
-                setIsError(true);
-                previousError.current = isError;
+                isError.current = true;
             });
         }
+    }
+
+    useEffect(() => {
+        fetch();
     }, [calledMethod, dtoIn, isError, pageInfo, token]);
 
     return {

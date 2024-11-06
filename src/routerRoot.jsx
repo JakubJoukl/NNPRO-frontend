@@ -29,7 +29,6 @@ function RouterRoot({openAlert, closeAlert}) {
             path: "/register",
             element: <RegisterRoute/>,
             errorElement: <ErrorPage/>,
-
         }
     ]);
     return (

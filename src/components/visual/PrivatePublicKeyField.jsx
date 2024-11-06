@@ -21,10 +21,35 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 export function PrivatePublicKeyField({id, label, className}) {
-    const {formContext, setFormContext} = useContext(FormContext);
-    const [value, setValue] = useState(formContext[id]?.value);
-    const [editMode, setEditMode] = useState(false);
-    const {openAlert, closeAlert} = useContext(GlobalAlertContext);
+    const {formRef} = useContext(FormContext);
+    const [value, setValue] = useState(formRef.current[id]?.value);
+    const {openAlert} = useContext(GlobalAlertContext);
+
+    async function generateKeyPair() {
+        const keyPair = await generateElipticKeyPair();
+        const publicKey = await crypto.subtle.exportKey("jwk", keyPair.publicKey);
+        const privateKey = await crypto.subtle.exportKey("jwk", keyPair.privateKey);
+
+        // Convert the public key to JSON string
+        const privateKeyJson = JSON.stringify(privateKey, null, 2);
+        const publicKeyJson = JSON.stringify(publicKey, null, 2);
+
+
+        // Create a Blob from the JSON string
+        const blob = new Blob([privateKeyJson], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+
+        // Create an anchor element and trigger the download
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "privateKey.json"; // Name of the downloaded file
+        link.click(); // Open download dialog
+
+        // Clean up the Blob URL
+        URL.revokeObjectURL(url);
+        link.remove();
+        return {publicKeyJson, publicKey};
+    }
 
     return (
         <div className={className}>
@@ -43,7 +68,25 @@ export function PrivatePublicKeyField({id, label, className}) {
                         Upload public key
                         <VisuallyHiddenInput
                             type="file"
-                            onChange={(event) => console.log(event.target.files)}
+                            onChange={(event) => {
+                                const reader = new FileReader(); // Create a new FileReader instance
+
+                                // Define the onload event of FileReader
+                                reader.onload = (e) => {
+                                    const key = e.target.result;
+                                    setValue(key);
+                                    openAlert("Public key was uploaded successfully.");
+                                    formRef.current = {
+                                        ...formRef.current,
+                                        publicKey: {
+                                            value: JSON.parse(key),
+                                            edited: true
+                                        }
+                                    };
+                                };
+                                // Read file as text
+                                reader.readAsText(event.target.files[0]);
+                            }}
                         />
                     </Button>
                     <Button
@@ -53,38 +96,16 @@ export function PrivatePublicKeyField({id, label, className}) {
                         startIcon={<KeyIcon/>}
                         onClick={
                             async () => {
-                                const keyPair = await generateElipticKeyPair();
-                                const publicKey = await crypto.subtle.exportKey("jwk", keyPair.publicKey);
-                                const privateKey = await crypto.subtle.exportKey("jwk", keyPair.privateKey);
-
-                                // Convert the public key to JSON string
-                                const privateKeyJson = JSON.stringify(privateKey, null, 2);
-                                const publicKeyJson = JSON.stringify(publicKey, null, 2);
-
-
-                                // Create a Blob from the JSON string
-                                const blob = new Blob([privateKeyJson], {type: "application/json"});
-                                const url = URL.createObjectURL(blob);
-
-                                // Create an anchor element and trigger the download
-                                const link = document.createElement("a");
-                                link.href = url;
-                                link.download = "privateKey.json"; // Name of the downloaded file
-                                link.click(); // Open download dialog
-
-                                // Clean up the Blob URL
-                                URL.revokeObjectURL(url);
-                                link.remove();
+                                const {publicKeyJson, publicKey} = await generateKeyPair();
                                 setValue(publicKeyJson);
                                 openAlert("Keypair successfully generated. Private key has been downloaded. Public key has been saved to form.");
-                                setFormContext((prev) => {
-                                    return {
-                                        publicKey: {
-                                            value: publicKeyJson,
-                                            edited: true
-                                        }
+                                formRef.current = {
+                                    ...formRef.current,
+                                    publicKey: {
+                                        value: publicKey,
+                                        edited: true
                                     }
-                                });
+                                };
                             }
                         }
                     >

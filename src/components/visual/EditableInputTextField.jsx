@@ -3,8 +3,8 @@ import {useContext, useState} from "react";
 import {FormContext} from "../../context/formContext.js";
 
 export function EditableInputTextField({id, label, type, className}) {
-    const {formContext, setFormContext} = useContext(FormContext);
-    const [value, setValue] = useState(formContext[id]?.value);
+    const {formRef} = useContext(FormContext);
+    const [value, setValue] = useState(formRef.current[id]?.value);
     const [editMode, setEditMode] = useState(false);
 
     return (
