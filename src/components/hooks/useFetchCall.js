@@ -35,7 +35,7 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo) {
 
     return {
         dtoOut: dtoOut,
-        status: {callInProgress, isError},
+        status: {callInProgress, isError: isError.current},
         resetErr
     }
 }

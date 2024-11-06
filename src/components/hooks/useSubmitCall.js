@@ -34,7 +34,7 @@ export function useSubmitCall(calledMethod, successMessage, errorMessage) {
 
     return {
         dtoOut: dtoOut,
-        status: {callInProgress, isError},
+        status: {callInProgress, isError: isError.current},
         call
     }
 }
