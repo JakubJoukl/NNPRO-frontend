@@ -19,7 +19,7 @@ function PaperComponent(props) {
     );
 }
 
-export function DraggableDialog({Content, OpenDialogButton, dialogButtonContent, title}) {
+export function DraggableDialog({Content, OpenDialogButton, dialogButtonContent, title, className}) {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -40,6 +40,7 @@ export function DraggableDialog({Content, OpenDialogButton, dialogButtonContent,
                 onClose={handleClose}
                 PaperComponent={PaperComponent}
                 aria-labelledby="draggable-dialog-title"
+                className={className}
             >
                 <DialogTitle style={{cursor: 'move'}} id="draggable-dialog-title">
                     {title}

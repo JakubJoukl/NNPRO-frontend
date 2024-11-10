@@ -33,6 +33,10 @@ async function searchUsers(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/searchUsers`, dtoIn, pageInfo, token);
 }
 
+async function addContact(dtoIn, pageInfo, token) {
+    return await callPost(`${BASE_URI}/addContact`, dtoIn, pageInfo, token);
+}
+
 /*
 async function login(username, password, captchaToken) {
     const base64encodedData = btoa(`${username}:${password}`);
@@ -132,5 +136,5 @@ async function callGet(uri, dtoIn, token) {
 }
 
 export {
-    login, register, verify2fa, listUserConversation, getCurrentUserProfile, updateUser, listContacts, searchUsers
+    login, register, verify2fa, listUserConversation, getCurrentUserProfile, updateUser, listContacts, searchUsers, addContact
 }

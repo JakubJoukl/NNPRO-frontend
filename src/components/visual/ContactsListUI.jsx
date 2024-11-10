@@ -6,9 +6,8 @@ import ListItemText from "@mui/material/ListItemText";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export function ContactsListUI({contacts, status, handleOnLoadMore, displayType}) {
+export function ContactsListUI({contacts, status, handleOnLoadMore}) {
 
-    console.log(contacts);
     return (<div className={"w-full flex flex-col items-center"}><List className={"w-[50rem] max-w-full"}>
         {status?.isError && (<>
             <ListItem disablePadding key={"error"}>
@@ -35,7 +34,7 @@ export function ContactsListUI({contacts, status, handleOnLoadMore, displayType}
         {(!status.isError && contacts && Array.isArray(contacts)) && <>
             {contacts.map((contacts) => {
                 return (<ListItem disablePadding key={contacts.username} secondaryAction={
-                    <IconButton edge="end" aria-label="delete">
+                    <IconButton edge="end" aria-label="delete" color={"primary"}>
                         <DeleteIcon/>
                     </IconButton>
                 }>
@@ -46,9 +45,9 @@ export function ContactsListUI({contacts, status, handleOnLoadMore, displayType}
             })}
         </>}
         {(!status.isError && !status.callInProgress && !contacts.length) && <>
-        <Typography variant="p" className={"text-center"}>
-            You don&#39;t have any contacts.
-        </Typography>
+            <Typography variant="p" className={"text-center"}>
+                You don&#39;t have any contacts.
+            </Typography>
         </>}
         {status.callInProgress &&
             <ListItem disablePadding key={"progressCircle"} className={"flex !justify-center mt-3 flex-row"}>

@@ -44,7 +44,6 @@ export function PrivateKeyInputUI({setLoggedUser}) {
                             // Define the onload event of FileReader
                             reader.onload = (event) => {
                                 const key = event.target.result;
-                                console.log(key);
                                 setLoggedUser((prevState) => {
                                     return {
                                         ...prevState,

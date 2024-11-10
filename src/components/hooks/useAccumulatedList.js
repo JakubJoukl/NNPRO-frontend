@@ -8,12 +8,13 @@ export function useAccumulatedList(calledMethod, dtoIn, pageInfo, uniqueIndexNam
     const [callInProgress, setCallInProgress] = useState(false);
     const [resultingList, setResultingList] = useState({
         itemList: [],
-        total: 999999999 // so it is always called
+        total: 0 // so it is always called
     });
     const {token} = useContext(UserContext).userContext;
     const isError = useRef(false);
     const previousPageInfo = useRef({});
     const previousError = useRef(isError.current);
+    const previousDtoIn = useRef(dtoIn);
 
     function resetErr() {
         previousError.current = isError.current;
@@ -22,8 +23,16 @@ export function useAccumulatedList(calledMethod, dtoIn, pageInfo, uniqueIndexNam
     }
 
     function loadMore() {
+        if (JSON.stringify(previousDtoIn.current) !== JSON.stringify(dtoIn)) {
+            setResultingList({
+                itemList: [],
+                total: 0 // so it is always called
+            });
+            previousPageInfo.current = {};
+        }
+        previousDtoIn.current = dtoIn;
         if (!callInProgress && !isError.current &&
-            (previousError.current !== isError.current || (previousPageInfo.current.pageSize !== pageInfo.pageSize && previousPageInfo.current.pageIndex !== pageInfo.pageIndex))
+            (previousError.current !== isError.current || (previousPageInfo.current.pageSize !== pageInfo.pageSize || previousPageInfo.current.pageIndex !== pageInfo.pageIndex))
         ) {
             setCallInProgress(true);
             Calls[calledMethod](dtoIn ?? {}, pageInfo, token).then((response) => {
@@ -38,21 +47,23 @@ export function useAccumulatedList(calledMethod, dtoIn, pageInfo, uniqueIndexNam
                 });
                 setCallInProgress(false);
                 previousPageInfo.current = pageInfo;
+                previousError.current = isError.current;
+                isError.current = false;
             }).catch((err) => {
                 setCallInProgress(false);
                 previousError.current = isError.current;
                 isError.current = true;
                 setResultingList({
                     itemList: [],
-                    total: 999999999 // so it is always called
+                    total: 0 // so it is always called
                 });
             });
         }
     }
 
     useEffect(() => {
-        loadMore()
-    }, [pageInfo.pageIndex, isError.current, callInProgress]);
+        loadMore();
+    }, [pageInfo.pageIndex, isError.current, dtoIn, callInProgress]);
 
     return {
         resultingList: resultingList.itemList,

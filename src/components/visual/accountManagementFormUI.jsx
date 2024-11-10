@@ -29,7 +29,6 @@ export function AccountManagementFormUI({status, resetError, callInProgress}) {
             <CircularProgress className={'ml-3'} color="primary"/>
         </ListItem>
     } else {
-        console.log(status);
         return <div className={"flex flex-col justify-center align-middle items-center space-y-3"}>
             <EditableInputTextField label={"Username"} id={"username"} className={"w-full max-w-2xl"}/>
             <EditableInputTextField label={"Email"} id={"email"} className={"w-full max-w-2xl"}/>

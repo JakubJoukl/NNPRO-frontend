@@ -39,7 +39,7 @@ export function ConversationListUI({conversations, status, handleOnLoadMore}) {
             })}
         </>}
         {status.callInProgress &&
-            <ListItem disablePadding key={"progressCircle"} className={"flex !justify-center mt-3 flex-row"}>
+            <ListItem key={"progress"} disablePadding key={"progressCircle"} className={"flex !justify-center mt-3 flex-row"}>
                 <CircularProgress className={'ml-3'} color="primary"/>
             </ListItem>
         }
