@@ -14,7 +14,8 @@ export function UsersListUI({
                                 status,
                                 handleOnLoadMore,
                                 setFilteredName,
-                                handleOnAddContact
+                                handleOnAddContact,
+                                className
                             }) {
     const timeoutRef = useRef();
     const {addedContacts} = useContext(AddedContactsContext);

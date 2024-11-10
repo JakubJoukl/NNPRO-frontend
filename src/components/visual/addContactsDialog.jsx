@@ -1,7 +1,7 @@
 import {DraggableDialog} from "./DraggableDialog.jsx";
 import {UsersList} from "../functional/usersList.jsx";
 import {Button} from "@mui/material";
-import {useContext, useState} from "react";
+import {useContext} from "react";
 import * as Calls from "../../constants/calls.js";
 import {UserContext} from "../../context/userContext.js";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
@@ -42,7 +42,7 @@ export function AddContactsDialog() {
     }
 
     return <DraggableDialog title={"Add new contact"}
-                            Content={<UsersList handleOnAddContact={handleOnAddContact}/>}
+                            Content={<UsersList handleOnAddContact={handleOnAddContact} className={"h-128 max-h-screen"}/>}
                             dialogButtonContent={"Add new contact"}
-                            OpenDialogButton={Button} className={"h-[35rem] max-h-screen"}/>
+                            OpenDialogButton={Button} className={"h-128 max-h-screen"}/>
 }

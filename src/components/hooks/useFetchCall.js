@@ -34,7 +34,6 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo) {
         fetch();
     }, [calledMethod, dtoIn, pageInfo, token]);
 
-    console.log("pre", dtoOut);
     return {
         dtoOut,
         status: {callInProgress, isError: isError.current},
