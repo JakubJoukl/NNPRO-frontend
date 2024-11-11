@@ -51,14 +51,15 @@ export function AccountManagementFormUI({status, resetError, callInProgress}) {
                 disabled={callInProgress}
                 onClick={async () => {
                     const submitDtoIn = {
-                        confirmationPassword: formRef.current.confirmationPassword,
+                        confirmationPassword: formRef.current.confirmationPassword ?? null,
                     };
+                    console.log(formRef.current, "from inner submit")
                     for (const key in formRef.current) {
                         if (formRef.current[key].edited) {
                             submitDtoIn[key] = formRef.current[key].value;
                         }
                     }
-                    onSubmit(submitDtoIn, {})
+                    onSubmit(submitDtoIn, undefined);
                 }
                 }
                 color={"primary"}

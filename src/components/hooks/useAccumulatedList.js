@@ -39,7 +39,7 @@ export function useAccumulatedList(calledMethod, dtoIn, pageInfo, uniqueIndexNam
 
                 setResultingList((prevState) => {
                     let itemList;
-                    itemList = response.itemList.filter((item) => !prevState.itemList.some((prevItem) => prevItem[uniqueIndexName] !== item[uniqueIndexName]));
+                    itemList = response.itemList.filter((item) => !prevState.itemList.some((prevItem) => prevItem[uniqueIndexName] === item[uniqueIndexName]));
                     return {
                         itemList: [...(prevState.itemList), ...(itemList)],
                         total: response?.pageInfo?.total ?? 0
@@ -63,7 +63,7 @@ export function useAccumulatedList(calledMethod, dtoIn, pageInfo, uniqueIndexNam
 
     useEffect(() => {
         loadMore();
-    }, [pageInfo.pageIndex, isError.current, dtoIn, callInProgress]);
+    }, [pageInfo.pageIndex, isError.current, dtoIn]);
 
     return {
         resultingList: resultingList.itemList,

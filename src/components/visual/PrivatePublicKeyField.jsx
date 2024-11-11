@@ -22,7 +22,7 @@ const VisuallyHiddenInput = styled('input')({
 
 export function PrivatePublicKeyField({id, label, className}) {
     const {formRef} = useContext(FormContext);
-    const [value, setValue] = useState(formRef.current[id]?.value);
+    const [value, setValue] = useState(JSON.stringify(formRef.current[id]?.value, null, 2));
     const {openAlert} = useContext(GlobalAlertContext);
 
     async function generateKeyPair() {
@@ -76,12 +76,9 @@ export function PrivatePublicKeyField({id, label, className}) {
                                     const key = e.target.result;
                                     setValue(key);
                                     openAlert("Public key was uploaded successfully.");
-                                    formRef.current = {
-                                        ...formRef.current,
-                                        publicKey: {
-                                            value: JSON.parse(key),
-                                            edited: true
-                                        }
+                                    formRef.current.publicKey = {
+                                        value: JSON.parse(key),
+                                        edited: true
                                     };
                                 };
                                 // Read file as text
@@ -99,12 +96,9 @@ export function PrivatePublicKeyField({id, label, className}) {
                                 const {publicKeyJson, publicKey} = await generateKeyPair();
                                 setValue(publicKeyJson);
                                 openAlert("Keypair successfully generated. Private key has been downloaded. Public key has been saved to form.");
-                                formRef.current = {
-                                    ...formRef.current,
-                                    publicKey: {
-                                        value: publicKey,
-                                        edited: true
-                                    }
+                                formRef.current.publicKey = {
+                                    value: JSON.parse(publicKeyJson),
+                                    edited: true
                                 };
                             }
                         }
