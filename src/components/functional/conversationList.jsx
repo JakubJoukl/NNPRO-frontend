@@ -4,7 +4,7 @@ import {useState} from "react";
 
 export function ConversationList() {
     const [pageInfo, setPageInfo] = useState({pageIndex: 0, pageSize: 50});
-    const {resultingList, status, resetErr} = useAccumulatedList('listUserConversation', {}, pageInfo, "username");
+    const {resultingList, status, resetErr} = useAccumulatedList('listUserConversation', {}, pageInfo, "id");
 
     function handleOnLoadMore() {
         if (status.isError && !status.callInProgress) {

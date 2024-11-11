@@ -7,7 +7,7 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo) {
     const [callInProgress, setCallInProgress] = useState(false);
     const isError = useRef(false);
     const {token} = useContext(UserContext).userContext;
-    const [dtoOut, setDtoOut] = useState({}); //FIXME use REF!!!!!!
+    const [dtoOut, setDtoOut] = useState({});
     const calledDtoIn = dtoIn ?? {};
     const calledPageInfo = pageInfo ?? {};
 
@@ -23,6 +23,7 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo) {
                 setCallInProgress(false);
                 setDtoOut(response);
             }).catch((err) => {
+                setDtoOut({});
                 setCallInProgress(false);
                 isError.current = true;
             });
@@ -31,10 +32,10 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo) {
 
     useEffect(() => {
         fetch();
-    }, [calledMethod, dtoIn, isError, pageInfo, token]);
+    }, [calledMethod, dtoIn, pageInfo, token]);
 
     return {
-        dtoOut: dtoOut,
+        dtoOut,
         status: {callInProgress, isError: isError.current},
         resetErr
     }
