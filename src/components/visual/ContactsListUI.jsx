@@ -1,16 +1,31 @@
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import {Alert, Button, CircularProgress, Typography} from "@mui/material";
+import {Alert, Button, CircularProgress, TextField, Typography} from "@mui/material";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from '@mui/icons-material/Delete';
+import {useRef} from "react";
 
-export function ContactsListUI({contacts, status, handleOnLoadMore}) {
+export function ContactsListUI({contacts, status, handleOnLoadMore, setFilteredName, deleteEnabled, handleOnClick}) {
+    const timeoutRef = useRef();
 
-    return (<div className={"w-full flex flex-col items-center"}><List className={"w-[50rem] max-w-full"}>
+    console.log(deleteEnabled);
+    //Maybe filtering textfield deserves to be in separate component?
+    return (<div className={"w-full flex flex-col items-center"}><List className={"w-full] lg:w-[50rem]"}>
+        <TextField onChange={(e) => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = null;
+            }
+            timeoutRef.current = setTimeout(() => {
+                setFilteredName(e.target.value);
+            }, 500);
+        }
+        }
+                   label={"Username"} variant="filled" className={"w-full"}/>
         {status?.isError && (<>
-            <ListItem disablePadding key={"error"}>
+            <ListItem disablePadding>
                 <Alert
                     severity={"error"}
                     variant="filled"
@@ -19,7 +34,7 @@ export function ContactsListUI({contacts, status, handleOnLoadMore}) {
                     Error occurred during loading of contacts.
                 </Alert>
             </ListItem>
-            <ListItem disablePadding key={"reloadButton"} className={"flex !justify-center mt-3 flex-row"}>
+            <ListItem disablePadding className={"flex !justify-center mt-3 flex-row"}>
                 <Button
                     size="large" variant="outlined"
                     onClick={() => {
@@ -32,14 +47,18 @@ export function ContactsListUI({contacts, status, handleOnLoadMore}) {
         </>)
         }
         {(!status.isError && contacts && Array.isArray(contacts)) && <>
-            {contacts.map((contacts) => {
-                return (<ListItem disablePadding key={contacts.username} secondaryAction={
-                    <IconButton edge="end" aria-label="delete" color={"primary"}>
+            {contacts.map((contact) => {
+                return (<ListItem disablePadding key={contact.username} secondaryAction={
+                    deleteEnabled ? <IconButton edge="end" aria-label="delete" color={"primary"}>
                         <DeleteIcon/>
-                    </IconButton>
-                }>
+                    </IconButton> : null
+                } onClick={() =>{
+                    if(handleOnClick){
+                        handleOnClick(contact);
+                    }
+                }}>
                     <ListItemButton>
-                        <ListItemText primary={contacts.username}/>
+                        <ListItemText primary={contact.username}/>
                     </ListItemButton>
                 </ListItem>)
             })}
@@ -50,7 +69,7 @@ export function ContactsListUI({contacts, status, handleOnLoadMore}) {
             </Typography>
         </>}
         {status.callInProgress &&
-            <ListItem disablePadding key={"progressCircle"} className={"flex !justify-center mt-3 flex-row"}>
+            <ListItem disablePadding className={"flex !justify-center mt-3 flex-row"}>
                 <CircularProgress className={'ml-3'} color="primary"/>
             </ListItem>
         }

@@ -3,10 +3,20 @@ import {useContext, useState} from "react";
 import {ContactsListUI} from "../visual/ContactsListUI.jsx";
 import {AddedContactsContext} from "../../context/addedContactsContext.js";
 
-export function ContactsList({displayType}) {
+export function ContactsList() {
     const [pageInfo, setPageInfo] = useState({pageIndex: 0, pageSize: 50});
-    const {resultingList, status, resetErr} = useAccumulatedList('listContacts', {}, pageInfo, "username");
-    const {addedContacts} = useContext(AddedContactsContext);
+    const [filteredName, setFilteredName] = useState("");
+    const {
+        resultingList,
+        status,
+        resetErr
+    } = useAccumulatedList('listContacts', {username: filteredName}, pageInfo, "username");
+    const {addedContacts, setAddedContacts} = useContext(AddedContactsContext);
+
+    function handleOnNameChange(newName) {
+        setFilteredName(newName);
+        setAddedContacts({}); // If we update filter, we don't need "fake" contacts anymore
+    }
 
     function handleOnLoadMore() {
         if (status.isError && !status.callInProgress) {
@@ -22,8 +32,12 @@ export function ContactsList({displayType}) {
         }
     }
 
-    // FIXME the CPU is gonna be like: WTF DUDE!
-    const finalContacts = [...resultingList, ...(Object.keys(addedContacts).map((key) => addedContacts[key]?.contact) ?? [])].reduce((acc, contact) => {
+    // FIXME the CPU is gonna be like: WTF DUDE! - need MEMO
+    const finalContacts = [
+        ...resultingList, ...((Object.keys(addedContacts).map((key) => addedContacts[key]?.contact) ?? [])
+                .filter(contact => contact.username.toLowerCase().startsWith(filteredName.toLowerCase()))
+        )
+    ].reduce((acc, contact) => {
         if (!acc.some(existingContact => existingContact.username === contact.username)) {
             acc.push(contact);
         }
@@ -31,5 +45,5 @@ export function ContactsList({displayType}) {
     }, []);
 
     return <ContactsListUI status={status} contacts={finalContacts} handleOnLoadMore={handleOnLoadMore}
-                           displayType={displayType}/>
+                           setFilteredName={handleOnNameChange} deleteEnabled={true}/>
 }

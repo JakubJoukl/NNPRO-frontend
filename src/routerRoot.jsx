@@ -10,6 +10,7 @@ import withAlert from "./components/visual/withAlert.jsx";
 import RegisterRoute from "./routes/registerRoute.jsx";
 import {AccountManagementRoute} from "./routes/AccountManagementRoute.jsx";
 import {ContactsRoute} from "./routes/contactsRoute.jsx";
+import {NewConversationRoute} from "./routes/newConversationRoute.jsx";
 
 function RouterRoot({openAlert, closeAlert}) {
 
@@ -27,6 +28,11 @@ function RouterRoot({openAlert, closeAlert}) {
                 {
                     path: "/contacts",
                     element: <ContactsRoute/>,
+                    errorElement: <ErrorPage/>,
+                },
+                {
+                    path: "/newConversation",
+                    element: <NewConversationRoute/>,
                     errorElement: <ErrorPage/>,
                 }
             ],

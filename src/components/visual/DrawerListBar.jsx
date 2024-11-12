@@ -41,7 +41,7 @@ export default function DrawerListBar({drawerWidth, handleDrawerClose, open}) {
         <Divider/>
         <List>
             <ListItem disablePadding>
-                <ListItemButton>
+                <ListItemButton onClick={() => navigate("/newConversation")}>
                     <ListItemIcon>
                         <QuestionAnswerIcon color={"secondary"}/>
                     </ListItemIcon>
