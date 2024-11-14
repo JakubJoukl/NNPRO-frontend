@@ -14,7 +14,6 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import {useTheme} from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import {ConversationList} from "../functional/conversationList.jsx";
-import {DraggableDialog} from "./DraggableDialog.jsx";
 
 export default function DrawerListBar({drawerWidth, handleDrawerClose, open}) {
     const theme = useTheme();

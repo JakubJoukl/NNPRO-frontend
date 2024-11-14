@@ -1,11 +1,12 @@
 import {Button, IconButton, TextField, Typography} from "@mui/material";
 import {ArrowBack} from "@mui/icons-material";
-import {useRef, useState} from "react";
-import {useFetchCall} from "../../hooks/useFetchCall.js";
+import {useContext, useRef, useState} from "react";
+import {UserContext} from "../../context/userContext.js";
 
 export function CreateConversationFormUI({selectedContact, setSelectedContact, status, onSubmit}) {
     const [conversationName, setConversationName] = useState("");
     const typingTimeoutRef = useRef({});
+    const userContext = useContext(UserContext).userContext;
 
     // True means valid, false means invalid
     const [validations, setValidations] = useState({conversationName: true});
@@ -68,8 +69,11 @@ export function CreateConversationFormUI({selectedContact, setSelectedContact, s
                 className={"w-fit"}
         >Create conversation</Button>
         {selectedContact.publicKey == null &&
-            <Typography color={"red"} variant={"span"}>{<b>It is impossible to start encrypted conversation
-                - user <Typography color={"primary"} variant={"span"}>{<b>{selectedContact.username}</b>}</Typography> has
-                not set public key yet.</b>}</Typography>}
+            <Typography color={"red"} variant={"span"}>{<b>User <Typography color={"primary"} variant={"span"}>{
+                <b>Can&#39;t start encrypted conversation - {selectedContact.username}</b>}</Typography> has
+                not set public key yet!</b>}</Typography>}
+        {(userContext.publicKey == null || userContext.privateKey == null) &&
+            <Typography color={"red"} variant={"span"}>{<b>Can&#39;t start encrypted conversation - You have not set your public key or private key. You have to
+                set your keypair first!</b>}</Typography>}
     </div>)
 }

@@ -1,5 +1,4 @@
 import {Typography} from "@mui/material";
-import {ContactsList} from "../components/functional/contactsList.jsx";
 import NewConversationWidget from "../components/functional/newConversationWidget.jsx";
 
 export function NewConversationRoute() {
