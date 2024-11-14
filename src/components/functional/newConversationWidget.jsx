@@ -1,25 +1,26 @@
-import {useContext, useState} from "react";
-import {useAccumulatedList} from "../hooks/useAccumulatedList.js";
-import {ContactsListUI} from "../visual/ContactsListUI.jsx";
+import {useState} from "react";
+import {ContactsList} from "./contactsList.jsx";
+import {CreateConversationFormUI} from "../visual/createConversationFormUI.jsx";
+import {useSubmitCall} from "../hooks/useSubmitCall.js";
 
 export default function NewConversationWidget({onUserClicked, deleteEnabled}) {
-    const [pageInfo, setPageInfo] = useState({pageIndex: 0, pageSize: 50});
-    const [filteredName, setFilteredName] = useState("");
-    const {resultingList, status, resetErr} = useAccumulatedList('listContacts', {username: filteredName}, pageInfo, "username");
+    const [selectedContact, setSelectedContact] = useState(null);
+    const {status, call} = useSubmitCall(
+        "createConversation", "Conversation has been created successfully",
+        "Creating conversation failed due to unknown error."
+    );
 
-    function handleOnLoadMore() {
-        if (status.isError && !status.callInProgress) {
-            resetErr();
-            setPageInfo({pageIndex: 0, pageSize: 50});
-        } else if (!status.callInProgress) {
-            setPageInfo((previousPageInfo) => {
-                return {
-                    ...previousPageInfo,
-                    pageIndex: previousPageInfo.pageIndex + 1,
-                }
-            });
-        }
+    function handleOnSubmit(conversationName) {
+        call({name: conversationName, users: [selectedContact.username]}, undefined);
     }
 
-    return <ContactsListUI status={status} contacts={resultingList} handleOnLoadMore={handleOnLoadMore} deleteEnabled={false} setFilteredName={setFilteredName} handleOnClick={onUserClicked}/>
+    function handleOnUserClicker(contact) {
+        setSelectedContact(contact);
+    }
+
+    if (!selectedContact) {
+        return <ContactsList onUserClicked={handleOnUserClicker}/>
+    }
+    return <CreateConversationFormUI selectedContact={selectedContact} setSelectedContact={setSelectedContact}
+                                     status={status} onSubmit={handleOnSubmit}/>
 }

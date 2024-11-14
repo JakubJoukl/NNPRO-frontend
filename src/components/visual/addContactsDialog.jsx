@@ -34,15 +34,17 @@ export function AddContactsDialog() {
         ).catch((err) => {
             openAlert(`Addidng of contact "${contact.username}" failed.`, "error");
             setAddedContacts((prevState) => {
+                delete prevState[contact.username];
                 return {
-                    ...prevState, [contact.username]: undefined
+                    ...prevState
                 }
             });
         });
     }
 
     return <DraggableDialog title={"Add new contact"}
-                            Content={<UsersList handleOnAddContact={handleOnAddContact} className={"h-128 max-h-screen"}/>}
+                            Content={<UsersList handleOnAddContact={handleOnAddContact}
+                                                className={"h-128 max-h-screen"}/>}
                             dialogButtonContent={"Add new contact"}
                             OpenDialogButton={Button} className={"h-128 max-h-screen"}/>
 }

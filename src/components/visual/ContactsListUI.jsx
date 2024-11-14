@@ -9,10 +9,8 @@ import {useRef} from "react";
 
 export function ContactsListUI({contacts, status, handleOnLoadMore, setFilteredName, deleteEnabled, handleOnClick}) {
     const timeoutRef = useRef();
-
-    console.log(deleteEnabled);
     //Maybe filtering textfield deserves to be in separate component?
-    return (<div className={"w-full flex flex-col items-center"}><List className={"w-full] lg:w-[50rem]"}>
+    return (<div className={"w-full flex flex-col items-center"}><List className={"w-full 2xl:w-[50rem] lg:w-[43rem]"}>
         <TextField onChange={(e) => {
             if (timeoutRef.current) {
                 clearTimeout(timeoutRef.current);

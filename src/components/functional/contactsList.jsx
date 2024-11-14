@@ -3,7 +3,7 @@ import {useContext, useState} from "react";
 import {ContactsListUI} from "../visual/ContactsListUI.jsx";
 import {AddedContactsContext} from "../../context/addedContactsContext.js";
 
-export function ContactsList() {
+export function ContactsList({onUserClicked, deleteEnabled}) {
     const [pageInfo, setPageInfo] = useState({pageIndex: 0, pageSize: 50});
     const [filteredName, setFilteredName] = useState("");
     const {
@@ -45,5 +45,5 @@ export function ContactsList() {
     }, []);
 
     return <ContactsListUI status={status} contacts={finalContacts} handleOnLoadMore={handleOnLoadMore}
-                           setFilteredName={handleOnNameChange} deleteEnabled={true}/>
+                           setFilteredName={handleOnNameChange} deleteEnabled={deleteEnabled} handleOnClick={onUserClicked}/>
 }

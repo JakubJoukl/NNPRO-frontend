@@ -20,6 +20,24 @@ export function UsersListUI({
     const timeoutRef = useRef();
     const {addedContacts} = useContext(AddedContactsContext);
 
+    function _getUserAddBody(user) {
+        if (user.alreadyAdded || (addedContacts[user.username] && addedContacts[user.username].progress !== "inProgress")) {
+            return (<IconButton edge="end" aria-label="add" color={"primary"}>
+                <CheckIcon/>
+            </IconButton>);
+        }
+        if (addedContacts[user.username].progress === "inProgress") {
+            return (<CircularProgress style={{height: "1.5em", width: "1.5em"}} color="primary"/>);
+        }
+
+        return (<IconButton edge="end" aria-label="add" color={"primary"}
+                            onClick={() => handleOnAddContact(user)}>
+            <AddCircleIcon/>
+        </IconButton>);
+
+    }
+
+
     return (<div className={"w-full flex flex-col items-center"}><List className={"w-[50rem] max-w-full"}>
         <TextField onChange={(e) => {
             if (timeoutRef.current) {
@@ -57,33 +75,25 @@ export function UsersListUI({
         {(!status.isError && usersList && Array.isArray(usersList)) && <>
             {usersList.map((user) => {
                 return (<ListItem disablePadding key={user.username} secondaryAction={
-                    !addedContacts[user.username]?.progress ? (
-                        <IconButton edge="end" aria-label="add" color={"primary"}
-                                    onClick={() => handleOnAddContact(user)}>
-                            <AddCircleIcon/>
-                        </IconButton>) : addedContacts[user.username].progress === "inProgress" ? (
-                        <CircularProgress style={{height: "1.5em", width: "1.5em"}} color="primary"/>
-                    ) : <IconButton edge="end" aria-label="add" color={"primary"}>
-                        <CheckIcon/>
-                    </IconButton>
+                    _getUserAddBody(user)
                 }>
                     <ListItemButton>
                         <ListItemText primary={user.username}/>
                     </ListItemButton>
                 </ListItem>)
             })}
-                {(status.hasMore) &&
-                    <ListItem disablePadding key={"reloadButton"} className={"flex !justify-center mt-3 flex-row"}>
-                        <Button
-                            size="large" variant="outlined"
-                            disabled={status.callInProgress}
-                            onClick={() => {
-                                handleOnLoadMore()
-                            }
-                            }
-                            color={"primary"}
-                        >Load more</Button>
-                    </ListItem>}
+            {(status.hasMore) &&
+                <ListItem disablePadding key={"reloadButton"} className={"flex !justify-center mt-3 flex-row"}>
+                    <Button
+                        size="large" variant="outlined"
+                        disabled={status.callInProgress}
+                        onClick={() => {
+                            handleOnLoadMore()
+                        }
+                        }
+                        color={"primary"}
+                    >Load more</Button>
+                </ListItem>}
         </>}
 
         {(!status.isError && !status.callInProgress && !usersList.length) && <>

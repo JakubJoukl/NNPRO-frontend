@@ -13,7 +13,7 @@ export function ContactsRoute() {
                 Your contacts
             </Typography>
             <AddContactsDialog/>
-            <ContactsList/>
+            <ContactsList deleteEnabled={true}/>
         </div>
     </AddedContactsContext.Provider>
 }
