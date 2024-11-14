@@ -1,4 +1,4 @@
-import {useAccumulatedList} from "../hooks/useAccumulatedList.js";
+import {useAccumulatedList} from "../../hooks/useAccumulatedList.js";
 import {ConversationListUI} from "../visual/ConversationListUI.jsx";
 import {useState} from "react";
 

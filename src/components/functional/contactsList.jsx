@@ -1,4 +1,4 @@
-import {useAccumulatedList} from "../hooks/useAccumulatedList.js";
+import {useAccumulatedList} from "../../hooks/useAccumulatedList.js";
 import {useContext, useState} from "react";
 import {ContactsListUI} from "../visual/ContactsListUI.jsx";
 import {AddedContactsContext} from "../../context/addedContactsContext.js";

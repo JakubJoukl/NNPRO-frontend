@@ -1,6 +1,5 @@
 import LoginFormUI from "../visual/loginFormUI.jsx";
 import * as Calls from "../../constants/calls.js";
-import {jwtDecode} from "jwt-decode";
 import {useContext, useState} from "react";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 import MailCodeVerificationUI from "../visual/mailCodeVerificationUI.jsx";
@@ -43,22 +42,20 @@ function LoginForm({setLoggedUser}) {
         }
     }
 
-    function submit2Fa(otp, captchaToken) {
+    async function submit2Fa(otp, captchaToken) {
         if (!callInProgress) {
             setCallInProgress(true);
             closeAlert();
-            Calls.verify2fa({username, verificationCode: otp, captchaToken}).then((dtoOut) => {
-                const token = dtoOut?.jwtToken;
-                // Decode the token to get the payload
-                const decodedToken = jwtDecode(token);
-                // Extract the username
-                const username = decodedToken.sub;  // 'sub' usually holds the username in JWT tokens
-                setCallInProgress(false);
+            try {
+                const tokenDtoOut = await Calls.verify2fa({username, verificationCode: otp, captchaToken})
+                const token = tokenDtoOut?.jwtToken;
+                const currentUserProfile = await Calls.getCurrentUserProfile({}, {}, token);
+                setLoggedUser({username: currentUserProfile.username, token, publicKey: currentUserProfile.publicKey});
                 closeAlert();
-                setLoggedUser({username, token});
-            }).catch((err) => {
                 setCallInProgress(false);
-
+            } catch (err) {
+                console.log(err);
+                setCallInProgress(false);
                 if (err.message === "unauthorized") {
                     if (openAlert) {
                         openAlert("Invalid 2FA code. Try again.", "error");
@@ -68,7 +65,7 @@ function LoginForm({setLoggedUser}) {
                         openAlert("Unknown error occurred. Try again. If problem persists, contact support.", "error");
                     }
                 }
-            });
+            }
         }
     }
 

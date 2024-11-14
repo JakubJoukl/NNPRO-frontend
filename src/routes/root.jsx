@@ -8,14 +8,8 @@ import {Paper} from "@mui/material";
 export default function Root({routeName}) {
     const [loggedUser, setLoggedUser] = useState();
 
-    function logout() {
-        setLoggedUser({
-            token: null, username: null, privateKey: null
-        })
-    }
-
     if (loggedUser?.token && loggedUser.privateKey) {
-        return (<UserContext.Provider value={{userContext: loggedUser, setUserContext: logout}}>
+        return (<UserContext.Provider value={{userContext: loggedUser, setUserContext: setLoggedUser}}>
             <MainMenuBar routeHeader={routeName}>
                 <Paper variant={"outlined"} className={"w-full flex-grow p-3"}>
                     <Outlet/>

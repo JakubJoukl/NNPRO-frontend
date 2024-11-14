@@ -53,13 +53,12 @@ export function AccountManagementFormUI({status, resetError, callInProgress}) {
                     const submitDtoIn = {
                         confirmationPassword: formRef.current.confirmationPassword ?? null,
                     };
-                    console.log(formRef.current, "from inner submit")
                     for (const key in formRef.current) {
                         if (formRef.current[key].edited) {
                             submitDtoIn[key] = formRef.current[key].value;
                         }
                     }
-                    onSubmit(submitDtoIn, undefined);
+                    onSubmit(submitDtoIn);
                 }
                 }
                 color={"primary"}

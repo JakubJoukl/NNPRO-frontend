@@ -1,6 +1,6 @@
 import {useContext, useEffect, useRef, useState} from "react";
-import * as Calls from "../../constants/calls.js";
-import {UserContext} from "../../context/userContext.js";
+import * as Calls from "../constants/calls.js";
+import {UserContext} from "../context/userContext.js";
 
 // This expects pageSize to increase only, so no previous elements are loaded
 // FIXME - this hook is bad :(((
@@ -15,6 +15,7 @@ export function useAccumulatedList(calledMethod, dtoIn, pageInfo, uniqueIndexNam
     const previousPageInfo = useRef({});
     const previousError = useRef(isError.current);
     const previousDtoIn = useRef(dtoIn);
+    const callFinished = useRef(false);
 
     function resetErr() {
         previousError.current = isError.current;
@@ -49,10 +50,12 @@ export function useAccumulatedList(calledMethod, dtoIn, pageInfo, uniqueIndexNam
                 previousPageInfo.current = pageInfo;
                 previousError.current = isError.current;
                 isError.current = false;
+                callFinished.current = true;
             }).catch((err) => {
                 setCallInProgress(false);
                 previousError.current = isError.current;
                 isError.current = true;
+                callFinished.current = false;
                 setResultingList({
                     itemList: [],
                     total: 0 // so it is always called
@@ -68,6 +71,7 @@ export function useAccumulatedList(calledMethod, dtoIn, pageInfo, uniqueIndexNam
     return {
         resultingList: resultingList.itemList,
         status: {
+            callFinished: callFinished.current,
             callInProgress,
             isError: isError.current,
             hasMore: resultingList.total > (pageInfo.pageIndex + 1 * pageInfo.pageSize)

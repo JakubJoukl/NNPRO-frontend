@@ -1,6 +1,6 @@
 import {useContext, useEffect, useRef, useState} from "react";
-import * as Calls from "../../constants/calls.js";
-import {UserContext} from "../../context/userContext.js";
+import * as Calls from "../constants/calls.js";
+import {UserContext} from "../context/userContext.js";
 
 export function useFetchCall(calledMethod, dtoIn, pageInfo) {
     //calledMethod, dtoIn, pageInfo

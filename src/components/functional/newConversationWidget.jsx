@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {ContactsList} from "./contactsList.jsx";
 import {CreateConversationFormUI} from "../visual/createConversationFormUI.jsx";
-import {useSubmitCall} from "../hooks/useSubmitCall.js";
+import {useSubmitCall} from "../../hooks/useSubmitCall.js";
 
 export default function NewConversationWidget({onUserClicked, deleteEnabled}) {
     const [selectedContact, setSelectedContact] = useState(null);
