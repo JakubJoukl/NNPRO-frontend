@@ -4,7 +4,7 @@ import {FormContext} from "../../context/formContext.js";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import KeyIcon from '@mui/icons-material/Key';
 import {styled} from "@mui/system";
-import {generateElipticKeyPair} from "../helpers/eliptic-helper.js";
+import {generateElipticKeyPair} from "../helpers/cryptographyHelper.js";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 import {TextareaAutosize} from '@mui/base/TextareaAutosize';
 

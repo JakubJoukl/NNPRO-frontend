@@ -21,12 +21,12 @@ export function UsersListUI({
     const {addedContacts} = useContext(AddedContactsContext);
 
     function _getUserAddBody(user) {
-        if (user.alreadyAdded || (addedContacts[user.username] && addedContacts[user.username].progress !== "inProgress")) {
+        if (user.alreadyAdded || (addedContacts[user.username] && addedContacts[user.username]?.progress !== "inProgress")) {
             return (<IconButton edge="end" aria-label="add" color={"primary"}>
                 <CheckIcon/>
             </IconButton>);
         }
-        if (addedContacts[user.username].progress === "inProgress") {
+        if (addedContacts[user.username]?.progress === "inProgress") {
             return (<CircularProgress style={{height: "1.5em", width: "1.5em"}} color="primary"/>);
         }
 
