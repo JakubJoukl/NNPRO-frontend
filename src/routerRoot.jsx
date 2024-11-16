@@ -4,13 +4,13 @@ import {
 } from "react-router-dom";
 import Root from "./routes/root.jsx";
 import ErrorPage from "./components/errorPage.jsx";
-import RegisterForm from "./components/functional/registerForm.jsx";
 import {GlobalAlertContext} from "./context/globalAlertContext.js";
 import withAlert from "./components/visual/withAlert.jsx";
 import RegisterRoute from "./routes/registerRoute.jsx";
 import {AccountManagementRoute} from "./routes/AccountManagementRoute.jsx";
 import {ContactsRoute} from "./routes/contactsRoute.jsx";
 import {NewConversationRoute} from "./routes/newConversationRoute.jsx";
+import {ConversationRoute} from "./routes/conversationRoute.jsx";
 
 function RouterRoot({openAlert, closeAlert}) {
 
@@ -33,6 +33,11 @@ function RouterRoot({openAlert, closeAlert}) {
                 {
                     path: "/newConversation",
                     element: <NewConversationRoute/>,
+                    errorElement: <ErrorPage/>,
+                },
+                {
+                    path: "/conversation/:id",
+                    element: <ConversationRoute/>,
                     errorElement: <ErrorPage/>,
                 }
             ],

@@ -17,6 +17,7 @@ export function useSubmitCall(calledMethod, successMessage, errorMessage) {
         }
         if (!callInProgress) {
             setCallInProgress(true);
+            callFinished.current = false;
             Calls[calledMethod](dtoIn, pageInfo, token).then((response) => {
                 setCallInProgress(false);
                 dtoOut.current = response;

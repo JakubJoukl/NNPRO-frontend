@@ -2,11 +2,13 @@ import {Button, IconButton, TextField, Typography} from "@mui/material";
 import {ArrowBack} from "@mui/icons-material";
 import {useContext, useRef, useState} from "react";
 import {UserContext} from "../../context/userContext.js";
+import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 
 export function CreateConversationFormUI({selectedContact, setSelectedContact, status, onSubmit}) {
     const [conversationName, setConversationName] = useState("");
     const typingTimeoutRef = useRef({});
     const userContext = useContext(UserContext).userContext;
+    const {openAlert} = useContext(GlobalAlertContext);
 
     // True means valid, false means invalid
     const [validations, setValidations] = useState({conversationName: true});
@@ -63,7 +65,12 @@ export function CreateConversationFormUI({selectedContact, setSelectedContact, s
         />
         <Button disabled={status.callInProgress || selectedContact.publicKey == null} size="large" variant="outlined"
                 onClick={() => {
-                    onSubmit(conversationName);
+                    const result = validate();
+                    if (result.conversationName) {
+                        onSubmit(conversationName);
+                    } else {
+                        openAlert("Conversation name is not valid. Fix it before proceeding.", "error")
+                    }
                 }}
                 color={"primary"}
                 className={"w-fit"}
