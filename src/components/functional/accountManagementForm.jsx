@@ -22,8 +22,6 @@ export function AccountManagementForm() {
     if (shouldUpdateContextRef.current && submitFormStatus && submitFormStatus.callFinished) {
         if (typeof submitCallDtoOut === "object") {
             delete dtoOut.email;
-            console.log(userContext, "userContext");
-            console.log(submitCallDtoOut, "dtoOut");
             console.log({
                 ...userContext,
                 ...submitCallDtoOut

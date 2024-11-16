@@ -3,7 +3,7 @@ import * as Calls from "../constants/calls.js";
 import {UserContext} from "../context/userContext.js";
 import {GlobalAlertContext} from "../context/globalAlertContext.js";
 
-export function useSubmitCall(calledMethod, successMessage, errorMessage) {
+export function useSubmitCall(calledMethod, successMessage, errorMessage, callback) {
     const [callInProgress, setCallInProgress] = useState(false);
     const isError = useRef(false);
     const {token} = useContext(UserContext).userContext;
@@ -23,6 +23,9 @@ export function useSubmitCall(calledMethod, successMessage, errorMessage) {
                 dtoOut.current = response;
                 if (successMessage) {
                     openAlert(successMessage);
+                }
+                if (callback) {
+                    callback(response);
                 }
                 callFinished.current = true;
             }).catch((err) => {

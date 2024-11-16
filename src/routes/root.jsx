@@ -8,7 +8,7 @@ import {AddedConversationContext} from "../context/AddedConversationContext.js";
 
 export default function Root({routeName}) {
     const [loggedUser, setLoggedUser] = useState();
-    const [addedConversations, setAddedConversation] = useState({});
+    const [addedConversations, setAddedConversation] = useState([]);
 
     if (loggedUser?.token && loggedUser.privateKey) {
         return (<UserContext.Provider value={{userContext: loggedUser, setUserContext: setLoggedUser}}>
