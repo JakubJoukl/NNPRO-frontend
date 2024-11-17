@@ -132,7 +132,6 @@ export async function decryptDataByElliptic(receiverPrivateKey, senderPublicKey,
 export async function decryptAesKey(receiverPrivateKey, senderPublicKey, encryptedAesKey, iv) {
     const encryptedRawKey = _base64ToUint8Array(encryptedAesKey);
     const rawKey = await decryptDataByElliptic(receiverPrivateKey, senderPublicKey, encryptedRawKey, iv);
-
     const importedKey = await window.crypto.subtle.importKey(
         "raw",               // The format of the key (raw key material)
         rawKey,              // The raw key data (an ArrayBuffer)

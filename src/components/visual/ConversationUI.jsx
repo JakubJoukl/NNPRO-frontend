@@ -1,11 +1,8 @@
 import ListItem from "@mui/material/ListItem";
-import {Alert, AppBar, Button, CircularProgress, MenuItem, Typography} from "@mui/material";
-import * as React from "react";
-import IconButton from "@mui/material/IconButton";
-import {Menu} from "@mui/base";
-import Toolbar from "@mui/material/Toolbar";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import {Alert, Button, CircularProgress} from "@mui/material";
 import {ConversationToolBar} from "./ConversationToolBar.jsx";
+import {MessageTypingBox} from "./MessageTypingBox.jsx";
+import {MessageList} from "../functional/messageList.jsx";
 
 export function ConversationUI({conversation, status, reseErr}) {
 
@@ -37,7 +34,11 @@ export function ConversationUI({conversation, status, reseErr}) {
         </>;
     }
 
-    return <div>{renderLoadErrorHeadings()}
-        {(!status.isError && status.callFinished) && <ConversationToolBar conversation={conversation}/>}
+    return <div className={"flex flex-col h-full flex-grow"}>{renderLoadErrorHeadings()}
+        {(!status.isError && status.callFinished) && <>
+            <ConversationToolBar conversation={conversation}/>
+            <MessageList/>
+            <MessageTypingBox/>
+        </>}
     </div>
 }
