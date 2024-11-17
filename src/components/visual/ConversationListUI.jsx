@@ -3,8 +3,10 @@ import ListItem from "@mui/material/ListItem";
 import {Alert, Button, CircularProgress} from "@mui/material";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
+import {useNavigate} from "react-router-dom";
 
 export function ConversationListUI({conversations, status, handleOnLoadMore}) {
+    const navigate = useNavigate();
 
     return (<List>
         {status?.isError && (<>
@@ -32,7 +34,9 @@ export function ConversationListUI({conversations, status, handleOnLoadMore}) {
         {(!status.isError && conversations && Array.isArray(conversations)) && <>
             {conversations.map((conversation) => {
                 return (<ListItem disablePadding key={conversation.id}>
-                    <ListItemButton>
+                    <ListItemButton onClick={() => {
+                        navigate(`/conversation/${conversation.id}`);
+                    }}>
                         <ListItemText primary={conversation.name}/>
                     </ListItemButton>
                 </ListItem>)

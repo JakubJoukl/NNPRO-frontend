@@ -1,7 +1,11 @@
-import {Button, Card, CardContent, Typography} from "@mui/material";
-import classes from "../../styles/loginForm.module.css";
+import {Button, Container, Typography} from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {styled} from "@mui/system";
+import {useContext} from "react";
+import {UserContext} from "../../context/userContext.js";
+import {importPrivateKey} from "../helpers/cryptographyHelper.js";
+import {GlobalAlertContext} from "../../context/globalAlertContext.js";
+import CircleIcon from '@mui/icons-material/Circle';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -15,48 +19,57 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-export function PrivateKeyInputUI({setLoggedUser}) {
-    return <>
-        <Card variant="outlined" className={`${classes.card} w-[36rem] max-w-full m-3`}>
-            <CardContent className={"!space-y-3"}>
-                <Typography variant="h5" gutterBottom>
-                    Upload your private key.
-                </Typography>
-                <Typography variant="p" gutterBottom>
-                    Upload your private key to be able to decipher messages.<br/>
-                    🔒<b>You private key never leaves your browser.</b>🔒
-                </Typography>
-            </CardContent>
-            <CardContent className={"flex flex-row-reverse"}>
-                <Button
-                    component="label"
-                    role={undefined}
-                    variant="contained"
-                    tabIndex={-1}
-                    startIcon={<CloudUploadIcon/>}
-                >
-                    Upload private key
-                    <VisuallyHiddenInput
-                        type="file"
-                        onChange={(event) => {
-                            const reader = new FileReader(); // Create a new FileReader instance
+export function PrivateKeyInputUI() {
+    const {userContext, setUserContext} = useContext(UserContext);
+    const {openAlert, closeAlert} = useContext(GlobalAlertContext);
 
-                            // Define the onload event of FileReader
-                            reader.onload = (event) => {
-                                const key = event.target.result;
-                                setLoggedUser((prevState) => {
-                                    return {
-                                        ...prevState,
-                                        privateKey: JSON.parse(key),
-                                    }
-                                })
-                            };
-                            // Read file as text
-                            reader.readAsText(event.target.files[0]);
-                        }}
-                    />
-                </Button>
-            </CardContent>
-        </Card>
-    </>
+    return <Container className={"space-y-6 flex flex-col"}>
+        <Typography variant="h5">
+            Upload your private key.
+        </Typography>
+        <Typography variant="p" gutterBottom>
+            Upload your private key to be able to decipher messages.<br/>
+            🔒<b>You private key never leaves your browser.</b>🔒
+        </Typography>
+        <Button
+            className={"w-fit !mr-auto !ml-auto"}
+            component="label"
+            role={undefined}
+            variant="contained"
+            tabIndex={-1}
+            startIcon={<CloudUploadIcon/>
+        }>
+            Upload private key
+            <VisuallyHiddenInput
+                type="file"
+                onChange={(event) => {
+                    const reader = new FileReader(); // Create a new FileReader instance
+
+                    // Define the onload event of FileReader
+                    reader.onload = async (event) => {
+                        const key = event.target.result;
+                        try {
+                            const parsedKey = JSON.parse(key);
+                            await importPrivateKey(parsedKey);
+                            setUserContext((prevState) => {
+                                return {
+                                    ...prevState,
+                                    privateKey: parsedKey,
+                                }
+                            });
+                            openAlert("Key uploaded successfully.");
+                        } catch (e) {
+                            openAlert("Importing of private key was not successful. Verify that key is valid private key in P-521 format.","error");
+                        }
+                    };
+                    // Read file as text
+                    reader.readAsText(event.target.files[0]);
+                }}
+            />
+        </Button>
+        <div className={"flex justify-start items-stretch"}><Typography variant="span" className={"flex justify-start items-center"}>
+            Key upload status: <CircleIcon color={userContext.privateKey? "success": "error"}/>.
+        </Typography>
+        </div>
+    </Container>
 }

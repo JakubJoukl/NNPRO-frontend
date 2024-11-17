@@ -54,7 +54,6 @@ function LoginForm({setLoggedUser}) {
                 closeAlert();
                 setCallInProgress(false);
             } catch (err) {
-                console.log(err);
                 setCallInProgress(false);
                 if (err.message === "unauthorized") {
                     if (openAlert) {

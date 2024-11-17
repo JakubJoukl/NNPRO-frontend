@@ -6,41 +6,33 @@ import {useContext, useRef} from "react";
 import {UserContext} from "../../context/userContext.js";
 
 export function AccountManagementForm() {
-    const {dtoOut, status, resetErr} = useFetchCall("getCurrentUserProfile", null, null);
+    const {dtoOut, status, resetErr} = useFetchCall("getCurrentUserProfile", null, null, updateForm);
     const {status: submitFormStatus, call, dtoOut: submitCallDtoOut} = useSubmitCall(
         "updateUser", "Account updated successfully.",
-        "Updating of account failed due to unknown error."
+        "Updating of account failed due to unknown error.",
+        updateUserContext
     );
-    const shouldUpdateContextRef = useRef(false);
 
     function handleOnCall(submitDtoIn) {
-        shouldUpdateContextRef.current = true;
         call(submitDtoIn, undefined);
     }
 
     const {userContext, setUserContext} = useContext(UserContext);
-    if (shouldUpdateContextRef.current && submitFormStatus && submitFormStatus.callFinished) {
-        if (typeof submitCallDtoOut === "object") {
+
+    const formRef = useRef({});
+
+    function updateUserContext(dtoOut){
+        if (typeof dtoOut === "object") {
             delete dtoOut.email;
-            console.log({
-                ...userContext,
-                ...submitCallDtoOut
-            });
             setUserContext({
                     ...userContext,
-                    ...submitCallDtoOut
+                    ...dtoOut
                 }
             );
         }
-        shouldUpdateContextRef.current = false;
     }
-    // This has to be ref so this form is not reloaded on change
-    const isInitialLoadRef = useRef(true);
-    const formRef = useRef({});
-    if (isInitialLoadRef.current) {
-        if (status.callFinished) {
-            isInitialLoadRef.current = false;
-        }
+
+    function updateForm(dtoOut) {
         formRef.current = {
             username: {
                 value: dtoOut.username || "",
@@ -56,6 +48,7 @@ export function AccountManagementForm() {
             },
         };
     }
+
 
     return <FormContext.Provider value={{
         formRef, onSubmit: handleOnCall

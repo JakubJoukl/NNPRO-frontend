@@ -22,7 +22,6 @@ export function ConversationList() {
         }
     }
 
-    console.log(addedConversations);
     // FIXME the CPU is gonna be like: WTF DUDE! - need MEMO
     const finalConversations = [...resultingList, ...addedConversations].reduce((acc, conversation) => {
         if (!acc.some(existingConversation => existingConversation.id === conversation.id)) {
@@ -31,6 +30,5 @@ export function ConversationList() {
         return acc;
     }, []);
 
-    console.log(finalConversations);
     return <ConversationListUI status={status} conversations={finalConversations} handleOnLoadMore={handleOnLoadMore}/>
 }

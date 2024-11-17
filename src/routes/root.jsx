@@ -10,7 +10,7 @@ export default function Root({routeName}) {
     const [loggedUser, setLoggedUser] = useState();
     const [addedConversations, setAddedConversation] = useState([]);
 
-    if (loggedUser?.token && loggedUser.privateKey) {
+    if (loggedUser?.token) {
         return (<UserContext.Provider value={{userContext: loggedUser, setUserContext: setLoggedUser}}>
             <AddedConversationContext.Provider value={{addedConversations, setAddedConversation}}>
                 <MainMenuBar routeHeader={routeName}>

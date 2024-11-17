@@ -63,7 +63,7 @@ export function CreateConversationFormUI({selectedContact, setSelectedContact, s
                    error={!(validations.conversationName)}
                    helperText={!(validations.conversationName) && "Conversation name must be between 7 and 29 characters long."}
         />
-        <Button disabled={status.callInProgress || selectedContact.publicKey == null} size="large" variant="outlined"
+        <Button disabled={status.callInProgress || selectedContact.publicKey == null || userContext.publicKey == null || userContext.privateKey == null} size="large" variant="outlined"
                 onClick={() => {
                     const result = validate();
                     if (result.conversationName) {

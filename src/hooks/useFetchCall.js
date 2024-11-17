@@ -2,7 +2,7 @@ import {useContext, useEffect, useRef, useState} from "react";
 import * as Calls from "../constants/calls.js";
 import {UserContext} from "../context/userContext.js";
 
-export function useFetchCall(calledMethod, dtoIn, pageInfo) {
+export function useFetchCall(calledMethod, dtoIn, pageInfo, callback) {
     //calledMethod, dtoIn, pageInfo
     const [callInProgress, setCallInProgress] = useState(false);
     const isError = useRef(false);
@@ -25,6 +25,9 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo) {
                 setCallInProgress(false);
                 callFinished.current = true;
                 setDtoOut(response);
+                if (callback) {
+                    callback(response);
+                }
             }).catch((err) => {
                 setDtoOut({});
                 setCallInProgress(false);
@@ -36,7 +39,7 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo) {
 
     useEffect(() => {
         fetch();
-    }, [calledMethod, dtoIn, pageInfo, token]);
+    }, [dtoIn, pageInfo, token]);
     return {
         dtoOut,
         status: {callInProgress, isError: isError.current, callFinished: callFinished.current},

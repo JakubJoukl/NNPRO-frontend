@@ -1,4 +1,4 @@
-import {useContext, useEffect, useRef, useState} from "react";
+import {useContext, useState} from "react";
 import {ContactsList} from "./contactsList.jsx";
 import {CreateConversationFormUI} from "../visual/createConversationFormUI.jsx";
 import {useSubmitCall} from "../../hooks/useSubmitCall.js";
@@ -22,7 +22,6 @@ export default function NewConversationWidget({onUserClicked, deleteEnabled}) {
 
     // Need to also add conversation to context
     function callback(callDtoOut) {
-        console.log("hey!");
         setAddedConversation((prevState) => {
             return [
                 ...prevState,

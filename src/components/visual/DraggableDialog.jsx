@@ -19,7 +19,7 @@ function PaperComponent(props) {
     );
 }
 
-export function DraggableDialog({Content, OpenDialogButton, dialogButtonContent, title, className}) {
+export function DraggableDialog({Content, OpenDialogButton, dialogButtonContent, title, className, buttonOptions}) {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -32,7 +32,7 @@ export function DraggableDialog({Content, OpenDialogButton, dialogButtonContent,
 
     return (
         <React.Fragment>
-            <OpenDialogButton onClick={handleClickOpen} variant={"outlined"}>
+            <OpenDialogButton onClick={handleClickOpen} variant={buttonOptions?.variant} color={buttonOptions.color}>
                 {dialogButtonContent}
             </OpenDialogButton>
             <Dialog

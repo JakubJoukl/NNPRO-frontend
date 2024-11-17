@@ -13,43 +13,6 @@ export async function generateElipticKeyPair() {
     return keyPair;
 }
 
-/*
-Decrypt the message using the secret key.
-If the ciphertext was decrypted successfully,
-update the "decryptedValue" box with the decrypted value.
-If there was an error decrypting,
-update the "decryptedValue" box with an error message.
-*/
-async function decrypt(secretKey, dataToDecrypt, iv) {
-    return await window.crypto.subtle.decrypt(
-            {
-                name: "AES-GCM",
-                iv: iv,
-            },
-            secretKey,
-            dataToDecrypt
-        );
-}
-
-/*
-Encrypt the message using the secret key.
-Update the "ciphertextValue" box with a representation of part of
-the ciphertext.
-*/
-async function encrypt(secretKey, dataToEncrypt) {
-    const iv = window.crypto.getRandomValues(new Uint8Array(12));
-
-    const encrypted = await window.crypto.subtle.encrypt(
-        {
-            name: "AES-GCM",
-            iv: iv,
-        },
-        secretKey,
-        dataToEncrypt
-    );
-    return {encrypted, iv};
-}
-
 // Unencrypted AES key
 export async function generateSharedAESKey() {
     // Generate a random AES key (256-bit)
@@ -67,12 +30,7 @@ export async function generateSharedAESKey() {
     return {aesKey, rawKey};
 }
 
-/*
-Derive an AES key, given:
-- our ECDH private key
-- their ECDH public key
-*/
-async function deriveSecretKey(privateKey, publicKey) {
+export async function importPrivateKey(privateKey) {
     const importedPrivateKey = await window.crypto.subtle.importKey(
         "jwk",
         privateKey,
@@ -83,7 +41,10 @@ async function deriveSecretKey(privateKey, publicKey) {
         true,
         privateKey.key_ops ?? [], // Key usages
     );
+    return importedPrivateKey;
+}
 
+export async function importPublicKey(publicKey) {
     const importedPublicKey = await window.crypto.subtle.importKey(
         "jwk",
         publicKey,
@@ -94,6 +55,17 @@ async function deriveSecretKey(privateKey, publicKey) {
         true,
         publicKey.key_ops ?? [], // Key usages
     );
+    return importedPublicKey;
+}
+
+/*
+Derive an AES key, given:
+- our ECDH private key
+- their ECDH public key
+*/
+async function deriveSecretKey(privateKey, publicKey) {
+    const importedPrivateKey = await importPrivateKey(privateKey);
+    const importedPublicKey = await importPublicKey(publicKey);
 
     return window.crypto.subtle.deriveKey(
         {
@@ -127,6 +99,25 @@ export async function encryptAesKey(senderPrivateKey, receiverPublicKey, aesKey)
     return {key, iv};
 }
 
+/*
+Encrypt the message using the secret key.
+Update the "ciphertextValue" box with a representation of part of
+the ciphertext.
+*/
+async function encrypt(secretKey, dataToEncrypt) {
+    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+
+    const encrypted = await window.crypto.subtle.encrypt(
+        {
+            name: "AES-GCM",
+            iv: iv,
+        },
+        secretKey,
+        dataToEncrypt
+    );
+    return {encrypted, iv};
+}
+
 export async function decryptDataByElliptic(receiverPrivateKey, senderPublicKey, data, iv) {
     // Alice then generates a secret key using her private key and Bob's public key.
     let aliceSecretKey = await deriveSecretKey(
@@ -154,6 +145,24 @@ export async function decryptAesKey(receiverPrivateKey, senderPublicKey, encrypt
     );
 
     return {importedKey, rawKey};
+}
+
+/*
+Decrypt the message using the secret key.
+If the ciphertext was decrypted successfully,
+update the "decryptedValue" box with the decrypted value.
+If there was an error decrypting,
+update the "decryptedValue" box with an error message.
+*/
+async function decrypt(secretKey, dataToDecrypt, iv) {
+    return await window.crypto.subtle.decrypt(
+        {
+            name: "AES-GCM",
+            iv: iv,
+        },
+        secretKey,
+        dataToDecrypt
+    );
 }
 
 // Function to convert a Base64 string back to a Uint8Array

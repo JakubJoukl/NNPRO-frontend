@@ -7,6 +7,8 @@ import {styled} from "@mui/system";
 import {generateElipticKeyPair} from "../helpers/cryptographyHelper.js";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 import {TextareaAutosize} from '@mui/base/TextareaAutosize';
+import {useFetchCall} from "../../hooks/useFetchCall.js";
+import {UserContext} from "../../context/userContext.js";
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -20,10 +22,11 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-export function PrivatePublicKeyField({id, label, className}) {
+export function PrivatePublicKeyField({id, label, className, centerButtons}) {
     const {formRef} = useContext(FormContext);
     const [value, setValue] = useState(JSON.stringify(formRef.current[id]?.value, null, 2));
     const {openAlert} = useContext(GlobalAlertContext);
+    const {userContext, setUserContext} = useContext(UserContext);
 
     async function generateKeyPair() {
         const keyPair = await generateElipticKeyPair();
@@ -48,13 +51,25 @@ export function PrivatePublicKeyField({id, label, className}) {
         // Clean up the Blob URL
         URL.revokeObjectURL(url);
         link.remove();
+
+        setUserContext(prevContext => {
+            return {
+                ...prevContext,
+                privateKey: privateKey
+            }
+        });
+
         return {publicKeyJson, publicKey};
     }
 
+    let buttonClassNames = "flex flex-row items-center space-x-3";
+    if (centerButtons) {
+        buttonClassNames += " justify-center"
+    }
     return (
         <div className={className}>
             <div className={"space-y-3"}>
-                <div className={"flex flex-row items-center space-x-3"}>
+                <div className={buttonClassNames}>
                     <Typography variant="p">
                         {label}
                     </Typography>
@@ -95,7 +110,7 @@ export function PrivatePublicKeyField({id, label, className}) {
                             async () => {
                                 const {publicKeyJson, publicKey} = await generateKeyPair();
                                 setValue(publicKeyJson);
-                                openAlert("Keypair successfully generated. Private key has been downloaded. Public key has been saved to form.");
+                                openAlert("Keypair successfully generated. Private key has been downloaded and also stored in client. Public key has been saved to form. You still need to submit form to apply changes!");
                                 formRef.current.publicKey = {
                                     value: JSON.parse(publicKeyJson),
                                     edited: true

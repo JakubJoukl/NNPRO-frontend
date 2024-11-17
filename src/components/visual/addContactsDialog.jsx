@@ -46,5 +46,7 @@ export function AddContactsDialog() {
                             Content={<UsersList handleOnAddContact={handleOnAddContact}
                                                 className={"h-128 max-h-screen"}/>}
                             dialogButtonContent={"Add new contact"}
-                            OpenDialogButton={Button} className={"h-128 max-h-screen"}/>
+                            OpenDialogButton={Button} className={"h-128 max-h-screen"}
+                            buttonOptions={{variant:"outlined"}}
+    />
 }

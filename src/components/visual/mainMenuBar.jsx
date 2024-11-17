@@ -8,6 +8,11 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import DrawerListBar from "./DrawerListBar.jsx";
+import {DraggableDialog} from "./DraggableDialog.jsx";
+import {Button} from "@mui/material";
+import {useContext} from "react";
+import {UserContext} from "../../context/userContext.js";
+import FormManagementDialogContent from "../functional/formManagementDialog.jsx";
 
 const drawerWidth = 240;
 
@@ -68,7 +73,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 export default function MainMenuBar({children, routeHeader}) {
     const [open, setOpen] = React.useState(true);
-
+    const {userContext, setUserContext} = useContext(UserContext);
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -76,6 +81,16 @@ export default function MainMenuBar({children, routeHeader}) {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+
+    function renderKeyManagementDialog(){
+        return <DraggableDialog title={"Key management"}
+                                Content={<FormManagementDialogContent/>}
+                                dialogButtonContent={"Change keypair"}
+                                className={"h-128 max-h-screen"}
+                                OpenDialogButton={Button}
+                                buttonOptions={{variant: "contained", color: "secondary"}}
+        />
+    }
 
     return (
         <Box sx={{display: 'flex'}}>
@@ -96,9 +111,12 @@ export default function MainMenuBar({children, routeHeader}) {
                     >
                         <MenuIcon/>
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        {routeHeader}
+                    <Typography variant="span" noWrap className={"flex-grow"}>
+                        Logged user: {userContext.username}
                     </Typography>
+                    {
+                        renderKeyManagementDialog()
+                    }
                 </Toolbar>
             </AppBar>
             <DrawerListBar drawerWidth={drawerWidth} handleDrawerClose={handleDrawerClose} open={open}/>
