@@ -41,6 +41,10 @@ async function createConversation(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/createConversation`, dtoIn, pageInfo, token);
 }
 
+async function getConversation(dtoIn, pageInfo, token) {
+    return await callGetWithPathParam(`${BASE_URI}/getConversation`, dtoIn, pageInfo, token);
+}
+
 
 /*
 async function login(username, password, captchaToken) {
@@ -140,6 +144,37 @@ async function callGet(uri, dtoIn, token) {
     return await response.json();
 }
 
+async function callGetWithPathParam(uri, pathParam, token) {
+    const request = {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "default", // *default, no-cache, reload, force-cache, only-if-cached
+        //  credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+        }, redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    };
+    if (token) {
+        request.headers.Authorization = `Bearer ${token}`
+    }
+    const response = await fetch(`${uri}/${pathParam}`, request);
+    if (response.status !== 200 && response.status !== 201) {
+        throw new Error("Server responded with status " + response.status);
+    }
+    return await response.json();
+}
+
 export {
-    login, register, verify2fa, listUserConversation, getCurrentUserProfile, updateUser, listContacts, searchUsers, addContact, createConversation
+    login,
+    register,
+    verify2fa,
+    listUserConversation,
+    getCurrentUserProfile,
+    updateUser,
+    listContacts,
+    searchUsers,
+    addContact,
+    createConversation,
+    getConversation
 }

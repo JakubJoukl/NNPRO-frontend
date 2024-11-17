@@ -8,7 +8,7 @@ export function ContactsRoute() {
     const [addedContacts, setAddedContacts] = useState({});
 
     return <AddedContactsContext.Provider value={{addedContacts, setAddedContacts}}>
-        <div className={"text-center"}>
+        <div className={"text-center p-3"}>
             <Typography variant="h4" gutterBottom className={"w-full"} textAlign={"center"}>
                 Your contacts
             </Typography>
