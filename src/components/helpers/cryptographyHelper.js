@@ -164,6 +164,47 @@ async function decrypt(secretKey, dataToDecrypt, iv) {
     );
 }
 
+export async function encryptDataBySymmetricKey(key, data) {
+    const encoder = new TextEncoder();
+
+    // Convert the data to an ArrayBuffer
+    const encodedData = encoder.encode(data);
+
+    // Generate a random initialization vector (IV)
+    const iv = crypto.getRandomValues(new Uint8Array(12)); // IV should be 12 bytes for AES-GCM
+
+    // Encrypt the data
+    const encrypted = await crypto.subtle.encrypt(
+        {
+            name: "AES-GCM",
+            iv: iv
+        },
+        key, // AES-GCM CryptoKey
+        encodedData
+    );
+
+    return {
+        encryptedData: btoa(String.fromCharCode(...new Uint8Array(encrypted))),
+        iv: iv // Include the IV so it can be used during decryption
+    };
+}
+
+export async function decryptDataBySymetricKey(key, encryptedData, iv) {
+    // Decrypt the data
+    const decrypted = await crypto.subtle.decrypt(
+        {
+            name: "AES-GCM",
+            iv: iv // Use the same IV that was used for encryption
+        },
+        key, // AES-GCM CryptoKey
+        encryptedData // Encrypted data as ArrayBuffer
+    );
+
+    // Convert the decrypted data back to a string
+    const decoder = new TextDecoder();
+    return decoder.decode(decrypted);
+}
+
 // Function to convert a Base64 string back to a Uint8Array
 function _base64ToUint8Array(base64String) {
     // Decode the Base64 string back into a regular string

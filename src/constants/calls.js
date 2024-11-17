@@ -45,6 +45,10 @@ async function getConversation(dtoIn, pageInfo, token) {
     return await callGetWithPathParam(`${BASE_URI}/getConversation`, dtoIn, token);
 }
 
+async function sendMessageToConversation(dtoIn, pageInfo, token) {
+    return await callGetWithPathParam(`${BASE_URI}/sendMessageToConversation`, dtoIn, token);
+}
+
 async function listMessages(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/listMessages`, dtoIn, pageInfo, token);
 }
@@ -154,5 +158,6 @@ export {
     addContact,
     createConversation,
     getConversation,
-    listMessages
+    listMessages,
+    sendMessageToConversation
 }

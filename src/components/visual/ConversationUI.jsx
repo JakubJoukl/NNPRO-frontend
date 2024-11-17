@@ -4,7 +4,7 @@ import {ConversationToolBar} from "./ConversationToolBar.jsx";
 import {MessageTypingBox} from "./MessageTypingBox.jsx";
 import {MessageList} from "../functional/messageList.jsx";
 
-export function ConversationUI({conversation, status, reseErr}) {
+export function ConversationUI({conversation, status, reseErr, onSendMessage, sendStatus}) {
 
     function renderLoadErrorHeadings() {
         return <>
@@ -38,7 +38,7 @@ export function ConversationUI({conversation, status, reseErr}) {
         {(!status.isError && status.callFinished) && <>
             <ConversationToolBar conversation={conversation}/>
             <MessageList/>
-            <MessageTypingBox/>
+            <MessageTypingBox onSendMessage={onSendMessage} status={sendStatus}/>
         </>}
     </div>
 }
