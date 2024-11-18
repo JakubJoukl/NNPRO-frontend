@@ -1,6 +1,6 @@
 import {useFetchCall} from "../../hooks/useFetchCall.js";
 import {ConversationUI} from "../visual/ConversationUI.jsx";
-import {useContext, useRef} from "react";
+import {useContext, useState} from "react";
 import {UserContext} from "../../context/userContext.js";
 import {decryptAesKey, encryptDataBySymmetricKey} from "../helpers/cryptographyHelper.js";
 import {useSubmitCall} from "../../hooks/useSubmitCall.js";
@@ -8,7 +8,7 @@ import {useSubmitCall} from "../../hooks/useSubmitCall.js";
 export default function ConversationWidget({conversationId}) {
     const {dtoOut, status, resetErr} = useFetchCall("getConversation", conversationId, null, decryptKey);
     const {userContext, setUserContext} = useContext(UserContext);
-    const decryptedKeyRef = useRef(null);
+    const [decryptedKey, setDecryptedKey] = useState(null);
 
     async function decryptKey(conversation) {
         const currentUserKeyContainer = conversation.users.find(
@@ -16,19 +16,19 @@ export default function ConversationWidget({conversationId}) {
         const ivBuffer = new Uint8Array(Object.values(currentUserKeyContainer.iv));
 
         try {
-            decryptedKeyRef.current = (await decryptAesKey(
+            setDecryptedKey((await decryptAesKey(
                 userContext.privateKey,
                 currentUserKeyContainer.cipheringPublicKey,
                 currentUserKeyContainer.encryptedSymmetricKey,
                 ivBuffer
-            )).importedKey;
+            )).importedKey);
         } catch (e) {
             console.log(e);
         }
     }
 
     async function onSendMessage(stompClient, message) {
-        const {encryptedData, iv} = await encryptDataBySymmetricKey(decryptedKeyRef.current, message);
+        const {encryptedData, iv} = await encryptDataBySymmetricKey(decryptedKey.current, message);
         console.log("Stompity stompy stomp womp womp!");
         //Send Message
         stompClient.publish({
