@@ -3,8 +3,14 @@ import {Alert, Button, CircularProgress} from "@mui/material";
 import {ConversationToolBar} from "./ConversationToolBar.jsx";
 import {MessageTypingBox} from "./MessageTypingBox.jsx";
 import {MessageList} from "../functional/messageList.jsx";
+import {StompSessionProvider} from "react-stomp-hooks";
+import {BASE_URI} from "../../constants/calls.js";
+import {useContext} from "react";
+import {UserContext} from "../../context/userContext.js";
+
 
 export function ConversationUI({conversation, status, reseErr, onSendMessage, sendStatus}) {
+    const {token} = useContext(UserContext).userContext;
 
     function renderLoadErrorHeadings() {
         return <>
@@ -36,9 +42,15 @@ export function ConversationUI({conversation, status, reseErr, onSendMessage, se
 
     return <div className={"flex flex-col h-full flex-grow"}>{renderLoadErrorHeadings()}
         {(!status.isError && status.callFinished) && <>
-            <ConversationToolBar conversation={conversation}/>
-            <MessageList/>
-            <MessageTypingBox onSendMessage={onSendMessage} status={sendStatus}/>
+            <StompSessionProvider
+                url={`${BASE_URI}/chat`}
+                options={["Authorization", token]}
+                //All options supported by @stomp/stompjs can be used here
+            >
+                <ConversationToolBar conversation={conversation}/>
+                <MessageList/>
+                <MessageTypingBox onSendMessage={onSendMessage} status={sendStatus}/>
+            </StompSessionProvider>
         </>}
     </div>
 }

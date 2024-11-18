@@ -24,6 +24,7 @@
     "react-draggable": "^4.4.6",
     "react-google-recaptcha-v3": "^1.10.1",
     "react-router-dom": "^6.27.0",
+    "react-stomp-hooks": "^3.0.1",
     "react-transfer-list": "^1.6.4"
   },
   "devDependencies": {

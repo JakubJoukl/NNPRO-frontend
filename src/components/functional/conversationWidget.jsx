@@ -4,6 +4,7 @@ import {useContext, useRef} from "react";
 import {UserContext} from "../../context/userContext.js";
 import {decryptAesKey, encryptDataBySymmetricKey} from "../helpers/cryptographyHelper.js";
 import {useSubmitCall} from "../../hooks/useSubmitCall.js";
+import {useSubscription} from "react-stomp-hooks";
 
 export default function ConversationWidget({coversationId}) {
     const {dtoOut, status, resetErr} = useFetchCall("getConversation", coversationId, null, decryptKey);
