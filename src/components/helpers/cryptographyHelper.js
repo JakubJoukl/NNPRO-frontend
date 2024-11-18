@@ -119,19 +119,21 @@ async function encrypt(secretKey, dataToEncrypt) {
 }
 
 export async function decryptDataByElliptic(receiverPrivateKey, senderPublicKey, data, iv) {
-    // Alice then generates a secret key using her private key and Bob's public key.
-    let aliceSecretKey = await deriveSecretKey(
+    // Bob generates the same secret key using his private key and Alice's public key.
+    let bobsSecretKey = await deriveSecretKey(
         receiverPrivateKey,
-        senderPublicKey,
+        senderPublicKey
     );
+    console.log(bobsSecretKey);
 
     // Alice can then use her copy of the secret key to encrypt a message to Bob.
-    return await decrypt(aliceSecretKey, data, iv);
+    return await decrypt(bobsSecretKey, data, iv);
 }
 
 export async function decryptAesKey(receiverPrivateKey, senderPublicKey, encryptedAesKey, iv) {
     const encryptedRawKey = _base64ToUint8Array(encryptedAesKey);
     const rawKey = await decryptDataByElliptic(receiverPrivateKey, senderPublicKey, encryptedRawKey, iv);
+    console.log(rawKey);
     const importedKey = await window.crypto.subtle.importKey(
         "raw",               // The format of the key (raw key material)
         rawKey,              // The raw key data (an ArrayBuffer)
