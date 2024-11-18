@@ -28,7 +28,7 @@ export default function ConversationWidget({conversationId}) {
     }
 
     async function onSendMessage(stompClient, message) {
-        const {encryptedData, iv} = await encryptDataBySymmetricKey(decryptedKey.current, message);
+        const {encryptedData, iv} = await encryptDataBySymmetricKey(decryptedKey, message);
         console.log("Stompity stompy stomp womp womp!");
         //Send Message
         stompClient.publish({
