@@ -4,11 +4,9 @@ import {useContext, useRef} from "react";
 import {UserContext} from "../../context/userContext.js";
 import {decryptAesKey, encryptDataBySymmetricKey} from "../helpers/cryptographyHelper.js";
 import {useSubmitCall} from "../../hooks/useSubmitCall.js";
-import {useSubscription} from "react-stomp-hooks";
 
-export default function ConversationWidget({coversationId}) {
-    const {dtoOut, status, resetErr} = useFetchCall("getConversation", coversationId, null, decryptKey);
-    const {status: sendStatus, call} = useSubmitCall("sendMessageToConversation", null, "Failed to send message.");
+export default function ConversationWidget({conversationId}) {
+    const {dtoOut, status, resetErr} = useFetchCall("getConversation", conversationId, null, decryptKey);
     const {userContext, setUserContext} = useContext(UserContext);
     const decryptedKeyRef = useRef(null);
 
@@ -29,12 +27,20 @@ export default function ConversationWidget({coversationId}) {
         }
     }
 
-    async function onSendMessage(message) {
-        const encrypted = await encryptDataBySymmetricKey(decryptedKeyRef.current, message);
-        console.log(encrypted);
-        call(encrypted);
+    async function onSendMessage(stompClient, message) {
+        const {encryptedData, iv} = await encryptDataBySymmetricKey(decryptedKeyRef.current, message);
+        console.log("Stompity stompy stomp womp womp!");
+        //Send Message
+        stompClient.publish({
+            destination: "/app/sendMessageToConversation",
+            body: JSON.stringify({
+                conversationId,
+                sender: userContext.username,
+                message: encryptedData,
+                iv
+            }),
+        });
     }
 
-    return <ConversationUI status={status} conversation={dtoOut} reseErr={resetErr} sendStatus={sendStatus}
-                           onSendMessage={onSendMessage}/>
+    return <ConversationUI status={status} conversation={dtoOut} reseErr={resetErr} onSendMessage={onSendMessage}/>
 }

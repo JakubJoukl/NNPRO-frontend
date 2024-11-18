@@ -5,7 +5,7 @@ import SendIcon from '@mui/icons-material/Send';
 import {useState} from "react";
 import {useStompClient} from "react-stomp-hooks";
 
-export function MessageTypingBox({onSendMessage, status}) {
+export function MessageTypingBox({onSendMessage}) {
     const [message, setMessage] = useState('');
 
     const stompClient = useStompClient();
@@ -19,18 +19,12 @@ export function MessageTypingBox({onSendMessage, status}) {
                               }
                               return input;
                           })}/>
-        <IconButton disabled={status.callInProgress} className={"!absolute right-24"} onClick={() => {
+        <IconButton className={"!absolute right-24"} onClick={async () => {
             //onSendMessage(message);
             if (stompClient) {
-                console.log("Stompity stompy stomp");
-                //Send Message
-                stompClient.publish({
-                    destination: "/app/sendMessageToConversation",
-                    body: "{\"kitten\": \"5\"}",
-                });
+                onSendMessage(stompClient, message);
             } else {
                 console.log("No stomp lol");
-                //Handle error
             }
             setMessage('');
         }}>

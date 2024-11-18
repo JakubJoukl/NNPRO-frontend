@@ -5,6 +5,6 @@ export function ConversationRoute() {
     let {id} = useParams();
 
     return <div className={"text-center space-y-3 h-full"}>
-        <ConversationWidget coversationId={id}/>
+        <ConversationWidget conversationId={id}/>
     </div>
 }
