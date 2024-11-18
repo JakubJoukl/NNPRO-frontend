@@ -1,4 +1,5 @@
-const BASE_URI = 'http://localhost:8080';
+export const BASE_ADDRESS = "localhost:8080";
+export const BASE_URI = 'http://localhost:8080';
 
 async function login(dtoIn) {
     return await callPost(`${BASE_URI}/login`, dtoIn)

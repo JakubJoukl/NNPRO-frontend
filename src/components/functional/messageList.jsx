@@ -1,10 +1,14 @@
-import {useContext, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {useAccumulatedList} from "../../hooks/useAccumulatedList.js";
 import MessageBody from "../visual/MessageBody.jsx";
+import {BASE_ADDRESS} from "../../constants/calls.js";
+import {UserContext} from "../../context/userContext.js";
 
 export function MessageList() {
     const [pageInfo, setPageInfo] = useState({pageIndex: 0, pageSize: 50});
     const {resultingList, status, resetErr} = useAccumulatedList('listMessages', {}, pageInfo, "id");
+    const [webSocketMessages, setWebSocketMessages] = useState([]);
+    const {token} = useContext(UserContext).userContext;
 
     function handleOnLoadMore() {
         if (status.isError && !status.callInProgress) {
@@ -30,5 +34,26 @@ export function MessageList() {
 
      */
 
-    return <MessageBody handleOnLoadMore={handleOnLoadMore} status={status} messages={resultingList} />;
+    //wss://${BASE_ADDRESS}/chat
+    //wss://ws.ifelse.io
+    useEffect(() => {
+        const socket = new WebSocket(`wss://ws.ifelse.io`);
+        //, ["Authorization", token]);
+
+        socket.onopen = () => {
+            console.log('WebSocket connection established.');
+        };
+
+        socket.onmessage = (event) => {
+            const receivedMessage = event
+            console.log(receivedMessage);
+            setWebSocketMessages([...webSocketMessages, receivedMessage]);
+        };
+
+        return () => {
+            socket.close();
+        };
+    }, [webSocketMessages]);
+
+    return <MessageBody handleOnLoadMore={handleOnLoadMore} status={status} messages={resultingList}/>;
 }
