@@ -44,7 +44,9 @@ export function ConversationUI({conversation, status, reseErr, onSendMessage, se
         {(!status.isError && status.callFinished) && <>
             <StompSessionProvider
                 url={`${BASE_URI}/chat`}
-                options={["Authorization", token]}
+                connectHeaders={{
+                    Authorization: `Bearer ${token}`,
+                }}
                 //All options supported by @stomp/stompjs can be used here
             >
                 <ConversationToolBar conversation={conversation}/>

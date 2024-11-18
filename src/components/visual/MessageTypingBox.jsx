@@ -22,10 +22,11 @@ export function MessageTypingBox({onSendMessage, status}) {
         <IconButton disabled={status.callInProgress} className={"!absolute right-24"} onClick={() => {
             //onSendMessage(message);
             if (stompClient) {
+                console.log("Stompity stompy stomp");
                 //Send Message
                 stompClient.publish({
-                    destination: "/app/echo",
-                    body: "Echo 123",
+                    destination: "/app/sendMessageToConversation",
+                    body: "{\"kitten\": \"5\"}",
                 });
             } else {
                 console.log("No stomp lol");
