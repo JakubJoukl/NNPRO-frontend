@@ -4,11 +4,13 @@ import {useContext, useState} from "react";
 import {UserContext} from "../../context/userContext.js";
 import {decryptAesKey, encryptDataBySymmetricKey} from "../helpers/cryptographyHelper.js";
 import {useSubmitCall} from "../../hooks/useSubmitCall.js";
+import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 
 export default function ConversationWidget({conversationId}) {
     const {dtoOut, status, resetErr} = useFetchCall("getConversation", conversationId, null, decryptKey);
     const {userContext, setUserContext} = useContext(UserContext);
     const [decryptedKey, setDecryptedKey] = useState(null);
+    const {openAlert} = useContext(GlobalAlertContext);
 
     async function decryptKey(conversation) {
         const currentUserKeyContainer = conversation.users.find(
@@ -24,23 +26,28 @@ export default function ConversationWidget({conversationId}) {
             )).importedKey);
         } catch (e) {
             console.log(e);
+            throw e;
         }
     }
 
     async function onSendMessage(stompClient, message) {
-        const {encryptedData, iv} = await encryptDataBySymmetricKey(decryptedKey, message);
-        console.log("Stompity stompy stomp womp womp!");
-        //Send Message
-        stompClient.publish({
-            destination: "/app/sendMessageToConversation",
-            body: JSON.stringify({
-                conversationId,
-                sender: userContext.username,
-                message: encryptedData,
-                iv
-            }),
-        });
+        try {
+            const {encryptedData, iv} = await encryptDataBySymmetricKey(decryptedKey, message);
+            //Send Message
+            console.log("Stomp send!");
+            stompClient.publish({
+                destination: "/app/sendMessageToConversation",
+                body: JSON.stringify({
+                    conversationId,
+                    sender: userContext.username,
+                    message: encryptedData,
+                    iv
+                }),
+            });
+        }catch (e) {
+            openAlert("Sending of message failed.", "error")
+        }
     }
 
-    return <ConversationUI status={status} conversation={dtoOut} reseErr={resetErr} onSendMessage={onSendMessage}/>
+    return <ConversationUI status={status} conversation={dtoOut} reseErr={resetErr} onSendMessage={onSendMessage} conversationId={conversationId}/>
 }

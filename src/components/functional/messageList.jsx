@@ -1,13 +1,14 @@
-import {useContext, useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {useAccumulatedList} from "../../hooks/useAccumulatedList.js";
 import MessageBody from "../visual/MessageBody.jsx";
-import {UserContext} from "../../context/userContext.js";
 import { useSubscription } from "react-stomp-hooks";
 
 
-export function MessageList() {
+export function MessageList({conversationId}) {
     const [pageInfo, setPageInfo] = useState({pageIndex: 0, pageSize: 50});
-    const {resultingList, status, resetErr} = useAccumulatedList('listMessages', {}, pageInfo, "id");
+    // Will always remain same
+    const sendDto = useRef({to: new Date().toISOString(), conversationId});
+    const {resultingList, status, resetErr} = useAccumulatedList('listMessages', sendDto.current, pageInfo, "id");
     const [lastMessage, setLastMessage] = useState("No message received yet");
 
 
@@ -34,7 +35,7 @@ export function MessageList() {
     }, []);
 
      */
-    useSubscription("/chat", (message) => console.log(message));
+    useSubscription(`/topic/${conversationId}`, (message) => console.log(message));
 
 
     return <MessageBody handleOnLoadMore={handleOnLoadMore} status={status} messages={resultingList}/>;

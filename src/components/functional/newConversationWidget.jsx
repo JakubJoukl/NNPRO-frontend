@@ -44,7 +44,7 @@ export default function NewConversationWidget({onUserClicked, deleteEnabled}) {
                     username: selectedContact.username,
                     encryptedSymmetricKey: key,
                     iv,
-                    cipheringPublicKey: selectedContact.publicKey
+                    cipheringPublicKey: publicKey
                 },
                 {username: username, encryptedSymmetricKey: ownKey, iv: ownIv, cipheringPublicKey: publicKey}
             ]
