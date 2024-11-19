@@ -10,20 +10,21 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo, callback) {
     const [dtoOut, setDtoOut] = useState({});
     const calledDtoIn = dtoIn ?? {};
     const calledPageInfo = pageInfo ?? {};
-    const callFinished = useRef(false);
+    const [callFinished, setCallFinished] = useState(false);
 
     function resetErr() {
         isError.current = false;
-        callFinished.current = false;
+        setCallFinished(false);
         fetch();
     }
 
     function fetch() {
+        setCallFinished(false);
         if (!callInProgress) {
             setCallInProgress(true);
             Calls[calledMethod](calledDtoIn, calledPageInfo, token).then((response) => {
                 setCallInProgress(false);
-                callFinished.current = true;
+                setCallFinished(true);
                 setDtoOut(response);
                 if (callback) {
                     callback(response);
@@ -32,7 +33,7 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo, callback) {
                 setDtoOut({});
                 setCallInProgress(false);
                 isError.current = true;
-                callFinished.current = false;
+                setCallFinished(false);
             });
         }
     }
@@ -42,7 +43,7 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo, callback) {
     }, [dtoIn, pageInfo, token]);
     return {
         dtoOut,
-        status: {callInProgress, isError: isError.current, callFinished: callFinished.current},
+        status: {callInProgress, isError: isError.current, callFinished: callFinished},
         resetErr
     }
 }

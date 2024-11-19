@@ -36,22 +36,27 @@ export function MessageList({conversationId, decryptedKey}) {
         }
     }
 
+    async function _decryptMessage(message) {
+        let decryptedContent = null;
+        let isError = false;
+        try {
+            const iv = new Uint8Array(Object.values(message.iv));
+            decryptedContent = await decryptDataBySymetricKey(decryptedKey, message.message, iv);
+        } catch (e) {
+            console.log(e);
+            isError = true;
+        }
+        return {
+            ...message,
+            decrypted: !isError,
+            message: isError ? message.message : decryptedContent,
+        }
+    }
+
     useEffect(() => {
         (async () => {
             const newMessages = await Promise.all(dtoOut?.itemList?.map((async message => {
-                let decryptedContent = null;
-                let isError = false;
-                try {
-                    decryptedContent = await decryptDataBySymetricKey(decryptedKey, message.message, message.iv);
-                } catch (e) {
-                    console.log(e);
-                    isError = true;
-                }
-                return {
-                    ...message,
-                    decrypted: !isError,
-                    message: isError ? message.message : decryptedContent,
-                }
+                return await _decryptMessage(message);
             })) ?? []);
 
             if (prevConversationId.current !== conversationId) {
@@ -64,17 +69,12 @@ export function MessageList({conversationId, decryptedKey}) {
             }
             setResultingList((prevState) => [...resultingList, ...newMessages.filter((newMessage) => !prevState.some(prevMessage => prevMessage.id === newMessage.id))]);
         })();
-    }, [dtoOut?.itemList, decryptedKey, conversationId]);
-    /*
-    const finalConversations = [...resultingList, ...addedConversations].reduce((acc, conversation) => {
-        if (!acc.some(existingConversation => existingConversation.id === conversation.id)) {
-            acc.push(conversation);
-        }
-        return acc;
-    }, []);
+    }, [dtoOut?.itemList, decryptedKey, conversationId]); //resultingList sadly can't be in deps :( - as we also manipulate it by stomp
 
-     */
-    useSubscription(`/topic/${conversationId}`, (message) => console.log(message, "received message!"));
+    useSubscription(`/topic/${conversationId}`, (message) => {
+        console.log(message);
+        //const message = _decryptMessage(message);
+    });
 
     return <MessageListUI handleOnLoadMore={handleOnLoadMore} status={status} messages={resultingList}/>;
 }

@@ -26,7 +26,6 @@ export default function ConversationWidget({conversationId}) {
             )).importedKey);
         } catch (e) {
             console.log(e);
-            throw e;
         }
     }
 
