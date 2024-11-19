@@ -14,7 +14,7 @@ export default function Root({routeName}) {
         return (<UserContext.Provider value={{userContext: loggedUser, setUserContext: setLoggedUser}}>
             <AddedConversationContext.Provider value={{addedConversations, setAddedConversation}}>
                 <MainMenuBar routeHeader={routeName}>
-                    <Paper variant={"outlined"} className={"w-full flex-grow"}>
+                    <Paper variant={"outlined"} className={"w-full flex-grow h-screen overflow-auto flex justify-center"}>
                         <Outlet/>
                     </Paper>
                 </MainMenuBar>

@@ -40,7 +40,7 @@ export function ConversationUI({conversation, status, reseErr, onSendMessage, se
         </>;
     }
 
-    return <div className={"flex flex-col h-full flex-grow"}>{renderLoadErrorHeadings()}
+    return <div className={"flex flex-col flex-grow overflow-auto"}>{renderLoadErrorHeadings()}
         {(!status.isError && status.callFinished) && <>
             <StompSessionProvider
                 url={`${BASE_URI}/chat`}

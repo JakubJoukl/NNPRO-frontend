@@ -5,8 +5,7 @@ import Divider from "@mui/material/Divider";
 export function MessageBubble({messageText, sender, arrivalTime, className, backgroundColor, color, textAlign}) {
     return (
         <Card className={className} style={{backgroundColor: backgroundColor}}>
-            <CardContent>
-
+            <CardContent className={"break-words"}>
                     <Typography gutterBottom sx={{fontSize: 14}} component="p" textAlign={textAlign}
                                 color={color}>
                         {arrivalTime}

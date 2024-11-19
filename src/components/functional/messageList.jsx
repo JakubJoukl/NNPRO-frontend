@@ -1,5 +1,4 @@
 import {useContext, useEffect, useMemo, useRef, useState} from "react";
-import {useAccumulatedList} from "../../hooks/useAccumulatedList.js";
 import MessageListUI from "../visual/MessageBody.jsx";
 import {useSubscription} from "react-stomp-hooks";
 import {UserContext} from "../../context/userContext.js";

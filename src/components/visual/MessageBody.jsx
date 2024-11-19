@@ -15,7 +15,7 @@ export default function MessageBody({messages, status, handleOnLoadMore}) {
     });
 
 
-    return (<div className={"flex-grow border-b-2 p-3"}>
+    return (<div className={"flex-grow border-b-2 p-3 overflow-y-auto"}>
         {status?.isError && (<>
             <ListItem disablePadding key={"error"}>
                 <Alert
@@ -43,7 +43,7 @@ export default function MessageBody({messages, status, handleOnLoadMore}) {
                 if (message.sender === userContext.username) {
                     return (<MessageBubble key={message.id} messageText={message.message} sender={message.sender}
                                            arrivalTime={formatter.format(new Date(message.dateSend * 1000))}
-                                           className={"w-fit ml-auto mr-10"}
+                                           className={"w-fit ml-auto md:max-w-[60%] sm:max-w-[70%] max-w-[80%]"}
                                            textAlign={"right"}
                                            backgroundColor={message.decrypted ? theme.palette.messageOwn.main : theme.palette.messageError.main}
                                            color={message.decrypted ? "black" : theme.palette.messageError.secondary}
@@ -52,7 +52,7 @@ export default function MessageBody({messages, status, handleOnLoadMore}) {
                 } else {
                     return (<MessageBubble key={message.id} messageText={message.message} sender={message.sender}
                                            arrivalTime={formatter.format(new Date(message.dateSend * 1000))}
-                                           className={"w-fit ml-10"} textAlign={"left"}
+                                           className={"w-fit md:max-w-[60%] sm:max-w-[70%] max-w-[80%]"} textAlign={"left"}
                                            backgroundColor={message.decrypted ? theme.palette.messageForeign.main : theme.palette.messageError.main}
                                            color={message.decrypted ? "black" : theme.palette.messageError.secondary}
                     />);
