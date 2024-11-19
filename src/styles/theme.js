@@ -8,6 +8,16 @@ const theme = createTheme({
         secondary: {
             main: '#4747d4',
         },
+        messageForeign: {
+            main: '#8080FF',
+        },
+        messageOwn: {
+            main: '#00bcbc',
+        },
+        messageError: {
+            main: '#b22222',
+            secondary: '#FFFFFF'
+        },
     }
 });
 

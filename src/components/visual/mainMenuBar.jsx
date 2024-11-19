@@ -120,7 +120,7 @@ export default function MainMenuBar({children, routeHeader}) {
                 </Toolbar>
             </AppBar>
             <DrawerListBar drawerWidth={drawerWidth} handleDrawerClose={handleDrawerClose} open={open}/>
-            <Main open={open} className={"flex flex-col h-screen"}>
+            <Main open={open} className={"flex flex-col h-screen max-h-screen overflow-auto"}>
                 <DrawerHeader/>
                 {children}
             </Main>

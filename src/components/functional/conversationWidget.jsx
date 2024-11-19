@@ -49,5 +49,5 @@ export default function ConversationWidget({conversationId}) {
         }
     }
 
-    return <ConversationUI status={status} conversation={dtoOut} reseErr={resetErr} onSendMessage={onSendMessage} conversationId={conversationId}/>
+    return <ConversationUI status={status} conversation={dtoOut} reseErr={resetErr} onSendMessage={onSendMessage} conversationId={conversationId} decryptedKey={decryptedKey}/>
 }

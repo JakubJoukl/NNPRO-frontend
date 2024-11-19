@@ -133,7 +133,6 @@ export async function decryptDataByElliptic(receiverPrivateKey, senderPublicKey,
 export async function decryptAesKey(receiverPrivateKey, senderPublicKey, encryptedAesKey, iv) {
     const encryptedRawKey = _base64ToUint8Array(encryptedAesKey);
     const rawKey = await decryptDataByElliptic(receiverPrivateKey, senderPublicKey, encryptedRawKey, iv);
-    console.log(rawKey);
     const importedKey = await window.crypto.subtle.importKey(
         "raw",               // The format of the key (raw key material)
         rawKey,              // The raw key data (an ArrayBuffer)
@@ -199,7 +198,7 @@ export async function decryptDataBySymetricKey(key, encryptedData, iv) {
             iv: iv // Use the same IV that was used for encryption
         },
         key, // AES-GCM CryptoKey
-        encryptedData // Encrypted data as ArrayBuffer
+        _base64ToUint8Array(encryptedData) // Encrypted data as ArrayBuffer
     );
 
     // Convert the decrypted data back to a string

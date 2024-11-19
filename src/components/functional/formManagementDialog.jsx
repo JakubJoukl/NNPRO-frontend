@@ -50,7 +50,6 @@ export default function FormManagementDialog() {
                 edited: false,
             },
         };
-        console.log(formRef.current);
         setPublicKey(dtoOut.publicKey); // just for re-render
     }
 

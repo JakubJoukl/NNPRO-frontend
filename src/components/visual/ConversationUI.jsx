@@ -9,7 +9,7 @@ import {useContext} from "react";
 import {UserContext} from "../../context/userContext.js";
 
 
-export function ConversationUI({conversation, status, reseErr, onSendMessage, sendStatus, conversationId}) {
+export function ConversationUI({conversation, status, reseErr, onSendMessage, sendStatus, conversationId, decryptedKey}) {
     const {token} = useContext(UserContext).userContext;
 
     function renderLoadErrorHeadings() {
@@ -50,7 +50,7 @@ export function ConversationUI({conversation, status, reseErr, onSendMessage, se
                 //All options supported by @stomp/stompjs can be used here
             >
                 <ConversationToolBar conversation={conversation}/>
-                <MessageList conversationId={conversationId}/>
+                <MessageList conversationId={conversationId} decryptedKey={decryptedKey}/>
                 <MessageTypingBox onSendMessage={onSendMessage} status={sendStatus}/>
             </StompSessionProvider>
         </>}
