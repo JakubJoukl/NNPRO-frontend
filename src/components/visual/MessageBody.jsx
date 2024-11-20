@@ -5,7 +5,7 @@ import {useTheme} from '@mui/material/styles';
 import {useContext, useEffect, useRef} from "react";
 import {UserContext} from "../../context/userContext.js";
 
-export default function MessageBody({messages, status, handleOnLoadMore, hasMore}) {
+export default function MessageBody({messages, status, handleOnLoadMore, hasMore, onDeleteMessage}) {
     const theme = useTheme();
     const {userContext} = useContext(UserContext);
     const bottomElementRef = useRef(null);
@@ -39,7 +39,6 @@ export default function MessageBody({messages, status, handleOnLoadMore, hasMore
             }
             behavior = "instant";
         }
-        console.log("jumpy jumpy");
         bottomElementRef.current?.scrollIntoView({
             behavior,
             block: "end",
@@ -58,6 +57,8 @@ export default function MessageBody({messages, status, handleOnLoadMore, hasMore
                                        backgroundColor={message.decrypted ? theme.palette.messageOwn.main : theme.palette.messageError.main}
                                        refProp={index === messages.length - 1 ? lastMessageRef : null}
                                        color={message.decrypted ? "black" : theme.palette.messageError.secondary}
+                                       onDeleteMessage={onDeleteMessage}
+                                       messageId={message.id}
 
                 />);
             } else {
@@ -68,6 +69,8 @@ export default function MessageBody({messages, status, handleOnLoadMore, hasMore
                                        refProp={index === messages.length - 1 ? lastMessageRef : null}
                                        backgroundColor={message.decrypted ? theme.palette.messageForeign.main : theme.palette.messageError.main}
                                        color={message.decrypted ? "black" : theme.palette.messageError.secondary}
+                                       onDeleteMessage={onDeleteMessage}
+                                       messageId={message.id}
                 />);
             }
         });

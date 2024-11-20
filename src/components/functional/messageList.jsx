@@ -5,7 +5,7 @@ import {UserContext} from "../../context/userContext.js";
 import {decryptDataBySymetricKey} from "../helpers/cryptographyHelper.js";
 import {useFetchCall} from "../../hooks/useFetchCall.js";
 
-export function MessageList({conversationId, decryptedKey}) {
+export function MessageList({conversationId, decryptedKey, onDeleteMessage}) {
     const [pageInfo, setPageInfo] = useState({pageIndex: 0, pageSize: 50});
     const {userContext} = useContext(UserContext);
     // Will always remain same
@@ -47,7 +47,6 @@ export function MessageList({conversationId, decryptedKey}) {
             const iv = new Uint8Array(Object.values(message.iv));
             decryptedContent = await decryptDataBySymetricKey(decryptedKey, message.message, iv);
         } catch (e) {
-            console.log(e);
             isError = true;
         }
         return {
@@ -75,12 +74,15 @@ export function MessageList({conversationId, decryptedKey}) {
         })();
     }, [dtoOut?.itemList, decryptedKey, conversationId]); //resultingList sadly can't be in deps :( - as we also manipulate it by stomp
 
-    useSubscription(`/topic/${conversationId}`, async (message) => {
+    useSubscription(`/topic/addMessage/${conversationId}`, async (message) => {
         const decryptedMessage = await _decryptMessage(JSON.parse(message.body));
-        console.log(decryptedMessage);
         setResultingList([decryptedMessage, ...resultingList]);
     });
 
+    useSubscription(`/topic/deleteMessage/${conversationId}`, async (stompMessage) => {
+        setResultingList([resultingList.filter(message => message.id !== stompMessage.body.id)]);
+    });
+
     return <MessageListUI handleOnLoadMore={handleOnLoadMore} status={status} messages={resultingList}
-                          hasMore={hasMore}/>;
+                          hasMore={hasMore} onDeleteMessage={onDeleteMessage}/>;
 }

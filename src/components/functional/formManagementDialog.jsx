@@ -1,4 +1,3 @@
-import {DraggableDialog} from "../visual/DraggableDialog.jsx";
 import {FormContext} from "../../context/formContext.js";
 import {PrivateKeyInputUI} from "../visual/privateKeyInputUi.jsx";
 import {PrivatePublicKeyField} from "../visual/PrivatePublicKeyField.jsx";
@@ -108,7 +107,6 @@ export default function FormManagementDialog() {
         }
     }
 
-    console.log("re-render");
     return (<FormContext.Provider value={{
         formRef, onSubmit: handleOnCall
     }}><div className={"space-y-6"}>

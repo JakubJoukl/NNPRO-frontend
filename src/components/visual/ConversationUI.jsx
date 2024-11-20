@@ -3,13 +3,11 @@ import {Alert, Button, CircularProgress} from "@mui/material";
 import {ConversationToolBar} from "./ConversationToolBar.jsx";
 import {MessageTypingBox} from "./MessageTypingBox.jsx";
 import {MessageList} from "../functional/messageList.jsx";
-import {StompSessionProvider} from "react-stomp-hooks";
-import {BASE_URI} from "../../constants/calls.js";
 import {useContext} from "react";
 import {UserContext} from "../../context/userContext.js";
 
 
-export function ConversationUI({conversation, status, reseErr, onSendMessage, conversationId, decryptedKey}) {
+export function ConversationUI({conversation, status, reseErr, onSendMessage, conversationId, decryptedKey, onDeleteMessage}) {
     const {token} = useContext(UserContext).userContext;
 
     function renderLoadErrorHeadings() {
@@ -42,17 +40,9 @@ export function ConversationUI({conversation, status, reseErr, onSendMessage, co
 
     return <div className={"flex flex-col flex-grow overflow-auto"}>{renderLoadErrorHeadings()}
         {(!status.isError && status.callFinished) && <>
-            <StompSessionProvider
-                url={`${BASE_URI}/chat`}
-                connectHeaders={{
-                    Authorization: `Bearer ${token}`,
-                }}
-                //All options supported by @stomp/stompjs can be used here
-            >
-                <ConversationToolBar conversation={conversation}/>
-                <MessageList conversationId={conversationId} decryptedKey={decryptedKey}/>
-                <MessageTypingBox onSendMessage={onSendMessage}/>
-            </StompSessionProvider>
+            <ConversationToolBar conversation={conversation} decryptedKey={decryptedKey.rawKey}/>
+            <MessageList conversationId={conversationId} decryptedKey={decryptedKey.importedKey} onDeleteMessage={onDeleteMessage}/>
+            <MessageTypingBox onSendMessage={onSendMessage}/>
         </>}
     </div>
 }

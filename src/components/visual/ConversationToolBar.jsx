@@ -2,11 +2,13 @@ import Toolbar from "@mui/material/Toolbar";
 import {AppBar, MenuItem, Paper, Typography} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import * as React from "react";
 import {useState} from "react";
+import {ControlledDraggableDialog} from "./ControlledDraggableDialog.jsx";
+import {FingerprintDialogContent} from "./FingerprintDialogContent.jsx";
 
-export function ConversationToolBar({conversation}) {
+export function ConversationToolBar({conversation, decryptedKey}) {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [fingerPrintDialogOpen, setFingerprintDialogOpen] = useState(false);
 
     const handleMenuClick = (event) => {
         setMenuOpen((prevState => !prevState));
@@ -15,9 +17,24 @@ export function ConversationToolBar({conversation}) {
     const handleMenuClose = () => {
         setMenuOpen(false);
     };
+
+    function handleOnShowFingerprints() {
+        handleMenuClose();
+        setFingerprintDialogOpen(true);
+    }
+
     let menuClassNames = "absolute right-0 z-50 p-2"
     if (!menuOpen) {
         menuClassNames += " invisible hidden"
+    }
+
+    function renderKeyFingerprintDialog() {
+        return <ControlledDraggableDialog title={"Current fingerprints"}
+                                          Content={<FingerprintDialogContent conversation={conversation} className={"min-h-128 max-h-screen"} decryptedKey={decryptedKey}/>}
+                                          dialogButtonContent={"Fingerprints"}
+                                          open={fingerPrintDialogOpen}
+                                          setOpen={setFingerprintDialogOpen}
+        />
     }
 
     return <AppBar position={"relative"} color={"secondary"}>
@@ -45,7 +62,9 @@ export function ConversationToolBar({conversation}) {
                     square
                 >
                     <MenuItem color={"primary"} onClick={handleMenuClose}>Add user to conversation</MenuItem>
+                    <MenuItem color={"primary"} onClick={handleOnShowFingerprints}>Show key fingerprints</MenuItem>
                     <MenuItem color={"primary"} onClick={handleMenuClose}>Leave conversation</MenuItem>
+                    {renderKeyFingerprintDialog()}
                 </Paper>
             </div>
         </Toolbar>

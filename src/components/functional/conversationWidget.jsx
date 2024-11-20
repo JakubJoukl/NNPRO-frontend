@@ -1,6 +1,6 @@
 import {useFetchCall} from "../../hooks/useFetchCall.js";
 import {ConversationUI} from "../visual/ConversationUI.jsx";
-import {useContext, useState} from "react";
+import {useContext, useRef, useState} from "react";
 import {UserContext} from "../../context/userContext.js";
 import {decryptAesKey, encryptDataBySymmetricKey} from "../helpers/cryptographyHelper.js";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
@@ -8,29 +8,36 @@ import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 export default function ConversationWidget({conversationId}) {
     const {dtoOut, status, resetErr} = useFetchCall("getConversation", conversationId, null, decryptKey);
     const {userContext, setUserContext} = useContext(UserContext);
-    const [decryptedKey, setDecryptedKey] = useState(null);
+    const [decryptedKey, setDecryptedKey] = useState({});
     const {openAlert} = useContext(GlobalAlertContext);
+    const currentPrivateKeyRef = useRef(userContext.privateKey);
+    if(currentPrivateKeyRef.current !== userContext.privateKey){
+        decryptKey(dtoOut);
+    }
 
     async function decryptKey(conversation) {
+        currentPrivateKeyRef.current = userContext.privateKey;
         const currentUserKeyContainer = conversation.users.find(
             (user) => userContext.username === user.username);
         const ivBuffer = new Uint8Array(Object.values(currentUserKeyContainer.iv));
 
         try {
-            setDecryptedKey((await decryptAesKey(
+            const aesKey = (await decryptAesKey(
                 userContext.privateKey,
                 currentUserKeyContainer.cipheringPublicKey,
                 currentUserKeyContainer.encryptedSymmetricKey,
                 ivBuffer
-            )).importedKey);
+            ));
+            setDecryptedKey(aesKey);
         } catch (e) {
-            console.log(e);
+            openAlert("Decrypting of private key failed!","error");
+            setDecryptedKey({});
         }
     }
 
     async function onSendMessage(stompClient, message) {
         try {
-            const {encryptedData, iv} = await encryptDataBySymmetricKey(decryptedKey, message);
+            const {encryptedData, iv} = await encryptDataBySymmetricKey(decryptedKey.importedKey, message);
             //Send Message
             console.log("Stomp send!");
             stompClient.publish({
@@ -47,6 +54,19 @@ export default function ConversationWidget({conversationId}) {
         }
     }
 
+    async function onDeleteMessage(stompClient, id) {
+        console.log("deleting message");
+        try {
+            stompClient.publish({
+                destination: "/app/deleteMessage",
+                body: JSON.stringify({id}),
+            });
+        } catch (e) {
+            console.log(e);
+            openAlert("Deleting of message failed.", "error")
+        }
+    }
+
     return <ConversationUI status={status} conversation={dtoOut} reseErr={resetErr} onSendMessage={onSendMessage}
-                           conversationId={conversationId} decryptedKey={decryptedKey}/>
+                           conversationId={conversationId} decryptedKey={decryptedKey} onDeleteMessage={onDeleteMessage}/>
 }

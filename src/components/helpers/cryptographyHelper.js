@@ -1,5 +1,13 @@
 //https://github.com/mdn/dom-examples/blob/main/web-crypto/derive-key/ecdh.js
 
+export async function computeFingerprint(key) {
+    const hashBuffer = await crypto.subtle.digest("SHA-256", key);
+    // Convert the hash to a hex string for readability
+    return Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("");
+}
+
 export async function generateElipticKeyPair() {
     const keyPair = await crypto.subtle.generateKey(
         {
@@ -45,7 +53,7 @@ export async function importPrivateKey(privateKey) {
 }
 
 export async function importPublicKey(publicKey) {
-    const importedPublicKey = await window.crypto.subtle.importKey(
+    return await window.crypto.subtle.importKey(
         "jwk",
         publicKey,
         {
@@ -55,7 +63,6 @@ export async function importPublicKey(publicKey) {
         true,
         publicKey.key_ops ?? [], // Key usages
     );
-    return importedPublicKey;
 }
 
 /*
@@ -124,14 +131,13 @@ export async function decryptDataByElliptic(receiverPrivateKey, senderPublicKey,
         receiverPrivateKey,
         senderPublicKey
     );
-    console.log(bobsSecretKey);
 
     // Alice can then use her copy of the secret key to encrypt a message to Bob.
     return await decrypt(bobsSecretKey, data, iv);
 }
 
 export async function decryptAesKey(receiverPrivateKey, senderPublicKey, encryptedAesKey, iv) {
-    const encryptedRawKey = _base64ToUint8Array(encryptedAesKey);
+    const encryptedRawKey = base64ToUint8Array(encryptedAesKey);
     const rawKey = await decryptDataByElliptic(receiverPrivateKey, senderPublicKey, encryptedRawKey, iv);
     const importedKey = await window.crypto.subtle.importKey(
         "raw",               // The format of the key (raw key material)
@@ -198,7 +204,7 @@ export async function decryptDataBySymetricKey(key, encryptedData, iv) {
             iv: iv // Use the same IV that was used for encryption
         },
         key, // AES-GCM CryptoKey
-        _base64ToUint8Array(encryptedData) // Encrypted data as ArrayBuffer
+        base64ToUint8Array(encryptedData) // Encrypted data as ArrayBuffer
     );
 
     // Convert the decrypted data back to a string
@@ -207,7 +213,7 @@ export async function decryptDataBySymetricKey(key, encryptedData, iv) {
 }
 
 // Function to convert a Base64 string back to a Uint8Array
-function _base64ToUint8Array(base64String) {
+export function base64ToUint8Array(base64String) {
     // Decode the Base64 string back into a regular string
     const decodedString = atob(base64String);
 
