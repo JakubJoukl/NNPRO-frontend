@@ -39,6 +39,7 @@ export default function MessageBody({messages, status, handleOnLoadMore, hasMore
             }
             behavior = "instant";
         }
+        console.log("jumpy jumpy");
         bottomElementRef.current?.scrollIntoView({
             behavior,
             block: "end",
@@ -51,7 +52,7 @@ export default function MessageBody({messages, status, handleOnLoadMore, hasMore
         return messages.map((message, index) => {
             if (message.sender === userContext.username) {
                 return (<MessageBubble key={message.id} messageText={message.message} sender={message.sender}
-                                       arrivalTime={formatter.format(new Date(message.dateSend * 1000))}
+                                       arrivalTime={formatter.format(new Date(message.dateSend))}
                                        className={"w-fit ml-auto md:max-w-[60%] sm:max-w-[70%] max-w-[80%]"}
                                        textAlign={"right"}
                                        backgroundColor={message.decrypted ? theme.palette.messageOwn.main : theme.palette.messageError.main}
@@ -61,7 +62,7 @@ export default function MessageBody({messages, status, handleOnLoadMore, hasMore
                 />);
             } else {
                 return (<MessageBubble key={message.id} messageText={message.message} sender={message.sender}
-                                       arrivalTime={formatter.format(new Date(message.dateSend * 1000))}
+                                       arrivalTime={formatter.format(new Date(message.dateSend))}
                                        className={"w-fit md:max-w-[60%] sm:max-w-[70%] max-w-[80%]"}
                                        textAlign={"left"}
                                        refProp={index === messages.length - 1 ? lastMessageRef : null}

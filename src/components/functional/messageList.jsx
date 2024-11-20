@@ -75,10 +75,12 @@ export function MessageList({conversationId, decryptedKey}) {
         })();
     }, [dtoOut?.itemList, decryptedKey, conversationId]); //resultingList sadly can't be in deps :( - as we also manipulate it by stomp
 
-    useSubscription(`/topic/${conversationId}`, (message) => {
-        console.log(message,"msg");
-        //const message = _decryptMessage(message);
+    useSubscription(`/topic/${conversationId}`, async (message) => {
+        const decryptedMessage = await _decryptMessage(JSON.parse(message.body));
+        console.log(decryptedMessage);
+        setResultingList([decryptedMessage, ...resultingList]);
     });
 
-    return <MessageListUI handleOnLoadMore={handleOnLoadMore} status={status} messages={resultingList} hasMore={hasMore}/>;
+    return <MessageListUI handleOnLoadMore={handleOnLoadMore} status={status} messages={resultingList}
+                          hasMore={hasMore}/>;
 }
