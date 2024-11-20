@@ -2,9 +2,9 @@ import {Card, CardContent, Paper, Typography} from "@mui/material";
 import * as React from "react";
 import Divider from "@mui/material/Divider";
 
-export function MessageBubble({messageText, sender, arrivalTime, className, backgroundColor, color, textAlign}) {
+export function MessageBubble({messageText, sender, arrivalTime, className, backgroundColor, color, textAlign, refProp}) {
     return (
-        <Card className={className} style={{backgroundColor: backgroundColor}}>
+        <Card className={className} style={{backgroundColor: backgroundColor}} ref={refProp}>
             <CardContent className={"break-words"}>
                     <Typography gutterBottom sx={{fontSize: 14}} component="p" textAlign={textAlign}
                                 color={color}>

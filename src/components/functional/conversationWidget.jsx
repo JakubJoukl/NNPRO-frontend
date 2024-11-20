@@ -3,7 +3,6 @@ import {ConversationUI} from "../visual/ConversationUI.jsx";
 import {useContext, useState} from "react";
 import {UserContext} from "../../context/userContext.js";
 import {decryptAesKey, encryptDataBySymmetricKey} from "../helpers/cryptographyHelper.js";
-import {useSubmitCall} from "../../hooks/useSubmitCall.js";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 
 export default function ConversationWidget({conversationId}) {
@@ -43,10 +42,11 @@ export default function ConversationWidget({conversationId}) {
                     iv
                 }),
             });
-        }catch (e) {
+        } catch (e) {
             openAlert("Sending of message failed.", "error")
         }
     }
 
-    return <ConversationUI status={status} conversation={dtoOut} reseErr={resetErr} onSendMessage={onSendMessage} conversationId={conversationId} decryptedKey={decryptedKey}/>
+    return <ConversationUI status={status} conversation={dtoOut} reseErr={resetErr} onSendMessage={onSendMessage}
+                           conversationId={conversationId} decryptedKey={decryptedKey}/>
 }

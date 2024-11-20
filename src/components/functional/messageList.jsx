@@ -20,6 +20,10 @@ export function MessageList({conversationId, decryptedKey}) {
     const [lastMessage, setLastMessage] = useState({});
     const [resultingList, setResultingList] = useState([]);
     const prevConversationId = useRef(conversationId);
+    let hasMore = true;
+    if (dtoOut && dtoOut.pageInfo) {
+        hasMore = dtoOut.pageInfo.pageSize * (dtoOut.pageInfo.pageIndex + 1) < dtoOut.pageInfo.total;
+    }
 
 
     function handleOnLoadMore() {
@@ -72,9 +76,9 @@ export function MessageList({conversationId, decryptedKey}) {
     }, [dtoOut?.itemList, decryptedKey, conversationId]); //resultingList sadly can't be in deps :( - as we also manipulate it by stomp
 
     useSubscription(`/topic/${conversationId}`, (message) => {
-        console.log(message);
+        console.log(message,"msg");
         //const message = _decryptMessage(message);
     });
 
-    return <MessageListUI handleOnLoadMore={handleOnLoadMore} status={status} messages={resultingList}/>;
+    return <MessageListUI handleOnLoadMore={handleOnLoadMore} status={status} messages={resultingList} hasMore={hasMore}/>;
 }

@@ -9,7 +9,7 @@ import {useContext} from "react";
 import {UserContext} from "../../context/userContext.js";
 
 
-export function ConversationUI({conversation, status, reseErr, onSendMessage, sendStatus, conversationId, decryptedKey}) {
+export function ConversationUI({conversation, status, reseErr, onSendMessage, conversationId, decryptedKey}) {
     const {token} = useContext(UserContext).userContext;
 
     function renderLoadErrorHeadings() {
@@ -51,7 +51,7 @@ export function ConversationUI({conversation, status, reseErr, onSendMessage, se
             >
                 <ConversationToolBar conversation={conversation}/>
                 <MessageList conversationId={conversationId} decryptedKey={decryptedKey}/>
-                <MessageTypingBox onSendMessage={onSendMessage} status={sendStatus}/>
+                <MessageTypingBox onSendMessage={onSendMessage}/>
             </StompSessionProvider>
         </>}
     </div>
