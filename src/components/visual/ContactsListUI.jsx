@@ -63,7 +63,7 @@ export function ContactsListUI({contacts, status, handleOnLoadMore, setFilteredN
         </>}
         {(!status.isError && !status.callInProgress && !contacts.length) && <>
             <Typography variant="p" className={"text-center"}>
-                You don&#39;t have any contacts.
+                No contacts matching given criteria were found.
             </Typography>
         </>}
         {status.callInProgress &&
