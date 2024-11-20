@@ -76,11 +76,11 @@ export function MessageList({conversationId, decryptedKey, onDeleteMessage}) {
 
     useSubscription(`/topic/addMessage/${conversationId}`, async (message) => {
         const decryptedMessage = await _decryptMessage(JSON.parse(message.body));
-        setResultingList([decryptedMessage, ...resultingList]);
+        setResultingList((prevState) => [decryptedMessage, ...prevState]);
     });
 
     useSubscription(`/topic/deleteMessage/${conversationId}`, async (stompMessage) => {
-        setResultingList([resultingList.filter(message => message.id !== stompMessage.body.id)]);
+        setResultingList((prev) => prev.filter(message => message.id !== JSON.parse(stompMessage.body).id));
     });
 
     return <MessageListUI handleOnLoadMore={handleOnLoadMore} status={status} messages={resultingList}

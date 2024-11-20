@@ -59,6 +59,7 @@ export default function MessageBody({messages, status, handleOnLoadMore, hasMore
                                        color={message.decrypted ? "black" : theme.palette.messageError.secondary}
                                        onDeleteMessage={onDeleteMessage}
                                        messageId={message.id}
+                                       isOwn={true}
 
                 />);
             } else {
@@ -71,6 +72,7 @@ export default function MessageBody({messages, status, handleOnLoadMore, hasMore
                                        color={message.decrypted ? "black" : theme.palette.messageError.secondary}
                                        onDeleteMessage={onDeleteMessage}
                                        messageId={message.id}
+                                       isOwn={false}
                 />);
             }
         });

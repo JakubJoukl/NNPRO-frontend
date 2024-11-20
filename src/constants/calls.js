@@ -54,9 +54,35 @@ async function listMessages(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/listMessages`, dtoIn, pageInfo, token);
 }
 
+async function deleteMessage(dtoIn, pageInfo, token) {
+    return await callDelete(`${BASE_URI}/deleteMessage`, dtoIn, pageInfo, token);
+}
+
 async function callPost(uri, dtoIn, pageInfo, token) {
     const request = {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "default", // *default, no-cache, reload, force-cache, only-if-cached
+        //  credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+        }, redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify({...dtoIn, pageInfo}), // body data type must match "Content-Type" header
+    }
+    if (token) {
+        request.headers.Authorization = `Bearer ${token}`
+    }
+    const response = await fetch(uri, request);
+    if (response.status !== 200 && response.status !== 201) {
+        throw new Error("Server responded with status " + response.status);
+    }
+    return await response.json();
+}
+
+async function callDelete(uri, dtoIn, pageInfo, token) {
+    const request = {
+        method: "DELETE", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "default", // *default, no-cache, reload, force-cache, only-if-cached
         //  credentials: "same-origin", // include, *same-origin, omit
@@ -160,5 +186,6 @@ export {
     createConversation,
     getConversation,
     listMessages,
-    sendMessageToConversation
+    sendMessageToConversation,
+    deleteMessage
 }

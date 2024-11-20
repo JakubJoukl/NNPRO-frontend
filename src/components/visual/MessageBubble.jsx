@@ -17,8 +17,8 @@ export function MessageBubble({
                                   refProp,
                                   onDeleteMessage,
                                   messageId,
+                                  isOwn
                               }) {
-    const stompClient = useStompClient();
     return (
         <Card className={className} style={{backgroundColor: backgroundColor}} ref={refProp}>
             <CardContent className={"break-words"}>
@@ -33,11 +33,11 @@ export function MessageBubble({
                             <b>{sender}</b>
                         </Typography>
                     </div>
-                    <IconButton onClick={() =>
-                        onDeleteMessage(stompClient, messageId)
+                    {isOwn && <IconButton onClick={() =>
+                        onDeleteMessage(messageId)
                     }>
                         <DeleteForeverIcon fontSize={"medium"}/>
-                    </IconButton>
+                    </IconButton>}
                 </div>
                 <Divider className={"!mb-4"} color={color}/>
                 <Typography variant="body2" color={color} textAlign={"left"}>

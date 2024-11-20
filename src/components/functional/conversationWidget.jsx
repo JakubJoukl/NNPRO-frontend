@@ -4,14 +4,16 @@ import {useContext, useRef, useState} from "react";
 import {UserContext} from "../../context/userContext.js";
 import {decryptAesKey, encryptDataBySymmetricKey} from "../helpers/cryptographyHelper.js";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
+import {useSubmitCall} from "../../hooks/useSubmitCall.js";
 
 export default function ConversationWidget({conversationId}) {
     const {dtoOut, status, resetErr} = useFetchCall("getConversation", conversationId, null, decryptKey);
+    const {call} = useSubmitCall('deleteMessage', "Message deleted.", "Deleting of message failed.");
     const {userContext, setUserContext} = useContext(UserContext);
     const [decryptedKey, setDecryptedKey] = useState({});
     const {openAlert} = useContext(GlobalAlertContext);
     const currentPrivateKeyRef = useRef(userContext.privateKey);
-    if(currentPrivateKeyRef.current !== userContext.privateKey){
+    if (currentPrivateKeyRef.current !== userContext.privateKey) {
         decryptKey(dtoOut);
     }
 
@@ -30,7 +32,7 @@ export default function ConversationWidget({conversationId}) {
             ));
             setDecryptedKey(aesKey);
         } catch (e) {
-            openAlert("Decrypting of private key failed!","error");
+            openAlert("Decrypting of private key failed!", "error");
             setDecryptedKey({});
         }
     }
@@ -54,19 +56,12 @@ export default function ConversationWidget({conversationId}) {
         }
     }
 
-    async function onDeleteMessage(stompClient, id) {
-        console.log("deleting message");
-        try {
-            stompClient.publish({
-                destination: "/app/deleteMessage",
-                body: JSON.stringify({id}),
-            });
-        } catch (e) {
-            console.log(e);
-            openAlert("Deleting of message failed.", "error")
-        }
+    function onDeleteMessage(id) {
+        console.log(id);
+        call({id});
     }
 
     return <ConversationUI status={status} conversation={dtoOut} reseErr={resetErr} onSendMessage={onSendMessage}
-                           conversationId={conversationId} decryptedKey={decryptedKey} onDeleteMessage={onDeleteMessage}/>
+                           conversationId={conversationId} decryptedKey={decryptedKey}
+                           onDeleteMessage={onDeleteMessage}/>
 }
