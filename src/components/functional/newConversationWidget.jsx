@@ -9,9 +9,12 @@ import {
 import {UserContext} from "../../context/userContext.js";
 import {AddedConversationContext} from "../../context/AddedConversationContext.js";
 import {Navigate} from "react-router-dom";
+import {FormControlLabel, Switch} from "@mui/material";
+import {GroupConversation} from "./GroupConversation.jsx";
 
 export default function NewConversationWidget({onUserClicked, deleteEnabled}) {
     const [selectedContact, setSelectedContact] = useState(null);
+    const [groupConversation, setGroupConversation] = useState(false);
     const {status, call, dtoOut} = useSubmitCall(
         "createConversation", "Conversation has been created successfully",
         "Creating conversation failed due to unknown error.",
@@ -59,9 +62,25 @@ export default function NewConversationWidget({onUserClicked, deleteEnabled}) {
         setSelectedContact(contact);
     }
 
-    if (!selectedContact) {
-        return <ContactsList onUserClicked={handleOnUserClicker}/>
+    function renderGroupConversationSwitchButton() {
+        return <FormControlLabel
+            control={
+                <Switch checked={groupConversation} onChange={() => setGroupConversation((prevState) => !prevState)}/>
+            }
+            label="Group conversation"
+        />
     }
-    return <CreateConversationFormUI selectedContact={selectedContact} setSelectedContact={setSelectedContact}
-                                     status={status} onSubmit={handleOnSubmit}/>
+
+    if (!selectedContact && !groupConversation) {
+        return <>
+            {renderGroupConversationSwitchButton()}
+            <ContactsList onUserClicked={handleOnUserClicker}/>
+        </>
+    }
+    return <>
+        {renderGroupConversationSwitchButton()}
+        {!groupConversation && <CreateConversationFormUI selectedContact={selectedContact} setSelectedContact={setSelectedContact}
+                                  status={status} onSubmit={handleOnSubmit}/>}
+        {groupConversation && <GroupConversation status={status} onSubmit={handleOnSubmit}/>}
+    </>
 }
