@@ -5,7 +5,7 @@ import {UserContext} from "../../context/userContext.js";
 import {decryptDataBySymetricKey} from "../helpers/cryptographyHelper.js";
 import {useFetchCall} from "../../hooks/useFetchCall.js";
 
-export function MessageList({conversationId, decryptedKey, onDeleteMessage}) {
+export function MessageList({conversationId, decryptedKey}) {
     const [pageInfo, setPageInfo] = useState({pageIndex: 0, pageSize: 50});
     const {userContext} = useContext(UserContext);
     // Will always remain same
@@ -17,7 +17,6 @@ export function MessageList({conversationId, decryptedKey, onDeleteMessage}) {
         status,
         resetErr
     } = useFetchCall('listMessages', memoDtoIn, pageInfo);
-    const [lastMessage, setLastMessage] = useState({});
     const [resultingList, setResultingList] = useState([]);
     const prevConversationId = useRef(conversationId);
     let hasMore = true;
@@ -79,10 +78,10 @@ export function MessageList({conversationId, decryptedKey, onDeleteMessage}) {
         setResultingList((prevState) => [decryptedMessage, ...prevState]);
     });
 
-    useSubscription(`/topic/deleteMessage/${conversationId}`, async (stompMessage) => {
+    useSubscription(`/topic/deleteMessage/${conversationId}`, (stompMessage) => {
         setResultingList((prev) => prev.filter(message => message.id !== JSON.parse(stompMessage.body).id));
     });
 
     return <MessageListUI handleOnLoadMore={handleOnLoadMore} status={status} messages={resultingList}
-                          hasMore={hasMore} onDeleteMessage={onDeleteMessage}/>;
+                          hasMore={hasMore}/>;
 }

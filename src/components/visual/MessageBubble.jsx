@@ -1,9 +1,9 @@
-import {Card, CardContent, CardHeader, Typography} from "@mui/material";
+import {Card, CardContent, Typography} from "@mui/material";
 import * as React from "react";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import {useStompClient} from "react-stomp-hooks";
+import {useSubmitCall} from "../../hooks/useSubmitCall.js";
 
 
 export function MessageBubble({
@@ -15,10 +15,11 @@ export function MessageBubble({
                                   color,
                                   textAlign,
                                   refProp,
-                                  onDeleteMessage,
                                   messageId,
                                   isOwn
                               }) {
+    const {status,call} = useSubmitCall('deleteMessage', "Message deleted.", "Deleting of message failed.");
+
     return (
         <Card className={className} style={{backgroundColor: backgroundColor}} ref={refProp}>
             <CardContent className={"break-words"}>
@@ -33,8 +34,9 @@ export function MessageBubble({
                             <b>{sender}</b>
                         </Typography>
                     </div>
-                    {isOwn && <IconButton onClick={() =>
-                        onDeleteMessage(messageId)
+                    {isOwn && <IconButton disabled={status.callInProgress} onClick={() =>
+                        call({id: messageId}
+                        )
                     }>
                         <DeleteForeverIcon fontSize={"medium"}/>
                     </IconButton>}

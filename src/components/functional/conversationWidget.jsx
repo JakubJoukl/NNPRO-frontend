@@ -4,11 +4,9 @@ import {useContext, useRef, useState} from "react";
 import {UserContext} from "../../context/userContext.js";
 import {decryptAesKey, encryptDataBySymmetricKey} from "../helpers/cryptographyHelper.js";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
-import {useSubmitCall} from "../../hooks/useSubmitCall.js";
 
 export default function ConversationWidget({conversationId}) {
     const {dtoOut, status, resetErr} = useFetchCall("getConversation", conversationId, null, decryptKey);
-    const {call} = useSubmitCall('deleteMessage', "Message deleted.", "Deleting of message failed.");
     const {userContext, setUserContext} = useContext(UserContext);
     const [decryptedKey, setDecryptedKey] = useState({});
     const {openAlert} = useContext(GlobalAlertContext);
@@ -56,12 +54,6 @@ export default function ConversationWidget({conversationId}) {
         }
     }
 
-    function onDeleteMessage(id) {
-        console.log(id);
-        call({id});
-    }
-
     return <ConversationUI status={status} conversation={dtoOut} reseErr={resetErr} onSendMessage={onSendMessage}
-                           conversationId={conversationId} decryptedKey={decryptedKey}
-                           onDeleteMessage={onDeleteMessage}/>
+                           conversationId={conversationId} decryptedKey={decryptedKey}/>
 }

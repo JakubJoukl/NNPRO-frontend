@@ -5,9 +5,20 @@ import {MessageTypingBox} from "./MessageTypingBox.jsx";
 import {MessageList} from "../functional/messageList.jsx";
 import {useContext} from "react";
 import {UserContext} from "../../context/userContext.js";
+import withAlert from "./withAlert.jsx";
+import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 
 
-export function ConversationUI({conversation, status, reseErr, onSendMessage, conversationId, decryptedKey, onDeleteMessage}) {
+function ConversationUI({
+                            conversation,
+                            status,
+                            reseErr,
+                            onSendMessage,
+                            conversationId,
+                            decryptedKey,
+                            openAlert,
+                            closeAlert
+                        }) {
     const {token} = useContext(UserContext).userContext;
 
     function renderLoadErrorHeadings() {
@@ -38,11 +49,16 @@ export function ConversationUI({conversation, status, reseErr, onSendMessage, co
         </>;
     }
 
-    return <div className={"flex flex-col flex-grow overflow-auto"}>{renderLoadErrorHeadings()}
-        {(!status.isError && status.callFinished) && <>
-            <ConversationToolBar conversation={conversation} decryptedKey={decryptedKey.rawKey}/>
-            <MessageList conversationId={conversationId} decryptedKey={decryptedKey.importedKey} onDeleteMessage={onDeleteMessage}/>
-            <MessageTypingBox onSendMessage={onSendMessage}/>
-        </>}
-    </div>
+    return (<GlobalAlertContext.Provider value={{openAlert, closeAlert}}>
+        <div className={"flex flex-col flex-grow overflow-auto"}>{renderLoadErrorHeadings()}
+            {(!status.isError && status.callFinished) && <>
+                <ConversationToolBar conversation={conversation} decryptedKey={decryptedKey.rawKey}/>
+                <MessageList conversationId={conversationId} decryptedKey={decryptedKey.importedKey}/>
+                <MessageTypingBox onSendMessage={onSendMessage}/>
+            </>}
+        </div>
+    </GlobalAlertContext.Provider>)
 }
+
+const WrappedConversationUI = withAlert(ConversationUI);
+export {WrappedConversationUI as ConversationUI}

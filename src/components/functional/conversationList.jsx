@@ -4,8 +4,6 @@ import {useContext, useState} from "react";
 import {AddedConversationContext} from "../../context/AddedConversationContext.js";
 import {useSubscription} from "react-stomp-hooks";
 import {UserContext} from "../../context/userContext.js";
-import {useFetchCall} from "../../hooks/useFetchCall.js";
-import {useSubmitCall} from "../../hooks/useSubmitCall.js";
 
 export function ConversationList() {
     const [pageInfo, setPageInfo] = useState({pageIndex: 0, pageSize: 50});
