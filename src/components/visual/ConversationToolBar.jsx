@@ -5,16 +5,24 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {useState} from "react";
 import {ControlledDraggableDialog} from "./ControlledDraggableDialog.jsx";
 import {FingerprintDialogContent} from "./FingerprintDialogContent.jsx";
+import {ContactsList} from "../functional/contactsList.jsx";
 
 export function ConversationToolBar({conversation, decryptedKey}) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [fingerPrintDialogOpen, setFingerprintDialogOpen] = useState(false);
+    const [addUserDialogOpen, setAddUserDialogOpen] = useState(false);
+
 
     const handleMenuClick = (event) => {
         setMenuOpen((prevState => !prevState));
     };
 
     const handleMenuClose = () => {
+        setMenuOpen(false);
+    };
+
+    const handleOnAddUserDialog = () => {
+        setAddUserDialogOpen(true);
         setMenuOpen(false);
     };
 
@@ -34,6 +42,15 @@ export function ConversationToolBar({conversation, decryptedKey}) {
                                           dialogButtonContent={"Fingerprints"}
                                           open={fingerPrintDialogOpen}
                                           setOpen={setFingerprintDialogOpen}
+        />
+    }
+
+    function renderAddUserDialog() {
+        return <ControlledDraggableDialog title={"Add new user to conversation"}
+                                          Content={<ContactsList />}
+                                          dialogButtonContent={"Add new user to conversation"}
+                                          open={addUserDialogOpen}
+                                          setOpen={setAddUserDialogOpen}
         />
     }
 
@@ -61,10 +78,11 @@ export function ConversationToolBar({conversation, decryptedKey}) {
                     className={menuClassNames}
                     square
                 >
-                    <MenuItem color={"primary"} onClick={handleMenuClose}>Add user to conversation</MenuItem>
+                    <MenuItem color={"primary"} onClick={handleOnAddUserDialog}>Add user to conversation</MenuItem>
                     <MenuItem color={"primary"} onClick={handleOnShowFingerprints}>Show key fingerprints</MenuItem>
                     <MenuItem color={"primary"} onClick={handleMenuClose}>Leave conversation</MenuItem>
                     {renderKeyFingerprintDialog()}
+                    {renderAddUserDialog()}
                 </Paper>
             </div>
         </Toolbar>

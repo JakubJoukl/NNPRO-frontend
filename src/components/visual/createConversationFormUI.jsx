@@ -63,11 +63,11 @@ export function CreateConversationFormUI({selectedContact, setSelectedContact, s
                    error={!(validations.conversationName)}
                    helperText={!(validations.conversationName) && "Conversation name must be between 7 and 29 characters long."}
         />
-        <Button disabled={status.callInProgress || selectedContact.publicKey == null || userContext.publicKey == null || userContext.privateKey == null} size="large" variant="outlined"
+        <Button disabled={status.callInProgress || selectedContact.publicKey == null || userContext.publicKey == null || userContext.privateKey == null} size="large" variant="contained"
                 onClick={() => {
                     const result = validate();
                     if (result.conversationName) {
-                        onSubmit(conversationName);
+                        onSubmit(conversationName, [selectedContact]);
                     } else {
                         openAlert("Conversation name is not valid. Fix it before proceeding.", "error")
                     }
@@ -76,8 +76,8 @@ export function CreateConversationFormUI({selectedContact, setSelectedContact, s
                 className={"w-fit"}
         >Create conversation</Button>
         {selectedContact.publicKey == null &&
-            <Typography color={"red"} variant={"span"}>{<b>User <Typography color={"primary"} variant={"span"}>{
-                <b>Can&#39;t start encrypted conversation - {selectedContact.username}</b>}</Typography> has
+            <Typography color={"red"} variant={"span"}>{<b>Can&#39;t start encrypted conversation - <Typography color={"primary"} variant={"span"}>{
+                <b>{selectedContact.username}</b>}</Typography> has
                 not set public key yet!</b>}</Typography>}
         {(userContext.publicKey == null || userContext.privateKey == null) &&
             <Typography color={"red"} variant={"span"}>{<b>Can&#39;t start encrypted conversation - You have not set your public key or private key. You have to

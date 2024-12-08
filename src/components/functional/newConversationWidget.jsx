@@ -11,6 +11,7 @@ import {AddedConversationContext} from "../../context/AddedConversationContext.j
 import {Navigate} from "react-router-dom";
 import {FormControlLabel, Switch} from "@mui/material";
 import {GroupConversation} from "./GroupConversation.jsx";
+import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 
 export default function NewConversationWidget({onUserClicked, deleteEnabled}) {
     const [selectedContact, setSelectedContact] = useState(null);
@@ -20,6 +21,7 @@ export default function NewConversationWidget({onUserClicked, deleteEnabled}) {
         "Creating conversation failed due to unknown error.",
         callback
     );
+    const {openAlert} = useContext(GlobalAlertContext);
     const {privateKey, publicKey, username} = useContext(UserContext).userContext;
     const {setAddedConversation} = useContext(AddedConversationContext);
 
@@ -33,24 +35,36 @@ export default function NewConversationWidget({onUserClicked, deleteEnabled}) {
         });
     }
 
-
-    async function handleOnSubmit(conversationName) {
+    async function handleOnSubmit(conversationName, selectedContacts) {
+        const users = [];
         const {aesKey, rawKey} = await generateSharedAESKey();
-        const {key, iv} = await encryptAesKey(privateKey, selectedContact.publicKey, rawKey);
+        for (const selectedContact of selectedContacts) {
+            try {
+                const {key, iv} = await encryptAesKey(privateKey, selectedContact.publicKey, rawKey);
+                users.push(
+                    {
+                        username: selectedContact.username,
+                        encryptedSymmetricKey: key,
+                        iv,
+                        cipheringPublicKey: publicKey
+                    }
+                )
+            } catch (e) {
+                openAlert(`Creating of conversation failed - ciphering by public key was not successful for user ${selectedContacts.username}`)
+                return;
+            }
+        }
         // Also sign for ourselves
-        const {key: ownKey, iv: ownIv} = await encryptAesKey(privateKey, publicKey, rawKey);
-
+        try {
+            const {key: ownKey, iv: ownIv} = await encryptAesKey(privateKey, publicKey, rawKey);
+            users.push({username: username, encryptedSymmetricKey: ownKey, iv: ownIv, cipheringPublicKey: publicKey});
+        }catch (e) {
+            openAlert(`Creating of conversation failed - ciphering by public key was not successful for your key.`)
+            return;
+        }
         call({
             name: conversationName,
-            users: [
-                {
-                    username: selectedContact.username,
-                    encryptedSymmetricKey: key,
-                    iv,
-                    cipheringPublicKey: publicKey
-                },
-                {username: username, encryptedSymmetricKey: ownKey, iv: ownIv, cipheringPublicKey: publicKey}
-            ]
+            users
         }, undefined);
     }
 
@@ -79,8 +93,9 @@ export default function NewConversationWidget({onUserClicked, deleteEnabled}) {
     }
     return <>
         {renderGroupConversationSwitchButton()}
-        {!groupConversation && <CreateConversationFormUI selectedContact={selectedContact} setSelectedContact={setSelectedContact}
-                                  status={status} onSubmit={handleOnSubmit}/>}
+        {!groupConversation &&
+            <CreateConversationFormUI selectedContact={selectedContact} setSelectedContact={setSelectedContact}
+                                      status={status} onSubmit={handleOnSubmit}/>}
         {groupConversation && <GroupConversation status={status} onSubmit={handleOnSubmit}/>}
     </>
 }
