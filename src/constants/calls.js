@@ -42,6 +42,10 @@ async function createConversation(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/createConversation`, dtoIn, pageInfo, token);
 }
 
+async function leaveConversation(dtoIn, pageInfo, token) {
+    return await callDelete(`${BASE_URI}/leaveConversation`, dtoIn, pageInfo, token);
+}
+
 async function addUserToConversation(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/addUserToConversation`, dtoIn, pageInfo, token);
 }
@@ -192,5 +196,6 @@ export {
     listMessages,
     sendMessageToConversation,
     deleteMessage,
-    addUserToConversation
+    addUserToConversation,
+    leaveConversation
 }

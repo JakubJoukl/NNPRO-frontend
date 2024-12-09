@@ -6,11 +6,13 @@ import {useState} from "react";
 import {ControlledDraggableDialog} from "./ControlledDraggableDialog.jsx";
 import {FingerprintDialogContent} from "./FingerprintDialogContent.jsx";
 import {AddUserToConversationBody} from "../functional/addUserToConversationBody.jsx";
+import {LeaveConversationBody} from "../functional/leaveConversationBody.jsx";
 
 export function ConversationToolBar({conversation, decryptedKey}) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [fingerPrintDialogOpen, setFingerprintDialogOpen] = useState(false);
     const [addUserDialogOpen, setAddUserDialogOpen] = useState(false);
+    const [leaveConversationDialogOpen, setLeaveConversationDialogOpen] = useState(false);
 
 
     const handleMenuClick = (event) => {
@@ -31,6 +33,11 @@ export function ConversationToolBar({conversation, decryptedKey}) {
         setFingerprintDialogOpen(true);
     }
 
+    function handleOnLeaveConversationOpen() {
+        handleMenuClose();
+        setLeaveConversationDialogOpen(true);
+    }
+
     let menuClassNames = "absolute right-0 z-50 p-2"
     if (!menuOpen) {
         menuClassNames += " invisible hidden"
@@ -38,7 +45,9 @@ export function ConversationToolBar({conversation, decryptedKey}) {
 
     function renderKeyFingerprintDialog() {
         return <ControlledDraggableDialog title={"Current fingerprints"}
-                                          Content={<FingerprintDialogContent conversation={conversation} className={"min-h-128 max-h-screen"} decryptedKey={decryptedKey}/>}
+                                          Content={<FingerprintDialogContent conversation={conversation}
+                                                                             className={"min-h-128 max-h-screen"}
+                                                                             decryptedKey={decryptedKey}/>}
                                           dialogButtonContent={"Fingerprints"}
                                           open={fingerPrintDialogOpen}
                                           setOpen={setFingerprintDialogOpen}
@@ -47,10 +56,22 @@ export function ConversationToolBar({conversation, decryptedKey}) {
 
     function renderAddUserDialog() {
         return <ControlledDraggableDialog title={"Add new user to conversation"}
-                                          Content={<AddUserToConversationBody decryptedKey={decryptedKey} conversation={conversation} onSubmit={() => setAddUserDialogOpen(false)} />}
+                                          Content={<AddUserToConversationBody decryptedKey={decryptedKey}
+                                                                              conversation={conversation}
+                                                                              onSubmit={() => setAddUserDialogOpen(false)}/>}
                                           dialogButtonContent={"Add new user to conversation"}
                                           open={addUserDialogOpen}
                                           setOpen={setAddUserDialogOpen}
+        />
+    }
+
+    function renderLeaveConversationDialog() {
+        return <ControlledDraggableDialog title={"Add new user to conversation"}
+                                          Content={<LeaveConversationBody conversation={conversation}
+                                                                          onSubmit={() => setLeaveConversationDialogOpen(false)}/>}
+                                          dialogButtonContent={"Add new user to conversation"}
+                                          open={leaveConversationDialogOpen}
+                                          setOpen={setLeaveConversationDialogOpen}
         />
     }
 
@@ -61,7 +82,9 @@ export function ConversationToolBar({conversation, decryptedKey}) {
             </Typography>
 
 
-            <div style={{marginLeft: "auto"}} className={"overflow-auto"}>
+            <div style={{marginLeft: "auto"}} className={"overflow-auto"} onBlur={(e) => {
+                if (!e.relatedTarget && menuOpen) handleMenuClose()
+            }}>
                 <IconButton
                     size="large"
                     edge="end"
@@ -80,9 +103,10 @@ export function ConversationToolBar({conversation, decryptedKey}) {
                 >
                     <MenuItem color={"primary"} onClick={handleOnAddUserDialog}>Add user to conversation</MenuItem>
                     <MenuItem color={"primary"} onClick={handleOnShowFingerprints}>Show key fingerprints</MenuItem>
-                    <MenuItem color={"primary"} onClick={handleMenuClose}>Leave conversation</MenuItem>
+                    <MenuItem color={"primary"} onClick={handleOnLeaveConversationOpen}>Leave conversation</MenuItem>
                     {renderKeyFingerprintDialog()}
                     {renderAddUserDialog()}
+                    {renderLeaveConversationDialog()}
                 </Paper>
             </div>
         </Toolbar>
