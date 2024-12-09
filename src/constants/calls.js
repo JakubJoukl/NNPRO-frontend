@@ -42,6 +42,10 @@ async function createConversation(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/createConversation`, dtoIn, pageInfo, token);
 }
 
+async function addUserToConversation(dtoIn, pageInfo, token) {
+    return await callPost(`${BASE_URI}/addUserToConversation`, dtoIn, pageInfo, token);
+}
+
 async function getConversation(dtoIn, pageInfo, token) {
     return await callGetWithPathParam(`${BASE_URI}/getConversation`, dtoIn, token);
 }
@@ -187,5 +191,6 @@ export {
     getConversation,
     listMessages,
     sendMessageToConversation,
-    deleteMessage
+    deleteMessage,
+    addUserToConversation
 }

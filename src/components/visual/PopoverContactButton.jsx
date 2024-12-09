@@ -4,7 +4,7 @@ import ListItem from "@mui/material/ListItem";
 import {Popover, Typography} from "@mui/material";
 import {useState} from "react";
 
-export function PopoverContactButton({contact, setContactMap}) {
+export function PopoverContactButton({contact, onContactClicked}) {
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handlePopoverOpen = (event) => {
@@ -23,17 +23,7 @@ export function PopoverContactButton({contact, setContactMap}) {
                            onMouseEnter={handlePopoverOpen}
                            onMouseLeave={handlePopoverClose}>
         <ListItemButton disabled={contact.publicKey == null} onClick={() => {
-            setContactMap((prevState) => {
-                if (prevState.map.has(contact.username)) {
-                    return prevState;
-                }
-                const newMap = new Map(prevState.map);
-                newMap.set(contact.username, contact)
-                return {
-                    map: newMap,
-                    list: [...prevState.list, contact]
-                }
-            });
+            onContactClicked(contact);
         }}>
             <ListItemText primary={contact.username}/>
         </ListItemButton>

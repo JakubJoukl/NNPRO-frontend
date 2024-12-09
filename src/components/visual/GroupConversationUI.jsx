@@ -50,6 +50,20 @@ export function GroupConversationUI({status, onSubmit, setFilterName, contacts, 
         };
     }
 
+    function setSelectedContact(contact){
+        setSelectedContacts((prevState) => {
+            if (prevState.map.has(contact.username)) {
+                return prevState;
+            }
+            const newMap = new Map(prevState.map);
+            newMap.set(contact.username, contact)
+            return {
+                map: newMap,
+                list: [...prevState.list, contact]
+            }
+        });
+    }
+
     function _renderSearchBody() {
         return (<List className={"w-full flex flex-col flex-grow overflow-auto border-t-2"}>
             <TextField onChange={(e) => {
@@ -87,7 +101,7 @@ export function GroupConversationUI({status, onSubmit, setFilterName, contacts, 
             }
             {(!status.isError && contacts && Array.isArray(contacts)) && <>
                 {contacts.map((contact) => {
-                    return (<PopoverContactButton key={contact.username + "_search"} contact={contact} setContactMap={setSelectedContacts}/>)
+                    return (<PopoverContactButton key={contact.username + "_search"} contact={contact} onContactClicked={setSelectedContact}/>)
                 })}
             </>}
             {status.callInProgress &&

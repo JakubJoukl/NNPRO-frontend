@@ -7,7 +7,6 @@ import {styled} from "@mui/system";
 import {generateElipticKeyPair} from "../helpers/cryptographyHelper.js";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 import {TextareaAutosize} from '@mui/base/TextareaAutosize';
-import {useFetchCall} from "../../hooks/useFetchCall.js";
 import {UserContext} from "../../context/userContext.js";
 
 const VisuallyHiddenInput = styled('input')({
