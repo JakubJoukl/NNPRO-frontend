@@ -19,7 +19,7 @@ function PaperComponent(props) {
     );
 }
 
-export function ControlledDraggableDialog({Content, title, className, open, setOpen}) {
+export function ControlledDraggableDialog({Content, title, className, open, setOpen, ConfirmButton}) {
 
     function handleClose() {
         setOpen(false);

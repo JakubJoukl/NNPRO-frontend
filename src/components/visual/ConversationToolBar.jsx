@@ -1,11 +1,11 @@
 import Toolbar from "@mui/material/Toolbar";
-import {AppBar, MenuItem, Paper, Typography} from "@mui/material";
+import {AppBar, Button, MenuItem, Paper, Typography} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {useState} from "react";
 import {ControlledDraggableDialog} from "./ControlledDraggableDialog.jsx";
 import {FingerprintDialogContent} from "./FingerprintDialogContent.jsx";
-import {ContactsList} from "../functional/contactsList.jsx";
+import {AddUserToConversationBody} from "../functional/addUserToConversationBody.jsx";
 
 export function ConversationToolBar({conversation, decryptedKey}) {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -47,7 +47,7 @@ export function ConversationToolBar({conversation, decryptedKey}) {
 
     function renderAddUserDialog() {
         return <ControlledDraggableDialog title={"Add new user to conversation"}
-                                          Content={<ContactsList />}
+                                          Content={<AddUserToConversationBody decryptedKey={decryptedKey} conversation={conversation} onSubmit={() => setAddUserDialogOpen(false)} />}
                                           dialogButtonContent={"Add new user to conversation"}
                                           open={addUserDialogOpen}
                                           setOpen={setAddUserDialogOpen}
