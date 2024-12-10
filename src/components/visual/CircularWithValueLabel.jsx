@@ -39,14 +39,14 @@ export function CircularWithValueLabel({validTo, validFrom, color, notifyExpired
     }
 
     useEffect(() => {
-        const timeout = remainingSeconds < 1500 ? 100 : 55_000
+        const timeout = remainingSeconds < 1500 ? 50 : 55_000
         const timer = setTimeout(() => {
             if (100 - percentage < 0) {
                 setProgress(0);
                 return;
             }
             setProgress(100 - percentage);
-        }, 1000 / 10);
+        }, timeout);
         return () => {
             clearInterval(timer);
         };

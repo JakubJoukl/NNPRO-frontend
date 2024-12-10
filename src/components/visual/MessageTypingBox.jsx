@@ -4,6 +4,8 @@ import IconButton from "@mui/material/IconButton";
 import SendIcon from '@mui/icons-material/Send';
 import {useRef, useState} from "react";
 import {useStompClient} from "react-stomp-hooks";
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 
 export function MessageTypingBox({onSendMessage}) {
     const [message, setMessage] = useState('');
@@ -11,14 +13,27 @@ export function MessageTypingBox({onSendMessage}) {
     const buttonRef = useRef(null);
     const [disappearing, setDisappearing] = useState(false);
     const [disapperanceTime, setDisapperanceTime] = useState(5);
+    const [showMenu, setShowMenu] = useState(false);
 
     const stompClient = useStompClient();
 
+    let menuClassNames = "p-3 flex flex-row justify-center items-center relative transition-all box-border overflow-hidden";
+    if (!showMenu) {
+        menuClassNames += " h-3";
+    }else{
+        menuClassNames += " h-20";
+    }
     return (<div>
-        <div className={"p-3 flex flex-row justify-center items-center"}>
-            <FormControlLabel control={<Switch value={disappearing} onChange={(e) => setDisappearing(e.target.value)}
-                                               size={"small"}/>} label="Dissapearing messages"/>
-            <TextField
+        <div className={menuClassNames}>
+            <IconButton className={"!absolute justify-self-start right-3 top-0 bottom-0"}
+                        onClick={() => setShowMenu((prevState) => !prevState)}>
+                {!showMenu && <KeyboardDoubleArrowUpIcon/>}
+                {showMenu && <KeyboardDoubleArrowDownIcon/>}
+            </IconButton>
+
+            {showMenu && <FormControlLabel control={<Switch value={disappearing} onChange={(e) => setDisappearing(e.target.value)}
+                                               size={"small"}/>} label="Dissapearing messages"/>}
+            {showMenu && <TextField
                 size={"small"}
                 type="number"
                 variant={"filled"}
@@ -29,7 +44,7 @@ export function MessageTypingBox({onSendMessage}) {
                     }
                 }}
                 onChange={(e) => {
-                    if(e.target.value < 0){
+                    if (e.target.value < 0) {
                         setDisapperanceTime(0);
                         return;
                     }
@@ -43,9 +58,9 @@ export function MessageTypingBox({onSendMessage}) {
                     }
                 }}
                 label="Dissaperance time (s)"
-            />
+            />}
         </div>
-        <Paper elevation={3} square className={"p-3 flex flex-col justify-center items-center"}>
+        <Paper elevation={3} square className={"p-3 flex flex-col justify-center items-center !relative"}>
             <TextareaAutosize ref={inputRef} className={"resize-none w-full outline-0 pr-32"} maxRows={6} minRows={3}
                               value={message}
                               onKeyDown={(e) => {
@@ -61,7 +76,7 @@ export function MessageTypingBox({onSendMessage}) {
                                   }
                                   return input;
                               })}/>
-            <IconButton ref={buttonRef} disabled={message.length <= 0} className={"!absolute right-24"}
+            <IconButton ref={buttonRef} disabled={message.length <= 0} className={"!absolute right-20"}
                         onClick={async () => {
                             const additionalParams = {};
                             if (disappearing && disapperanceTime) {
