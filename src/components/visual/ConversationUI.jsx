@@ -19,8 +19,6 @@ function ConversationUI({
                             openAlert,
                             closeAlert
                         }) {
-    const {token} = useContext(UserContext).userContext;
-
     function renderLoadErrorHeadings() {
         return <>
             {status?.isError && (<>

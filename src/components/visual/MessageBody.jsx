@@ -50,7 +50,7 @@ export default function MessageBody({messages, status, handleOnLoadMore, hasMore
     function _mapMessages() {
         return messages.map((message, index) => {
             if (message.sender === userContext.username) {
-                return (<MessageBubble key={message.id} messageText={message.message} sender={message.sender}
+                return (<MessageBubble key={message.id} messageText={message.decryptedMessage} sender={message.sender}
                                        arrivalTime={formatter.format(new Date(message.dateSend))}
                                        className={"w-fit ml-auto md:max-w-[60%] sm:max-w-[70%] max-w-[80%]"}
                                        textAlign={"right"}
@@ -63,7 +63,7 @@ export default function MessageBody({messages, status, handleOnLoadMore, hasMore
 
                 />);
             } else {
-                return (<MessageBubble key={message.id} messageText={message.message} sender={message.sender}
+                return (<MessageBubble key={message.id} messageText={message.decryptedMessage} sender={message.sender}
                                        arrivalTime={formatter.format(new Date(message.dateSend))}
                                        className={"w-fit md:max-w-[60%] sm:max-w-[70%] max-w-[80%]"}
                                        textAlign={"left"}

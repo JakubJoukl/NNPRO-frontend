@@ -66,6 +66,16 @@ export function ConversationToolBar({conversation, decryptedKey}) {
     }
 
     function renderLeaveConversationDialog() {
+        return <ControlledDraggableDialog title={"Leave conversation"}
+                                          Content={<LeaveConversationBody conversation={conversation}
+                                                                          onSubmit={() => setLeaveConversationDialogOpen(false)}/>}
+                                          dialogButtonContent={"Leave conversation"}
+                                          open={leaveConversationDialogOpen}
+                                          setOpen={setLeaveConversationDialogOpen}
+        />
+    }
+
+    function renderConversationUsersDialog() {
         return <ControlledDraggableDialog title={"Add new user to conversation"}
                                           Content={<LeaveConversationBody conversation={conversation}
                                                                           onSubmit={() => setLeaveConversationDialogOpen(false)}/>}
@@ -107,6 +117,7 @@ export function ConversationToolBar({conversation, decryptedKey}) {
                     {renderKeyFingerprintDialog()}
                     {renderAddUserDialog()}
                     {renderLeaveConversationDialog()}
+                    {renderConversationUsersDialog()}
                 </Paper>
             </div>
         </Toolbar>

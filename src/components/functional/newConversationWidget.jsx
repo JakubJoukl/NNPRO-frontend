@@ -7,7 +7,7 @@ import {
     generateSharedAESKey,
 } from "../helpers/cryptographyHelper.js";
 import {UserContext} from "../../context/userContext.js";
-import {AddedConversationContext} from "../../context/AddedConversationContext.js";
+import {ConversationContext} from "../../context/conversationContext.js";
 import {Navigate} from "react-router-dom";
 import {FormControlLabel, Switch} from "@mui/material";
 import {GroupConversation} from "./GroupConversation.jsx";
@@ -23,11 +23,15 @@ export default function NewConversationWidget({onUserClicked, deleteEnabled}) {
     );
     const {openAlert} = useContext(GlobalAlertContext);
     const {privateKey, publicKey, username} = useContext(UserContext).userContext;
-    const {setAddedConversation} = useContext(AddedConversationContext);
+    const {setConversations} = useContext(ConversationContext);
 
     // Need to also add conversation to context
     function callback(callDtoOut) {
-        setAddedConversation((prevState) => {
+
+        setConversations((prevState) => {
+            if (prevState.some(conversation => conversation.id === callDtoOut.id)) {
+                return prevState; // conversation is already present in list
+            }
             return [
                 ...prevState,
                 callDtoOut

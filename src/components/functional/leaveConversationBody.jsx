@@ -1,9 +1,12 @@
 import {useSubmitCall} from "../../hooks/useSubmitCall.js";
 import {LeaveConversationBodyUI} from "../visual/leaveConversationBodyUI.jsx";
 import {useNavigate} from "react-router-dom";
+import {useContext} from "react";
+import {ConversationContext} from "../../context/conversationContext.js";
 
-export function LeaveConversationBody(conversation, onSubmit) {
+export function LeaveConversationBody({conversation, onSubmit}) {
     const navigate = useNavigate();
+    const {setConversations} = useContext(ConversationContext);
 
     const {status, call} = useSubmitCall(
         "leaveConversation", "Conversation has been left successfully",
@@ -12,12 +15,18 @@ export function LeaveConversationBody(conversation, onSubmit) {
     );
 
     async function leaveConversation() {
-        call({
+        await call({
             conversationId: conversation.conversationId,
         });
     }
 
     function finishLeave() {
+        setConversations((prevState) => {
+            const newState = prevState.filter((iteratedConversation) => iteratedConversation.id !== conversation.conversationId);
+            return[
+                ...newState
+            ]
+        });
         onSubmit();
         navigate("/");
     }

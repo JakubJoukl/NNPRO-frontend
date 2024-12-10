@@ -5,7 +5,7 @@ import {UserContext} from "../context/userContext.js";
 export function useFetchCall(calledMethod, dtoIn, pageInfo, callback) {
     //calledMethod, dtoIn, pageInfo
     const [callInProgress, setCallInProgress] = useState(false);
-    const isError = useRef(false);
+    const [isError, setIsError] = useState(false);
     const {token} = useContext(UserContext).userContext;
     const [dtoOut, setDtoOut] = useState({});
     const calledDtoIn = dtoIn ?? {};
@@ -13,12 +13,15 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo, callback) {
     const [callFinished, setCallFinished] = useState(false);
 
     function resetErr() {
-        isError.current = false;
+        setIsError(false);
         setCallFinished(false);
         fetch();
     }
 
     function fetch() {
+        if(isError){
+            return;
+        }
         setCallFinished(false);
         if (!callInProgress) {
             setCallInProgress(true);
@@ -26,13 +29,14 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo, callback) {
                 setCallInProgress(false);
                 setCallFinished(true);
                 setDtoOut(response);
-                if (callback) {
+                if (typeof callback === "function") {
                     callback(response);
                 }
             }).catch((err) => {
+                console.error(err);
                 setDtoOut({});
                 setCallInProgress(false);
-                isError.current = true;
+                setIsError(false);
                 setCallFinished(false);
             });
         }
@@ -40,10 +44,12 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo, callback) {
 
     useEffect(() => {
         fetch();
-    }, [dtoIn, pageInfo, token]);
+    }, [dtoIn, pageInfo]);
     return {
         dtoOut,
         status: {callInProgress, isError: isError.current, callFinished: callFinished},
+        // (dtoOut.itemList) - check if item is array
+        hasMore: dtoOut.itemList && dtoOut?.total > ((pageInfo.pageIndex + 1) * pageInfo.pageSize),
         resetErr
     }
 }

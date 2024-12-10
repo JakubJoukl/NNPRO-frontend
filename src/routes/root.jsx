@@ -4,13 +4,13 @@ import {useState} from "react";
 import MainMenuBar from "../components/visual/mainMenuBar.jsx";
 import LoginRoute from "./loginRoute.jsx";
 import {Paper} from "@mui/material";
-import {AddedConversationContext} from "../context/AddedConversationContext.js";
+import {ConversationContext} from "../context/conversationContext.js";
 import {BASE_URI} from "../constants/calls.js";
 import {StompSessionProvider} from "react-stomp-hooks";
 
 export default function Root({routeName}) {
     const [loggedUser, setLoggedUser] = useState();
-    const [addedConversations, setAddedConversation] = useState([]);
+    const [conversations, setConversations] = useState([]);
 
     if (loggedUser?.token) {
         return (<UserContext.Provider value={{userContext: loggedUser, setUserContext: setLoggedUser}}>
@@ -21,14 +21,14 @@ export default function Root({routeName}) {
                 }}
                 //All options supported by @stomp/stompjs can be used here
             >
-                <AddedConversationContext.Provider value={{addedConversations, setAddedConversation}}>
+                <ConversationContext.Provider value={{conversations, setConversations}}>
                     <MainMenuBar routeHeader={routeName}>
                         <Paper variant={"outlined"}
                                className={"w-full flex-grow h-screen overflow-auto flex justify-center"}>
                             <Outlet/>
                         </Paper>
                     </MainMenuBar>
-                </AddedConversationContext.Provider>
+                </ConversationContext.Provider>
             </StompSessionProvider>
         </UserContext.Provider>);
     } else {

@@ -1,16 +1,21 @@
-import {useAccumulatedList} from "../../hooks/useAccumulatedList.js";
 import {ConversationListUI} from "../visual/ConversationListUI.jsx";
-import {useContext, useState} from "react";
-import {AddedConversationContext} from "../../context/AddedConversationContext.js";
+import {useContext, useMemo, useState} from "react";
+import {ConversationContext} from "../../context/conversationContext.js";
 import {useSubscription} from "react-stomp-hooks";
 import {UserContext} from "../../context/userContext.js";
+import {useFetchCall} from "../../hooks/useFetchCall.js";
 
 export function ConversationList() {
     const [pageInfo, setPageInfo] = useState({pageIndex: 0, pageSize: 50});
-    const {resultingList, status, resetErr} = useAccumulatedList('listUserConversation', {}, pageInfo, "id");
-    const {addedConversations} = useContext(AddedConversationContext);
-    const [stompConversations, setStompConversations] = useState([]);
-    const {userContext, setUserContext} = useContext(UserContext);
+    const inputDtoIn = useMemo(() => {
+        return {}
+    }, []);
+    const pageInfoMemo = useMemo(() => {
+        return {pageInfo}
+    }, [pageInfo]);
+    const {dtoOut, status, resetErr} = useFetchCall('listUserConversation', inputDtoIn, pageInfo, updateConversations);
+    const {conversations, setConversations} = useContext(ConversationContext);
+    const {userContext} = useContext(UserContext);
 
     function handleOnLoadMore() {
         if (status.isError && !status.callInProgress) {
@@ -26,20 +31,25 @@ export function ConversationList() {
         }
     }
 
-    // FIXME the CPU is gonna be like: WTF DUDE! - need MEMO
-    const finalConversations = [...resultingList, ...addedConversations, ...stompConversations].reduce((acc, conversation) => {
-        if (!acc.some(existingConversation => existingConversation.id === conversation.id)) {
-            acc.push(conversation);
-        }
-        return acc;
-    }, []);
+    function updateConversations(response) {
+        setConversations((prevState) => {
+            return [...(response?.itemList ?? []), ...prevState].reduce((acc, conversation) => {
+                if (!acc.some(existingConversation => existingConversation.id === conversation.id)) {
+                    acc.push(conversation);
+                }
+                return acc;
+            }, []);
+        });
+    }
 
     useSubscription(`/topic/newConversation/${userContext.username}`, async (message) => {
-        setStompConversations((prevState) => {
+        setConversations((prevState) => {
+            if (prevState.some(conversation => conversation.id === JSON.parse(message.body).id)) {
+                return prevState; // conversation is already present in list
+            }
             return [...prevState, JSON.parse(message.body)];
         });
     });
 
-
-    return <ConversationListUI status={status} conversations={finalConversations} handleOnLoadMore={handleOnLoadMore}/>
+    return <ConversationListUI status={status} conversations={conversations} handleOnLoadMore={handleOnLoadMore}/>
 }

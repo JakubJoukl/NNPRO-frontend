@@ -28,6 +28,7 @@ export function useSubmitCall(calledMethod, successMessage, errorMessage, callba
                     callback(response);
                 }
                 callFinished.current = true;
+                isError.current = false
             }).catch((err) => {
                 setCallInProgress(false);
                 isError.current = true;

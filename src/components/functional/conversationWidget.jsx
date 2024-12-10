@@ -10,13 +10,12 @@ export default function ConversationWidget({conversationId}) {
     const {userContext, setUserContext} = useContext(UserContext);
     const [decryptedKey, setDecryptedKey] = useState({});
     const {openAlert} = useContext(GlobalAlertContext);
-    const currentPrivateKeyRef = useRef(userContext.privateKey);
-    if (currentPrivateKeyRef.current !== userContext.privateKey) {
+
+    if(decryptedKey.decryptingPrivateKey !== userContext.privateKey) {
         decryptKey(dtoOut);
     }
 
     async function decryptKey(conversation) {
-        currentPrivateKeyRef.current = userContext.privateKey;
         const currentUserKeyContainer = conversation.users.find(
             (user) => userContext.username === user.username);
         const ivBuffer = new Uint8Array(Object.values(currentUserKeyContainer.iv));
@@ -28,10 +27,11 @@ export default function ConversationWidget({conversationId}) {
                 currentUserKeyContainer.encryptedSymmetricKey,
                 ivBuffer
             ));
+            aesKey.decryptingPrivateKey = userContext.privateKey;
             setDecryptedKey(aesKey);
         } catch (e) {
-            openAlert("Decrypting of private key failed!", "error");
-            setDecryptedKey({});
+            openAlert("Decrypting of symmetric key failed!", "error");
+            setDecryptedKey({decryptingPrivateKey: userContext.privateKey});
         }
     }
 

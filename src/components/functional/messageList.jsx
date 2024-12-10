@@ -19,6 +19,7 @@ export function MessageList({conversationId, decryptedKey}) {
     } = useFetchCall('listMessages', memoDtoIn, pageInfo);
     const [resultingList, setResultingList] = useState([]);
     const prevConversationId = useRef(conversationId);
+    const previousDecryptedKey = useRef(decryptedKey);
     let hasMore = true;
     if (dtoOut && dtoOut.pageInfo) {
         hasMore = dtoOut.pageInfo.pageSize * (dtoOut.pageInfo.pageIndex + 1) < dtoOut.pageInfo.total;
@@ -47,19 +48,20 @@ export function MessageList({conversationId, decryptedKey}) {
             decryptedContent = await decryptDataBySymetricKey(decryptedKey, message.message, iv);
         } catch (e) {
             isError = true;
+            console.error(e);
         }
         return {
             ...message,
             decrypted: !isError,
-            message: isError ? message.message : decryptedContent,
+            decryptedMessage: isError ? message.message : decryptedContent,
         }
     }
 
     useEffect(() => {
         (async () => {
             const newMessages = await Promise.all(dtoOut?.itemList?.map((async message => {
-                return await _decryptMessage(message);
-            })) ?? []);
+                    return await _decryptMessage(message);
+                })) ?? []);
 
             if (prevConversationId.current !== conversationId) {
                 prevConversationId.current = conversationId;
@@ -69,7 +71,15 @@ export function MessageList({conversationId, decryptedKey}) {
             if (newMessages.length === 0) {
                 return;
             }
-            setResultingList((prevState) => [...resultingList, ...newMessages.filter((newMessage) => !prevState.some(prevMessage => prevMessage.id === newMessage.id))]);
+
+            if(previousDecryptedKey.current !== decryptedKey){
+                previousDecryptedKey.current = decryptedKey;
+                const newlyDecrypted = await Promise.all(resultingList?.map((async message => {
+                    return await _decryptMessage(message);
+                })) ?? []);
+                setResultingList((prevState) => [...newlyDecrypted, ...newMessages.filter((newMessage) => !prevState.some(prevMessage => prevMessage.id === newMessage.id))]);
+            }
+            setResultingList((prevState) => [...prevState, ...newMessages.filter((newMessage) => !prevState.some(prevMessage => prevMessage.id === newMessage.id))]);
         })();
     }, [dtoOut?.itemList, decryptedKey, conversationId]); //resultingList sadly can't be in deps :( - as we also manipulate it by stomp
 
