@@ -4,6 +4,7 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {useSubmitCall} from "../../hooks/useSubmitCall.js";
+import {CircularWithValueLabel} from "./CircularWithValueLabel.jsx";
 
 
 export function MessageBubble({
@@ -16,9 +17,16 @@ export function MessageBubble({
                                   textAlign,
                                   refProp,
                                   messageId,
-                                  isOwn
+                                  isOwn,
+                                  validTo,
+                                  dateSend,
+                                  notifyExpired
                               }) {
-    const {status,call} = useSubmitCall('deleteMessage', "Message deleted.", "Deleting of message failed.");
+    const {status, call} = useSubmitCall('deleteMessage', "Message deleted.", "Deleting of message failed.");
+
+    function handleOnNotifyExpired() {
+        notifyExpired(messageId);
+    }
 
     return (
         <Card className={className} style={{backgroundColor: backgroundColor}} ref={refProp}>
@@ -29,10 +37,14 @@ export function MessageBubble({
                                     color={color}>
                             {arrivalTime}
                         </Typography>
-                        <Typography gutterBottom sx={{fontSize: 14}} textAlign={textAlign}
-                                    color={color}>
-                            <b>{sender}</b>
-                        </Typography>
+                        <div className={"flex flex-row justify-between min-h-8"}>
+                            <Typography gutterBottom sx={{fontSize: 14}} textAlign={textAlign}
+                                        color={color}>
+                                <b>{sender}</b>
+                            </Typography>
+                            {validTo && <CircularWithValueLabel color={color} validTo={Date.parse(validTo)}
+                                                                validFrom={Date.parse(dateSend)} notifyExpired={handleOnNotifyExpired}/>}
+                        </div>
                     </div>
                     {isOwn && <IconButton disabled={status.callInProgress} onClick={() =>
                         call({id: messageId}

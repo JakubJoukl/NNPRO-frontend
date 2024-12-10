@@ -11,7 +11,7 @@ export default function ConversationWidget({conversationId}) {
     const [decryptedKey, setDecryptedKey] = useState({});
     const {openAlert} = useContext(GlobalAlertContext);
 
-    if(decryptedKey.decryptingPrivateKey !== userContext.privateKey) {
+    if (decryptedKey.decryptingPrivateKey !== userContext.privateKey) {
         decryptKey(dtoOut);
     }
 
@@ -35,19 +35,24 @@ export default function ConversationWidget({conversationId}) {
         }
     }
 
-    async function onSendMessage(stompClient, message) {
+    async function onSendMessage(stompClient, message, additionalParams) {
         try {
             const {encryptedData, iv} = await encryptDataBySymmetricKey(decryptedKey.importedKey, message);
             //Send Message
             console.log("Stomp send!");
+            const messageBody = {
+                conversationId,
+                sender: userContext.username,
+                message: encryptedData,
+                iv
+            };
+            if (additionalParams.disapperanceTime) {
+                const milliseconds = additionalParams.disapperanceTime * 1000;
+                messageBody.validTo = new Date(Date.now() + milliseconds);
+            }
             stompClient.publish({
                 destination: "/app/sendMessageToConversation",
-                body: JSON.stringify({
-                    conversationId,
-                    sender: userContext.username,
-                    message: encryptedData,
-                    iv
-                }),
+                body: JSON.stringify(messageBody),
             });
         } catch (e) {
             openAlert("Sending of message failed.", "error")

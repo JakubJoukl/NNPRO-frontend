@@ -3,8 +3,6 @@ import {Alert, Button, CircularProgress} from "@mui/material";
 import {ConversationToolBar} from "./ConversationToolBar.jsx";
 import {MessageTypingBox} from "./MessageTypingBox.jsx";
 import {MessageList} from "../functional/messageList.jsx";
-import {useContext} from "react";
-import {UserContext} from "../../context/userContext.js";
 import withAlert from "./withAlert.jsx";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 

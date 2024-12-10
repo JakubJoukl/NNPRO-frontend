@@ -4,11 +4,13 @@ import List from "@mui/material/List";
 import {Alert, Button, CircularProgress, Paper, TextField, Typography} from "@mui/material";
 import ListItem from "@mui/material/ListItem";
 import {PopoverContactButton} from "./PopoverContactButton.jsx";
+import {UserContext} from "../../context/userContext.js";
 
 export function AddUserToConversationBodyUI({status, onSubmit, setFilterName, contacts, handleOnLoadMore, submitStatus}) {
     const timeoutRef = useRef();
     const {openAlert} = useContext(GlobalAlertContext);
     const [selectedUser, setSelectedUser] = useState(null);
+    const {userContext} = useContext(UserContext);
 
     function _renderSearchBody() {
         return (<List className={"w-full flex flex-col flex-grow overflow-auto border-t-2"}>
@@ -61,11 +63,12 @@ export function AddUserToConversationBodyUI({status, onSubmit, setFilterName, co
     if(selectedUser){
         return <div className={"flex flex-col items-center justify-center space-y-3"}>
             <Typography textAlign={"center"} className={"m-auto"} sx={{p: 1}}>Are you sure you want to add user <Typography color={"primary"} variant={"span"}>{
-                <b>{selectedUser.username}</b>}</Typography> to converstion?</Typography>
+                <b>{selectedUser.username}</b>}</Typography> to conversation?</Typography>
             <div className={"flex flex-row space-x-6"}>
                 <Button onClick={() => setSelectedUser(null)} variant={"outlined"}>Back to selection</Button>
-                <Button disabled={submitStatus?.callInProgress} onClick={() => onSubmit(selectedUser)} variant={"contained"}>Confirm</Button>
+                <Button disabled={submitStatus?.callInProgress || userContext.privateKey == null} onClick={() => onSubmit(selectedUser)} variant={"contained"}>Confirm</Button>
             </div>
+            {userContext.privateKey == null && <Typography color={"red"} textAlign={"center"} className={"m-auto"} sx={{p: 1}}>In order to add user, you have to upload your private key first.</Typography>}
         </div>
     }
 

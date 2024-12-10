@@ -7,12 +7,14 @@ import {ControlledDraggableDialog} from "./ControlledDraggableDialog.jsx";
 import {FingerprintDialogContent} from "./FingerprintDialogContent.jsx";
 import {AddUserToConversationBody} from "../functional/addUserToConversationBody.jsx";
 import {LeaveConversationBody} from "../functional/leaveConversationBody.jsx";
+import {ShowConversationParticipants} from "./showConversationParticipants.jsx";
 
 export function ConversationToolBar({conversation, decryptedKey}) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [fingerPrintDialogOpen, setFingerprintDialogOpen] = useState(false);
     const [addUserDialogOpen, setAddUserDialogOpen] = useState(false);
     const [leaveConversationDialogOpen, setLeaveConversationDialogOpen] = useState(false);
+    const [showParticipantsDialog, setShowParticipantsDialog] = useState(false);
 
 
     const handleMenuClick = (event) => {
@@ -36,6 +38,11 @@ export function ConversationToolBar({conversation, decryptedKey}) {
     function handleOnLeaveConversationOpen() {
         handleMenuClose();
         setLeaveConversationDialogOpen(true);
+    }
+
+    function handleOnShowParticipants() {
+        handleMenuClose();
+        setShowParticipantsDialog(true);
     }
 
     let menuClassNames = "absolute right-0 z-50 p-2"
@@ -76,12 +83,12 @@ export function ConversationToolBar({conversation, decryptedKey}) {
     }
 
     function renderConversationUsersDialog() {
-        return <ControlledDraggableDialog title={"Add new user to conversation"}
-                                          Content={<LeaveConversationBody conversation={conversation}
-                                                                          onSubmit={() => setLeaveConversationDialogOpen(false)}/>}
-                                          dialogButtonContent={"Add new user to conversation"}
-                                          open={leaveConversationDialogOpen}
-                                          setOpen={setLeaveConversationDialogOpen}
+        return <ControlledDraggableDialog title={"Conversation participants"}
+                                          Content={<ShowConversationParticipants users={conversation.users}
+                                                                          onSubmit={() => setShowParticipantsDialog(false)}/>}
+                                          dialogButtonContent={"Show conversation participants"}
+                                          open={showParticipantsDialog}
+                                          setOpen={setShowParticipantsDialog}
         />
     }
 
@@ -113,6 +120,7 @@ export function ConversationToolBar({conversation, decryptedKey}) {
                 >
                     <MenuItem color={"primary"} onClick={handleOnAddUserDialog}>Add user to conversation</MenuItem>
                     <MenuItem color={"primary"} onClick={handleOnShowFingerprints}>Show key fingerprints</MenuItem>
+                    <MenuItem color={"primary"} onClick={handleOnShowParticipants}>Show conversation participants</MenuItem>
                     <MenuItem color={"primary"} onClick={handleOnLeaveConversationOpen}>Leave conversation</MenuItem>
                     {renderKeyFingerprintDialog()}
                     {renderAddUserDialog()}

@@ -60,8 +60,8 @@ export function MessageList({conversationId, decryptedKey}) {
     useEffect(() => {
         (async () => {
             const newMessages = await Promise.all(dtoOut?.itemList?.map((async message => {
-                    return await _decryptMessage(message);
-                })) ?? []);
+                return await _decryptMessage(message);
+            })) ?? []);
 
             if (prevConversationId.current !== conversationId) {
                 prevConversationId.current = conversationId;
@@ -72,7 +72,7 @@ export function MessageList({conversationId, decryptedKey}) {
                 return;
             }
 
-            if(previousDecryptedKey.current !== decryptedKey){
+            if (previousDecryptedKey.current !== decryptedKey) {
                 previousDecryptedKey.current = decryptedKey;
                 const newlyDecrypted = await Promise.all(resultingList?.map((async message => {
                     return await _decryptMessage(message);
@@ -92,6 +92,12 @@ export function MessageList({conversationId, decryptedKey}) {
         setResultingList((prev) => prev.filter(message => message.id !== JSON.parse(stompMessage.body).id));
     });
 
+    function deleteExpiredMessage(messageId) {
+        setResultingList(prev => {
+            return prev.filter((message) => message.id !== messageId);
+        });
+    }
+
     return <MessageListUI handleOnLoadMore={handleOnLoadMore} status={status} messages={resultingList}
-                          hasMore={hasMore}/>;
+                          hasMore={hasMore} notifyExpired={deleteExpiredMessage}/>;
 }

@@ -5,7 +5,7 @@ import {useTheme} from '@mui/material/styles';
 import {useContext, useEffect, useRef} from "react";
 import {UserContext} from "../../context/userContext.js";
 
-export default function MessageBody({messages, status, handleOnLoadMore, hasMore, onDeleteMessage}) {
+export default function MessageBody({messages, status, handleOnLoadMore, hasMore, onDeleteMessage, notifyExpired}) {
     const theme = useTheme();
     const {userContext} = useContext(UserContext);
     const bottomElementRef = useRef(null);
@@ -58,21 +58,26 @@ export default function MessageBody({messages, status, handleOnLoadMore, hasMore
                                        refProp={index === messages.length - 1 ? lastMessageRef : null}
                                        color={message.decrypted ? "black" : theme.palette.messageError.secondary}
                                        onDeleteMessage={onDeleteMessage}
+                                       dateSend={message.dateSend}
                                        messageId={message.id}
+                                       validTo={message.validTo}
                                        isOwn={true}
-
+                                       notifyExpired={notifyExpired}
                 />);
             } else {
                 return (<MessageBubble key={message.id} messageText={message.decryptedMessage} sender={message.sender}
                                        arrivalTime={formatter.format(new Date(message.dateSend))}
+                                       dateSend={message.dateSend}
                                        className={"w-fit md:max-w-[60%] sm:max-w-[70%] max-w-[80%]"}
                                        textAlign={"left"}
                                        refProp={index === messages.length - 1 ? lastMessageRef : null}
                                        backgroundColor={message.decrypted ? theme.palette.messageForeign.main : theme.palette.messageError.main}
                                        color={message.decrypted ? "black" : theme.palette.messageError.secondary}
                                        onDeleteMessage={onDeleteMessage}
+                                       validTo={message.validTo}
                                        messageId={message.id}
                                        isOwn={false}
+                                       notifyExpired={notifyExpired}
                 />);
             }
         });
