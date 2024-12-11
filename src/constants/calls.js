@@ -62,8 +62,16 @@ async function listMessages(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/listMessages`, dtoIn, pageInfo, token);
 }
 
+async function resetPassword(dtoIn, pageInfo) {
+    return await callPost(`${BASE_URI}/resetPassword`, dtoIn, pageInfo);
+}
+
 async function deleteMessage(dtoIn, pageInfo, token) {
     return await callDelete(`${BASE_URI}/deleteMessage`, dtoIn, pageInfo, token);
+}
+
+async function newPassword(dtoIn, pageInfo) {
+    return await callPost(`${BASE_URI}/newPassword`, dtoIn, pageInfo);
 }
 
 async function callPost(uri, dtoIn, pageInfo, token) {
@@ -197,5 +205,7 @@ export {
     sendMessageToConversation,
     deleteMessage,
     addUserToConversation,
-    leaveConversation
+    leaveConversation,
+    resetPassword,
+    newPassword
 }

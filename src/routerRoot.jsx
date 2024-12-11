@@ -11,6 +11,7 @@ import {AccountManagementRoute} from "./routes/AccountManagementRoute.jsx";
 import {ContactsRoute} from "./routes/contactsRoute.jsx";
 import {NewConversationRoute} from "./routes/newConversationRoute.jsx";
 import {ConversationRoute} from "./routes/conversationRoute.jsx";
+import {ResetPasswordRoute} from "./routes/resetPasswordRoute.jsx";
 
 function RouterRoot({openAlert, closeAlert}) {
 
@@ -45,6 +46,11 @@ function RouterRoot({openAlert, closeAlert}) {
         {
             path: "/register",
             element: <RegisterRoute/>,
+            errorElement: <ErrorPage/>,
+        },
+        {
+            path: "/resetPassword",
+            element: <ResetPasswordRoute/>,
             errorElement: <ErrorPage/>,
         }
     ]);

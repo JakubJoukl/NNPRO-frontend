@@ -42,8 +42,8 @@ export default function LoginFormUI({onSubmit, disableLoginButton}) {
                                    label="Password" variant="filled" type="password"
                                    autoComplete="current-password" className={"w-full"}/>
                     </CardContent>
-                    <CardContent className={"flex flex-row-reverse"}>
-                        <Button disabled={disableLoginButton} size="large" variant="outlined"
+                    <CardContent className={"flex flex-col"}>
+                        <Button className={"w-fit !mr-auto !ml-auto"} disabled={disableLoginButton} size="large" variant="outlined"
                                 onClick={() => {
                                     handleReCaptchaVerify().then(() => {
                                         onSubmit(username, password, tokenRef.current);
@@ -51,6 +51,9 @@ export default function LoginFormUI({onSubmit, disableLoginButton}) {
                                 }}
                                 color={"primary"}
                         >Login</Button>
+                        <Typography variant="p">
+                            Forgotten password? <NavLink className={"inline-link"} to={"/resetPassword"}>Reset</NavLink>
+                        </Typography>
                     </CardContent>
                 </>
             </Card>
