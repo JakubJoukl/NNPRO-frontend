@@ -1,13 +1,14 @@
 import {ContactsList} from "../components/functional/contactsList.jsx";
 import {AddContactsDialog} from "../components/visual/addContactsDialog.jsx";
 import {useState} from "react";
-import {AddedContactsContext} from "../context/addedContactsContext.js";
+import {ContactsContext} from "../context/contactsContext.js";
 import {Typography} from "@mui/material";
 
 export function ContactsRoute() {
-    const [addedContacts, setAddedContacts] = useState({});
+    const [contacts, setContacts] = useState([]);
+    const [contactFilter, setContactFilter] = useState("");
 
-    return <AddedContactsContext.Provider value={{addedContacts, setAddedContacts}}>
+    return <ContactsContext.Provider value={{contacts, setContacts, contactFilter, setContactFilter}}>
         <div className={"text-center p-3"}>
             <Typography variant="h4" gutterBottom className={"w-full"} textAlign={"center"}>
                 Your contacts
@@ -15,5 +16,5 @@ export function ContactsRoute() {
             <AddContactsDialog/>
             <ContactsList deleteEnabled={true}/>
         </div>
-    </AddedContactsContext.Provider>
+    </ContactsContext.Provider>
 }

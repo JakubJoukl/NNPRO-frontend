@@ -6,8 +6,7 @@ import ListItemText from "@mui/material/ListItemText";
 import IconButton from "@mui/material/IconButton";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CheckIcon from '@mui/icons-material/Check';
-import {useContext, useRef} from "react";
-import {AddedContactsContext} from "../../context/addedContactsContext.js";
+import {useRef} from "react";
 
 export function UsersListUI({
                                 usersList,
@@ -15,10 +14,9 @@ export function UsersListUI({
                                 handleOnLoadMore,
                                 setFilteredName,
                                 handleOnAddContact,
-                                className
+                                addedContacts
                             }) {
     const timeoutRef = useRef();
-    const {addedContacts} = useContext(AddedContactsContext);
 
     function _getUserAddBody(user) {
         if (user.alreadyAdded || (addedContacts[user.username] && addedContacts[user.username]?.progress !== "inProgress")) {
