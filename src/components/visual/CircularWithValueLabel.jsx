@@ -5,8 +5,7 @@ export function CircularWithValueLabel({validTo, validFrom, color, notifyExpired
     const currentTime = Date.now(); // Current time in milliseconds
     const elapsed = currentTime - validFrom;
     const totalDuration = validTo - validFrom;
-    const percentage = (elapsed / totalDuration) * 100;
-    const [progress, setProgress] = useState(percentage);
+    const [progress, setProgress] = useState(100 - (elapsed / totalDuration) * 100);
     const expireEventSend = useRef(false);
     const remainingSeconds = Math.round((validTo - currentTime) / 1000);
 
@@ -40,17 +39,20 @@ export function CircularWithValueLabel({validTo, validFrom, color, notifyExpired
 
     useEffect(() => {
         const timeout = remainingSeconds < 1500 ? 50 : 55_000
+        const currentTime = Date.now();
+        const elapsed = currentTime - validFrom;
+        const totalDuration = validTo - validFrom;
         const timer = setTimeout(() => {
-            if (100 - percentage < 0) {
+            if (progress < 0) {
                 setProgress(0);
                 return;
             }
-            setProgress(100 - percentage);
+            setProgress(100 - (elapsed / totalDuration) * 100);
         }, timeout);
         return () => {
-            clearInterval(timer);
+            clearTimeout(timer);
         };
-    }, [percentage]);
+    }, [elapsed, progress, remainingSeconds, totalDuration, validFrom, validTo]);
 
     if (currentTime >= validTo && !expireEventSend.current) {
         notifyExpired();
