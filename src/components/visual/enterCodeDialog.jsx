@@ -1,20 +1,45 @@
 import {Button, TextField, Typography} from "@mui/material";
 import {useSubmitCall} from "../../hooks/useSubmitCall.js";
-import {useContext, useState} from "react";
+import {useCallback, useContext, useEffect, useRef, useState} from "react";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
+import {useGoogleReCaptcha} from "react-google-recaptcha-v3";
+import {useNavigate} from "react-router-dom";
 
 export function EnterCode({onBack}) {
-    // Fixme recapcha
     const {status, call} = useSubmitCall(
-        "newPassword", "Password has been reset successfully",
-        "Resetting of password failed. Is the code correct?"
+        "newPassword",
+        "Password has been reset successfully. Now try logging in!",
+        "Resetting of password failed. Is the code correct?",
+        callback
     );
+    const navigate = useNavigate();
     const {openAlert} = useContext(GlobalAlertContext);
     const [enteredUsername, setEnteredUsername] = useState("");
     const [enteredCode, setEnteredCode] = useState("");
     const [enteredPassword, setEnteredPassword] = useState("");
     const [enteredPassword2, setEnteredPassword2] = useState("");
     const [typingTimeouts, setTypingTimeouts] = useState({});
+    const {executeRecaptcha} = useGoogleReCaptcha();
+    const tokenRef = useRef('');
+    // Create an event handler so you can call the verification on button click event or form submit
+    const handleReCaptchaVerify = useCallback(async () => {
+        if (!executeRecaptcha) {
+            console.log('Execute recaptcha not yet available');
+            return;
+        }
+
+        tokenRef.current = await executeRecaptcha('codeDialog');
+        // Do whatever you want with the token
+    }, [executeRecaptcha]);
+
+    // You can use useEffect to trigger the verification as soon as the component being loaded
+    useEffect(() => {
+        handleReCaptchaVerify();
+    }, [handleReCaptchaVerify]);
+
+    function callback() {
+        navigate("/");
+    }
 
     // True means valid, false means invalid
     const [validations, setValidations] = useState({
@@ -113,9 +138,14 @@ export function EnterCode({onBack}) {
                 <Button disabled={status.callInProgress} className={"w-fit"} size="large" variant="outlined"
                         onClick={() => {
                             if (validations.enteredPassword && validations.enteredPassword2) {
-                                //handleReCaptchaVerify().then(() => {
-                                call({username: enteredUsername, password: enteredPassword, token: enteredCode});
-                                //});
+                                handleReCaptchaVerify().then(() => {
+                                    call({
+                                        username: enteredUsername,
+                                        password: enteredPassword,
+                                        token: enteredCode,
+                                        captchaToken: tokenRef.current
+                                    });
+                                });
                             } else {
                                 openAlert("Password is not filled correctly.", "error")
                             }

@@ -15,7 +15,8 @@ function ConversationUI({
                             conversationId,
                             decryptedKey,
                             openAlert,
-                            closeAlert
+                            closeAlert,
+                            hasBeenDeleted
                         }) {
     function renderLoadErrorHeadings() {
         return <>
@@ -43,6 +44,10 @@ function ConversationUI({
                 </ListItem>
             }
         </>;
+    }
+
+    if (hasBeenDeleted) {
+        return <Alert severity={"error"} variant={"filled"} square>Given conversation has been deleted.</Alert>
     }
 
     return (<GlobalAlertContext.Provider value={{openAlert, closeAlert}}>

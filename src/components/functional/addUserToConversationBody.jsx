@@ -25,7 +25,6 @@ export function AddUserToConversationBody({decryptedKey, conversation, onSubmit}
 
     async function addUserToConversation(selectedContact) {
         const {key, iv} = await encryptAesKey(privateKey, selectedContact.publicKey, decryptedKey);
-        console.log(conversation);
         call({
             conversationId: conversation.conversationId,
             user: selectedContact.username,

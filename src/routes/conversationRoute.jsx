@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 export function ConversationRoute() {
     let {id} = useParams();
 
-    return <div className={"text-center space-y-3 flex flex-col flex-grow overflow-auto"}>
+    return <div className={"text-center flex flex-col flex-grow overflow-auto"}>
         <ConversationWidget conversationId={id}/>
     </div>
 }

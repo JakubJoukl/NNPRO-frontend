@@ -51,5 +51,12 @@ export function ConversationList() {
         });
     });
 
+    useSubscription(`/topic/deleteConversation/${userContext.username}`, async (message) => {
+        setConversations((prevState) => {
+            const parsedMessage = JSON.parse(message.body);
+            return prevState.filter(conversation => conversation.id !== parsedMessage.id);
+        });
+    });
+
     return <ConversationListUI status={status} conversations={conversations} handleOnLoadMore={handleOnLoadMore}/>
 }

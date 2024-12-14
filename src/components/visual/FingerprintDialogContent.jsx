@@ -26,7 +26,7 @@ export function FingerprintDialogContent({conversation, className, decryptedKey}
 
             setKeyFingerprints({symmetricKey, publicKeys});
         })()
-    }, [decryptedKey, setKeyFingerprints]);
+    }, [conversation.users, decryptedKey, setKeyFingerprints]);
 
     return (<div className={"flex flex-col"}>
         <div>
