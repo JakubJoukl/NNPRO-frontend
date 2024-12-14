@@ -36,7 +36,7 @@ export function ContactsListUI({contacts, status, handleOnLoadMore, setFilteredN
     }
 
     //Maybe filtering textfield deserves to be in separate component?
-    return (<div className={"w-full flex flex-col items-center"}><List className={"w-full 2xl:w-[50rem] lg:w-[43rem]"}>
+    return (<div className={"w-full flex flex-col items-center"}><List className={"w-full"}>
         <TextField onChange={(e) => {
             if (timeoutRef.current) {
                 clearTimeout(timeoutRef.current);

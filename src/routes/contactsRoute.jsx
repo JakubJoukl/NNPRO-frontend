@@ -9,7 +9,7 @@ export function ContactsRoute() {
     const [contactFilter, setContactFilter] = useState("");
 
     return <ContactsContext.Provider value={{contacts, setContacts, contactFilter, setContactFilter}}>
-        <div className={"text-center p-3"}>
+        <div className={"text-center p-3 w-full 2xl:w-[50rem] lg:w-[43rem]"}>
             <Typography variant="h4" gutterBottom className={"w-full"} textAlign={"center"}>
                 Your contacts
             </Typography>
