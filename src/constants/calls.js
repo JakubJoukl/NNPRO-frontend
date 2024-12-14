@@ -38,6 +38,10 @@ async function addContact(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/addContact`, dtoIn, pageInfo, token);
 }
 
+async function removeContact(dtoIn, pageInfo, token) {
+    return await callDelete(`${BASE_URI}/removeContact`, dtoIn, pageInfo, token);
+}
+
 async function createConversation(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/createConversation`, dtoIn, pageInfo, token);
 }
@@ -207,5 +211,6 @@ export {
     addUserToConversation,
     leaveConversation,
     resetPassword,
-    newPassword
+    newPassword,
+    removeContact
 }

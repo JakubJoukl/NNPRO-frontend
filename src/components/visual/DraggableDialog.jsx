@@ -19,7 +19,7 @@ function PaperComponent(props) {
     );
 }
 
-export function DraggableDialog({Content, OpenDialogButton, dialogButtonContent, title, className, buttonOptions}) {
+export function DraggableDialog({Content, OpenDialogButton, dialogButtonContent, title, className, buttonOptions, onClose}) {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -28,6 +28,9 @@ export function DraggableDialog({Content, OpenDialogButton, dialogButtonContent,
 
     const handleClose = () => {
         setOpen(false);
+        if(typeof onClose === "function"){
+            onClose();
+        }
     };
 
     return (

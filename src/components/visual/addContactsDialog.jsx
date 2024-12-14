@@ -53,7 +53,9 @@ export function AddContactsDialog() {
                                                 addedContacts={addedContacts}
                             />}
                             dialogButtonContent={"Add new contact"}
-                            OpenDialogButton={Button} className={"h-128 max-h-screen"}
+                            OpenDialogButton={Button}
+                            className={"h-128 max-h-screen"}
                             buttonOptions={{variant: "outlined"}}
+                            onClose={() => setAddedContacts({})}
     />
 }
