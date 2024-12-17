@@ -2,7 +2,7 @@ import {useAccumulatedList} from "../../hooks/useAccumulatedList.js";
 import {useContext, useMemo, useState} from "react";
 import {AddUserToConversationBodyUI} from "../visual/AddUserConversationBodyUI.jsx";
 import {useSubmitCall} from "../../hooks/useSubmitCall.js";
-import {encryptAesKey, generateSharedAESKey} from "../helpers/cryptographyHelper.js";
+import {encryptAesKey} from "../helpers/cryptographyHelper.js";
 import {UserContext} from "../../context/userContext.js";
 
 export function AddUserToConversationBody({decryptedKey, conversation, onSubmit}) {

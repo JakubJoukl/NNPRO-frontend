@@ -57,7 +57,7 @@ export function PrivateKeyInputUI() {
                                     privateKey: parsedKey,
                                 }
                             });
-                            openAlert("Key uploaded successfully.");
+                            openAlert("Private key uploaded successfully.");
                         } catch (e) {
                             openAlert("Importing of private key was not successful. Verify that key is valid private key in P-521 format.","error");
                         }

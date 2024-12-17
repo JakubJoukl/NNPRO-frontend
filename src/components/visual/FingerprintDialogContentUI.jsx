@@ -1,16 +1,19 @@
 import {Typography} from "@mui/material";
-import {useContext, useEffect, useState} from "react";
-import {UserContext} from "../../context/userContext.js";
-import {base64ToUint8Array, computeFingerprint, importPublicKey} from "../helpers/cryptographyHelper.js";
-import * as React from "react";
+import {useEffect, useRef, useState} from "react";
+import {computeFingerprint, importPublicKey} from "../helpers/cryptographyHelper.js";
 
-export function FingerprintDialogContent({conversation, className, decryptedKey}) {
-    const {userContext, setUserContext} = useContext(UserContext);
+export function FingerprintDialogContentUI({conversation, decryptedKey, encryptInProgress}) {
     const [fingerPrints, setKeyFingerprints] = useState({});
 
     useEffect(() => {
         (async () => {
-            const symmetricKey = await computeFingerprint(decryptedKey);
+            let symmetricKey;
+            try {
+                 symmetricKey = await computeFingerprint(decryptedKey);
+            }catch (e) {
+                symmetricKey = "Failed to calculate!"
+                console.error(e);
+            }
             const publicKeys = [];
             for (const user of conversation.users) {
                 let fingerPrint = "Failed to compute fingerprint!";
@@ -20,6 +23,7 @@ export function FingerprintDialogContent({conversation, className, decryptedKey}
                     fingerPrint = await computeFingerprint(rawKey);
                 } catch (e) {
                     console.error(e);
+                    fingerPrint = "Failed to calculate!"
                 }
                 publicKeys.push({key: fingerPrint, username: user.username});
             }

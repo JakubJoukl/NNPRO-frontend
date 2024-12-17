@@ -1,14 +1,12 @@
 import {useContext, useRef, useState} from "react";
-import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 import List from "@mui/material/List";
-import {Alert, Button, CircularProgress, Paper, TextField, Typography} from "@mui/material";
+import {Alert, Button, CircularProgress, TextField, Typography} from "@mui/material";
 import ListItem from "@mui/material/ListItem";
 import {PopoverContactButton} from "./PopoverContactButton.jsx";
 import {UserContext} from "../../context/userContext.js";
 
 export function AddUserToConversationBodyUI({status, onSubmit, setFilterName, contacts, handleOnLoadMore, submitStatus}) {
     const timeoutRef = useRef();
-    const {openAlert} = useContext(GlobalAlertContext);
     const [selectedUser, setSelectedUser] = useState(null);
     const {userContext} = useContext(UserContext);
 

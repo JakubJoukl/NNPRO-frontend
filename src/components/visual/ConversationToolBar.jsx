@@ -4,10 +4,11 @@ import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {useState} from "react";
 import {ControlledDraggableDialog} from "./ControlledDraggableDialog.jsx";
-import {FingerprintDialogContent} from "./FingerprintDialogContent.jsx";
+import {FingerprintDialogContentUI} from "./FingerprintDialogContentUI.jsx";
 import {AddUserToConversationBody} from "../functional/addUserToConversationBody.jsx";
 import {LeaveConversationBody} from "../functional/leaveConversationBody.jsx";
 import {ShowConversationParticipants} from "./showConversationParticipants.jsx";
+import {RotateSymmetricKey} from "../functional/RotateSymmetricKey.jsx";
 
 export function ConversationToolBar({conversation, decryptedKey}) {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -15,7 +16,9 @@ export function ConversationToolBar({conversation, decryptedKey}) {
     const [addUserDialogOpen, setAddUserDialogOpen] = useState(false);
     const [leaveConversationDialogOpen, setLeaveConversationDialogOpen] = useState(false);
     const [showParticipantsDialog, setShowParticipantsDialog] = useState(false);
+    const [rotateSymmetricKeyDialogOpen, setRotateSymmetricKeyDialogOpen] = useState(false);
 
+    //TODO success message
 
     const handleMenuClick = (event) => {
         setMenuOpen((prevState => !prevState));
@@ -45,6 +48,11 @@ export function ConversationToolBar({conversation, decryptedKey}) {
         setShowParticipantsDialog(true);
     }
 
+    function handleOnRotateSymmetricKey() {
+        handleMenuClose();
+        setRotateSymmetricKeyDialogOpen(true);
+    }
+
     let menuClassNames = "absolute right-0 z-50 p-2"
     if (!menuOpen) {
         menuClassNames += " invisible hidden"
@@ -52,9 +60,9 @@ export function ConversationToolBar({conversation, decryptedKey}) {
 
     function renderKeyFingerprintDialog() {
         return <ControlledDraggableDialog title={"Current fingerprints"}
-                                          Content={<FingerprintDialogContent conversation={conversation}
-                                                                             className={"min-h-128 max-h-screen"}
-                                                                             decryptedKey={decryptedKey}/>}
+                                          Content={<FingerprintDialogContentUI conversation={conversation}
+                                                                               className={"min-h-128 max-h-screen"}
+                                                                               decryptedKey={decryptedKey}/>}
                                           dialogButtonContent={"Fingerprints"}
                                           open={fingerPrintDialogOpen}
                                           setOpen={setFingerprintDialogOpen}
@@ -85,10 +93,22 @@ export function ConversationToolBar({conversation, decryptedKey}) {
     function renderConversationUsersDialog() {
         return <ControlledDraggableDialog title={"Conversation participants"}
                                           Content={<ShowConversationParticipants users={conversation.users}
-                                                                          onSubmit={() => setShowParticipantsDialog(false)}/>}
+                                                                                 onSubmit={() => setShowParticipantsDialog(false)}/>}
                                           dialogButtonContent={"Show conversation participants"}
                                           open={showParticipantsDialog}
                                           setOpen={setShowParticipantsDialog}
+        />
+    }
+
+    function renderRotateMasterKeysDialog() {
+        return <ControlledDraggableDialog title={"Rotate symmetric key"}
+                                          Content={<RotateSymmetricKey conversation={conversation}
+                                                                       className={"min-h-128 max-h-screen"}
+                                                                       decryptedKey={decryptedKey}
+                                                                       onSubmit={() => setRotateSymmetricKeyDialogOpen(false)}/>}
+                                          dialogButtonContent={"Rotate symmetric key"}
+                                          open={rotateSymmetricKeyDialogOpen}
+                                          setOpen={setRotateSymmetricKeyDialogOpen}
         />
     }
 
@@ -120,12 +140,15 @@ export function ConversationToolBar({conversation, decryptedKey}) {
                 >
                     <MenuItem color={"primary"} onClick={handleOnAddUserDialog}>Add user to conversation</MenuItem>
                     <MenuItem color={"primary"} onClick={handleOnShowFingerprints}>Show key fingerprints</MenuItem>
-                    <MenuItem color={"primary"} onClick={handleOnShowParticipants}>Show conversation participants</MenuItem>
+                    <MenuItem color={"primary"} onClick={handleOnShowParticipants}>Show conversation
+                        participants</MenuItem>
+                    <MenuItem color={"primary"} onClick={handleOnRotateSymmetricKey}>Rotate symmetric key</MenuItem>
                     <MenuItem color={"primary"} onClick={handleOnLeaveConversationOpen}>Leave conversation</MenuItem>
                     {renderKeyFingerprintDialog()}
                     {renderAddUserDialog()}
                     {renderLeaveConversationDialog()}
                     {renderConversationUsersDialog()}
+                    {renderRotateMasterKeysDialog()}
                 </Paper>
             </div>
         </Toolbar>
