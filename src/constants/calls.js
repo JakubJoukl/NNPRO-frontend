@@ -62,16 +62,16 @@ async function sendMessageToConversation(dtoIn, pageInfo, token) {
     return await callGetWithPathParam(`${BASE_URI}/sendMessageToConversation`, dtoIn, token);
 }
 
+async function rotateKeys(dtoIn, pageInfo, token) {
+    return await callPost(`${BASE_URI}/rotateKeys`, dtoIn, pageInfo, token);
+}
+
 async function listMessages(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/listMessages`, dtoIn, pageInfo, token);
 }
 
 async function resetPassword(dtoIn, pageInfo) {
     return await callPost(`${BASE_URI}/resetPassword`, dtoIn, pageInfo);
-}
-
-async function rotateKeys(dtoIn, pageInfo) {
-    return await callPost(`${BASE_URI}/rotateKeys`, dtoIn, pageInfo);
 }
 
 async function deleteMessage(dtoIn, pageInfo, token) {
