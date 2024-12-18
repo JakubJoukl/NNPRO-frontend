@@ -5,9 +5,9 @@ import {RotateSymmetricKeyUI} from "../visual/RotateSymmetricKeyUI.jsx";
 import {encryptAesKey, generateSharedAESKey} from "../helpers/cryptographyHelper.js";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 
-export function RotateSymmetricKey({conversation, className, decryptedKey}) {
+export function RotateSymmetricKey({conversation, className, decryptedKey, fetchConversation}) {
     const {status, call, dtoOut} = useSubmitCall(
-        "rotateSymmetricKey", "Symmetric key rotated! In the name of security, I will encrypt you!",
+        "rotateKeys", "Symmetric key rotated! In the name of security, I will encrypt you!",
         "Rotation of symmetric key failed due to unknown error.",
         onRotateDone
     );
@@ -17,6 +17,7 @@ export function RotateSymmetricKey({conversation, className, decryptedKey}) {
 
     function onRotateDone() {
         setEncryptInProgress(false);
+        fetchConversation();
     }
 
     async function handleOnSubmit() {
@@ -33,7 +34,7 @@ export function RotateSymmetricKey({conversation, className, decryptedKey}) {
                         iv,
                         cipheringPublicKey: userContext.publicKey
                     }
-                )
+                );
             } catch (e) {
                 console.log(e);
                 openAlert(`Rotation of symmetric key failed due to failed key encryption for user ${participant.username}`,"error")
@@ -42,7 +43,7 @@ export function RotateSymmetricKey({conversation, className, decryptedKey}) {
         }
         setEncryptInProgress(false);
         call({
-            conversationId: conversation.id,
+            conversationId: conversation.conversationId,
             users
         }, undefined);
     }

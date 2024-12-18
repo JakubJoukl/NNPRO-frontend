@@ -70,8 +70,8 @@ async function resetPassword(dtoIn, pageInfo) {
     return await callPost(`${BASE_URI}/resetPassword`, dtoIn, pageInfo);
 }
 
-async function rotateSymmetricKey(dtoIn, pageInfo) {
-    return await callPost(`${BASE_URI}/rotateSymmetricKey`, dtoIn, pageInfo);
+async function rotateKeys(dtoIn, pageInfo) {
+    return await callPost(`${BASE_URI}/rotateKeys`, dtoIn, pageInfo);
 }
 
 async function deleteMessage(dtoIn, pageInfo, token) {
@@ -217,5 +217,5 @@ export {
     resetPassword,
     newPassword,
     removeContact,
-    rotateSymmetricKey
+    rotateKeys
 }

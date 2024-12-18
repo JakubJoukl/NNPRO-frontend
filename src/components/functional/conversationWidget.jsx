@@ -8,16 +8,18 @@ import {useSubscription} from "react-stomp-hooks";
 import * as Calls from "../../constants/calls.js";
 
 export default function ConversationWidget({conversationId}) {
-    const {dtoOut, status, resetErr} = useFetchCall("getConversation", conversationId, null, decryptKey);
+    const {dtoOut, status, resetErr, fetch} = useFetchCall("getConversation", conversationId, null, decryptKey);
     const {userContext} = useContext(UserContext);
     const [decryptedKey, setDecryptedKey] = useState({});
     const {openAlert} = useContext(GlobalAlertContext);
     const [hasBeenDeleted, setHasBeenDeleted] = useState(false);
     const [asyncLoadedConversation, setAsyncLoadedConversation] = useState(null);
 
-    if (decryptedKey.decryptingPrivateKey !== userContext.privateKey) {
-        decryptKey(dtoOut);
-    }
+    useEffect(() => {
+        if (decryptedKey.decryptingPrivateKey !== userContext.privateKey) {
+            decryptKey(dtoOut);
+        }
+    }, [decryptKey, decryptedKey, dtoOut, userContext.privateKey]);
 
     useEffect(() => {
         setHasBeenDeleted(false);
@@ -68,6 +70,10 @@ export default function ConversationWidget({conversationId}) {
         }
     }
 
+    useSubscription(`/topic/rotateKey/${userContext.username}`, () => {
+        openAlert("Unable to send message. You need to rotate conversation key.");
+    });
+
     useSubscription(`/topic/deleteConversation/${userContext.username}`, async (message) => {
         try {
             const parsedMessage = JSON.parse(message.body);
@@ -99,7 +105,13 @@ export default function ConversationWidget({conversationId}) {
         }
     });
 
+    function handleFetch() {
+        fetch(conversationId);
+    }
+
     return <ConversationUI status={status} conversation={asyncLoadedConversation ?? dtoOut} reseErr={resetErr}
                            onSendMessage={onSendMessage}
-                           conversationId={conversationId} decryptedKey={decryptedKey} hasBeenDeleted={hasBeenDeleted}/>
+                           conversationId={conversationId}
+                           fetchConversation={handleFetch}
+                           decryptedKey={decryptedKey} hasBeenDeleted={hasBeenDeleted}/>
 }

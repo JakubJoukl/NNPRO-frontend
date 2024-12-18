@@ -16,7 +16,8 @@ function ConversationUI({
                             decryptedKey,
                             openAlert,
                             closeAlert,
-                            hasBeenDeleted
+                            hasBeenDeleted,
+                            fetchConversation
                         }) {
     function renderLoadErrorHeadings() {
         return <>
@@ -53,7 +54,7 @@ function ConversationUI({
     return (<GlobalAlertContext.Provider value={{openAlert, closeAlert}}>
         <div className={"flex flex-col flex-grow overflow-auto"}>{renderLoadErrorHeadings()}
             {(!status.isError && status.callFinished) && <>
-                <ConversationToolBar conversation={conversation} decryptedKey={decryptedKey.rawKey}/>
+                <ConversationToolBar conversation={conversation} decryptedKey={decryptedKey.rawKey} fetchConversation={fetchConversation}/>
                 <MessageList conversationId={conversationId} decryptedKey={decryptedKey.importedKey}/>
                 <MessageTypingBox onSendMessage={onSendMessage}/>
             </>}

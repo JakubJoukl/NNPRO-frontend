@@ -10,7 +10,7 @@ import {LeaveConversationBody} from "../functional/leaveConversationBody.jsx";
 import {ShowConversationParticipants} from "./showConversationParticipants.jsx";
 import {RotateSymmetricKey} from "../functional/RotateSymmetricKey.jsx";
 
-export function ConversationToolBar({conversation, decryptedKey}) {
+export function ConversationToolBar({conversation, decryptedKey, fetchConversation}) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [fingerPrintDialogOpen, setFingerprintDialogOpen] = useState(false);
     const [addUserDialogOpen, setAddUserDialogOpen] = useState(false);
@@ -105,7 +105,8 @@ export function ConversationToolBar({conversation, decryptedKey}) {
                                           Content={<RotateSymmetricKey conversation={conversation}
                                                                        className={"min-h-128 max-h-screen"}
                                                                        decryptedKey={decryptedKey}
-                                                                       onSubmit={() => setRotateSymmetricKeyDialogOpen(false)}/>}
+                                                                       onSubmit={() => setRotateSymmetricKeyDialogOpen(false)}
+                                                                       fetchConversation={fetchConversation}/>}
                                           dialogButtonContent={"Rotate symmetric key"}
                                           open={rotateSymmetricKeyDialogOpen}
                                           setOpen={setRotateSymmetricKeyDialogOpen}

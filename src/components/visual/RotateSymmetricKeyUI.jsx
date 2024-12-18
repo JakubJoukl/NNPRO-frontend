@@ -40,7 +40,7 @@ export function RotateSymmetricKeyUI({conversation, className, decryptedKey, onS
 
     return (<div className={"flex flex-col items-start justify-start"}>
             <Typography variant="p" gutterBottom color={"red"}>
-                IMPORTANT - Rotation of symmetric key will make old messages undecipherable.
+                IMPORTANT - Rotation of symmetric key will make old messages indecipherable.
             </Typography>
             <div className={"w-full flex flex-row justify-center"}>
                 {renderActionButtons()}

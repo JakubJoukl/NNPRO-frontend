@@ -50,6 +50,7 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo, callback) {
         status: {callInProgress, isError: isError.current, callFinished: callFinished},
         // (dtoOut.itemList) - check if item is array
         hasMore: dtoOut.itemList && dtoOut?.total > ((pageInfo.pageIndex + 1) * pageInfo.pageSize),
-        resetErr
+        resetErr,
+        fetch,
     }
 }
