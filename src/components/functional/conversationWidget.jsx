@@ -66,15 +66,23 @@ export default function ConversationWidget({conversationId}) {
                 body: JSON.stringify(messageBody),
             });
         } catch (e) {
+            console.log(e);
             openAlert("Sending of message failed.", "error")
         }
     }
 
-    useSubscription(`/topic/rotateKey/${userContext.username}`, () => {
-        openAlert("Unable to send message. You need to rotate conversation key.");
+    useSubscription(`/topic/rotateKey/${userContext.username}`, (message) => {
+        const parsedMessage = JSON.parse(message.body);
+        if (Number(conversationId) === parsedMessage.id) {
+            openAlert("Unable to send message. You need to rotate conversation keys");
+        }
     });
 
-    useSubscription(`/topic/deleteConversation/${userContext.username}`, async (message) => {
+    useSubscription(`/topic/keyUpdated/${conversationId}`, async (message) => {
+        handleFetch();
+    });
+
+    useSubscription(`/topic/deleteConversation/${userContext.username}`, (message) => {
         try {
             const parsedMessage = JSON.parse(message.body);
             if (Number(conversationId) === parsedMessage.id) {

@@ -4,7 +4,7 @@ import {FingerprintDialogContentUI} from "./FingerprintDialogContentUI.jsx";
 import {useContext, useRef, useState} from "react";
 import {UserContext} from "../../context/userContext.js";
 
-export function RotateSymmetricKeyUI({conversation, className, decryptedKey, onSubmit}) {
+export function RotateSymmetricKeyUI({conversation, className, decryptedKey, onSubmit, encryptInProgress}) {
     const [inConfirmation, setInConfirmation] = useState(false);
     const [confirmEnabled, setConfirmEnabled] = useState(false);
     const timeOutRef = useRef();
@@ -20,7 +20,7 @@ export function RotateSymmetricKeyUI({conversation, className, decryptedKey, onS
                     }, 1000);
                 }}
                         variant={"contained"}
-                        disabled={userContext.privateKey == null}
+                        disabled={userContext.privateKey == null || encryptInProgress}
                         size={"large"}>Rotate</Button>);
         } else {
             return (<div className={"space-x-3"}>

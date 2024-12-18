@@ -62,5 +62,4 @@ function ConversationUI({
     </GlobalAlertContext.Provider>)
 }
 
-const WrappedConversationUI = withAlert(ConversationUI);
-export {WrappedConversationUI as ConversationUI}
+export {ConversationUI}

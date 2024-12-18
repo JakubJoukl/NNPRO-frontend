@@ -4,6 +4,7 @@ import {useSubmitCall} from "../../hooks/useSubmitCall.js";
 import {RotateSymmetricKeyUI} from "../visual/RotateSymmetricKeyUI.jsx";
 import {encryptAesKey, generateSharedAESKey} from "../helpers/cryptographyHelper.js";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
+import * as Calls from "../../constants/calls.js";
 
 export function RotateSymmetricKey({conversation, className, decryptedKey, fetchConversation}) {
     const {status, call, dtoOut} = useSubmitCall(
@@ -22,12 +23,13 @@ export function RotateSymmetricKey({conversation, className, decryptedKey, fetch
 
     async function handleOnSubmit() {
         setEncryptInProgress(true);
-        const users = [];
         const {aesKey, rawKey} = await generateSharedAESKey();
-        for (const participant of conversation.users) {
+        const listedConversationUsers = await Calls.listUsersInConversation({id: conversation.conversationId}, null, userContext.token);
+        const encryptedUsers = [];
+        for (const participant of listedConversationUsers) {
             try {
-                const {key, iv} = await encryptAesKey(userContext.privateKey, participant.cipheringPublicKey, rawKey);
-                users.push(
+                const {key, iv} = await encryptAesKey(userContext.privateKey, participant.publicKey, rawKey);
+                encryptedUsers.push(
                     {
                         username: participant.username,
                         encryptedSymmetricKey: key,
@@ -37,18 +39,19 @@ export function RotateSymmetricKey({conversation, className, decryptedKey, fetch
                 );
             } catch (e) {
                 console.log(e);
-                openAlert(`Rotation of symmetric key failed due to failed key encryption for user ${participant.username}`,"error")
+                openAlert(`Rotation of symmetric key failed due to failed key encryption for user ${participant.username}`, "error")
                 return;
             }
         }
         setEncryptInProgress(false);
         call({
             conversationId: conversation.conversationId,
-            users
+            users: encryptedUsers
         }, undefined);
     }
 
 
     return <RotateSymmetricKeyUI conversation={conversation} className={className} decryptedKey={decryptedKey}
-                                 encryptInProgress={encryptInProgress || status.callInProgress} onSubmit={() => handleOnSubmit()}/>
+                                 encryptInProgress={encryptInProgress || status.callInProgress}
+                                 onSubmit={() => handleOnSubmit()}/>
 }

@@ -66,6 +66,10 @@ async function rotateKeys(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/rotateKeys`, dtoIn, pageInfo, token);
 }
 
+async function listUsersInConversation(dtoIn, pageInfo, token) {
+    return await callPost(`${BASE_URI}/listUsersInConversation`, dtoIn, pageInfo, token);
+}
+
 async function listMessages(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/listMessages`, dtoIn, pageInfo, token);
 }
@@ -217,5 +221,6 @@ export {
     resetPassword,
     newPassword,
     removeContact,
-    rotateKeys
+    rotateKeys,
+    listUsersInConversation
 }
