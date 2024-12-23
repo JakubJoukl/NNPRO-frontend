@@ -24,7 +24,7 @@ export function AddAdminDialog() {
         });
 
         Calls.addAdmin({username: contact.username}, null, token).then((_) => {
-                openAlert(`Admin "${contact.username}" successfully added.`);
+                openAlert(`Administrator "${contact.username}" successfully added.`);
                 setAddedAdmins((prevState) => {
                     return {
                         ...prevState, [contact.username]: {
@@ -38,7 +38,7 @@ export function AddAdminDialog() {
             }
         ).catch((err) => {
             console.log(err);
-            openAlert(`Adding of admin "${contact.username}" failed.`, "error");
+            openAlert(`Adding of administrator "${contact.username}" failed.`, "error");
             setAddedAdmins((prevState) => {
                 delete prevState[contact.username];
                 return {
@@ -52,7 +52,7 @@ export function AddAdminDialog() {
                             Content={<UsersList handleOnAddUser={handleOnAddAdmin}
                                                 className={"h-128 max-h-screen"}
                                                 addedUsers={addedAdmins}
-                                                userIsAddedFunction={(user) => AuthorizationHelper.userIsAuthorities(user.claims ?? [])}
+                                                userIsAddedFunction={(user) => AuthorizationHelper.userIsAuthorities(user.authorities ?? [])}
                             />}
                             dialogButtonContent={"Add new administrator"}
                             OpenDialogButton={Button}
