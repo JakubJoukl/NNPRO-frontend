@@ -3,9 +3,6 @@ import {Alert, Button, CircularProgress} from "@mui/material";
 import {ConversationToolBar} from "./ConversationToolBar.jsx";
 import {MessageTypingBox} from "./MessageTypingBox.jsx";
 import {MessageList} from "../functional/messageList.jsx";
-import withAlert from "./withAlert.jsx";
-import {GlobalAlertContext} from "../../context/globalAlertContext.js";
-
 
 function ConversationUI({
                             conversation,
@@ -14,8 +11,6 @@ function ConversationUI({
                             onSendMessage,
                             conversationId,
                             decryptedKey,
-                            openAlert,
-                            closeAlert,
                             hasBeenDeleted,
                             fetchConversation
                         }) {
@@ -51,15 +46,14 @@ function ConversationUI({
         return <Alert severity={"error"} variant={"filled"} square>Given conversation has been deleted.</Alert>
     }
 
-    return (<GlobalAlertContext.Provider value={{openAlert, closeAlert}}>
-        <div className={"flex flex-col flex-grow overflow-auto"}>{renderLoadErrorHeadings()}
-            {(!status.isError && status.callFinished) && <>
-                <ConversationToolBar conversation={conversation} decryptedKey={decryptedKey.rawKey} fetchConversation={fetchConversation}/>
-                <MessageList conversationId={conversationId} decryptedKey={decryptedKey.importedKey}/>
-                <MessageTypingBox onSendMessage={onSendMessage}/>
-            </>}
-        </div>
-    </GlobalAlertContext.Provider>)
+    return (<div className={"flex flex-col flex-grow overflow-auto"}>{renderLoadErrorHeadings()}
+        {(!status.isError && status.callFinished) && <>
+            <ConversationToolBar conversation={conversation} decryptedKey={decryptedKey.rawKey}
+                                 fetchConversation={fetchConversation}/>
+            <MessageList conversationId={conversationId} decryptedKey={decryptedKey.importedKey}/>
+            <MessageTypingBox onSendMessage={onSendMessage}/>
+        </>}
+    </div>)
 }
 
 export {ConversationUI}
