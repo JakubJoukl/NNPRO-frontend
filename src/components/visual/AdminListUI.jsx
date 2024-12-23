@@ -7,7 +7,6 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useContext, useRef, useState} from "react";
 import {ControlledDraggableDialog} from "./ControlledDraggableDialog.jsx";
-import {DeleteContactBody} from "./deleteContactBody.jsx";
 import {useSubmitCall} from "../../hooks/useSubmitCall.js";
 import {AdminWidgetContext} from "../../context/adminWidgetContext.js";
 import {DeleteAdminBody} from "./DeleteAdminBody.jsx";
@@ -17,8 +16,8 @@ export function AdminListUI({admins, status, handleOnLoadMore, setFilteredName})
     const [currentlyDeletedContact, setCurrentlyDeletedContact] = useState(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const {status: deleteStatus, call} = useSubmitCall(
-        "removeAdmin", "Admin has been removed",
-        "Deleting of admin failed",
+        "removeAdmin", "Administrator has been removed",
+        "Deleting of administrator failed",
         handleOnDeleteCallback
     );
     const {setAdmins} = useContext(AdminWidgetContext);

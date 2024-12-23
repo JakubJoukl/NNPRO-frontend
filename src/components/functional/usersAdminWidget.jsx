@@ -34,7 +34,7 @@ export function AdminWidget() {
                     <BannedUsersAdminList/>
                 </div>
             </div>
-            <Typography variant="h5">Admins</Typography>
+            <Typography variant="h5">Administrators</Typography>
             <AdminManagement/>
         </div>
     </AdminPanelUserContext.Provider>

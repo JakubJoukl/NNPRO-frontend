@@ -18,7 +18,7 @@ export function AdminPanelRoute() {
             variant="filled"
             sx={{width: '100%'}}
         >
-            User is not authorized to see admin panel.
+            User is not authorized to see administrator panel.
         </Alert>}
     </div>
 };

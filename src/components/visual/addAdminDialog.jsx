@@ -48,13 +48,13 @@ export function AddAdminDialog() {
         });
     }
 
-    return <DraggableDialog title={"Add new admin"}
+    return <DraggableDialog title={"Add new administrator"}
                             Content={<UsersList handleOnAddUser={handleOnAddAdmin}
                                                 className={"h-128 max-h-screen"}
                                                 addedUsers={addedAdmins}
                                                 userIsAddedFunction={(user) => AuthorizationHelper.userIsAuthorities(user.claims ?? [])}
                             />}
-                            dialogButtonContent={"Add new admin"}
+                            dialogButtonContent={"Add new administrator"}
                             OpenDialogButton={Button}
                             className={"h-128 max-h-screen"}
                             buttonOptions={{variant: "outlined"}}
