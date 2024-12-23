@@ -2,7 +2,7 @@ import {useAccumulatedList} from "../../hooks/useAccumulatedList.js";
 import {useState} from "react";
 import {UsersListUI} from "../visual/UsersListUI.jsx";
 
-export function UsersList({ handleOnAddContact, addedContacts}) {
+export function UsersList({ handleOnAddUser, addedUsers, userIsAddedFunction}) {
     const [pageInfo, setPageInfo] = useState({pageIndex: 0, pageSize: 50});
     const [searchString, setSearchString] = useState("");
     const {
@@ -24,6 +24,6 @@ export function UsersList({ handleOnAddContact, addedContacts}) {
         }
     }
 
-    return <UsersListUI status={status} usersList={resultingList} handleOnLoadMore={handleOnLoadMore}
-                        setFilteredName={setSearchString} handleOnAddContact={handleOnAddContact} addedContacts={addedContacts}/>
+    return <UsersListUI status={status} usersList={resultingList} handleOnLoadMore={handleOnLoadMore} userIsAddedFunction={userIsAddedFunction}
+                        setFilteredName={setSearchString} handleOnAddUser={handleOnAddUser} addedUsers={addedUsers}/>
 }

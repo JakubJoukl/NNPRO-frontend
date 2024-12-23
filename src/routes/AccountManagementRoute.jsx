@@ -8,4 +8,4 @@ export function AccountManagementRoute() {
         </Typography>
         <AccountManagementForm/>
     </div>
-}
+};

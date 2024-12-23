@@ -38,6 +38,14 @@ async function addContact(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/addContact`, dtoIn, pageInfo, token);
 }
 
+async function addAdmin(dtoIn, pageInfo, token) {
+    return await callPost(`${BASE_URI}/addAdmin`, dtoIn, pageInfo, token);
+}
+
+async function removeAdmin(dtoIn, pageInfo, token) {
+    return await callPost(`${BASE_URI}/removeAdmin`, dtoIn, pageInfo, token);
+}
+
 async function removeContact(dtoIn, pageInfo, token) {
     return await callDelete(`${BASE_URI}/removeContact`, dtoIn, pageInfo, token);
 }
@@ -64,6 +72,22 @@ async function sendMessageToConversation(dtoIn, pageInfo, token) {
 
 async function rotateKeys(dtoIn, pageInfo, token) {
     return await callPost(`${BASE_URI}/rotateKeys`, dtoIn, pageInfo, token);
+}
+
+async function listBannedUsers(dtoIn, pageInfo, token) {
+    return await callPost(`${BASE_URI}/listBannedUsers`, dtoIn, pageInfo, token);
+}
+
+async function listNotBannedUsers(dtoIn, pageInfo, token) {
+    return await callPost(`${BASE_URI}/listNotBannedUsers`, dtoIn, pageInfo, token);
+}
+
+async function banUser(dtoIn, pageInfo, token) {
+    return await callPost(`${BASE_URI}/banUser`, dtoIn, pageInfo, token);
+}
+
+async function unbanUser(dtoIn, pageInfo, token) {
+    return await callPost(`${BASE_URI}/unbanUser`, dtoIn, pageInfo, token);
 }
 
 async function listUsersInConversation(dtoIn, pageInfo, token) {
@@ -222,5 +246,11 @@ export {
     newPassword,
     removeContact,
     rotateKeys,
-    listUsersInConversation
+    listUsersInConversation,
+    listBannedUsers,
+    listNotBannedUsers,
+    banUser,
+    unbanUser,
+    addAdmin,
+    removeAdmin
 }

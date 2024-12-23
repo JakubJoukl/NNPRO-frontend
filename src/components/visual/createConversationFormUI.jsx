@@ -46,7 +46,7 @@ export function CreateConversationFormUI({selectedContact, setSelectedContact, s
         };
     }
 
-    return (<div className={"w-full 2xl:w-[50rem] lg:w-[43rem] space-y-3 flex flex-col items-center"}>
+    return (<div className={"w-full space-y-3 flex flex-col items-center"}>
         <div className={"flex flex-row items-center justify-start w-full"}>
             <IconButton onClick={() => setSelectedContact(null)} className={"!absolute"} color={"primary"}><ArrowBack/></IconButton>
             <Typography variant="h6" className={"text-center !flex-grow"}>

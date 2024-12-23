@@ -5,16 +5,17 @@ import {useContext, useState} from "react";
 import * as Calls from "../../constants/calls.js";
 import {UserContext} from "../../context/userContext.js";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
-import {ContactsContext} from "../../context/contactsContext.js";
+import {AdminWidgetContext} from "../../context/adminWidgetContext.js";
+import AuthorizationHelper from "../helpers/authorizationHelper.js";
 
-export function AddContactsDialog() {
-    const {setContacts, contactFilter} = useContext(ContactsContext);
+export function AddAdminDialog() {
+    const {setAdmins, adminFilter} = useContext(AdminWidgetContext);
     const {token} = useContext(UserContext).userContext;
     const {openAlert} = useContext(GlobalAlertContext);
-    const [addedContacts, setAddedContacts] = useState({});
+    const [addedAdmins, setAddedAdmins] = useState({});
 
-    function handleOnAddContact(contact) {
-        setAddedContacts((prevState) => {
+    function handleOnAddAdmin(contact) {
+        setAddedAdmins((prevState) => {
             return {
                 ...prevState, [contact.username]: {
                     contact, progress: "inProgress"
@@ -22,23 +23,23 @@ export function AddContactsDialog() {
             }
         });
 
-        Calls.addContact({username: contact.username}, null, token).then((_) => {
-                openAlert(`Contact "${contact.username}" successfully added.`);
-                setAddedContacts((prevState) => {
+        Calls.addAdmin({username: contact.username}, null, token).then((_) => {
+                openAlert(`Admin "${contact.username}" successfully added.`);
+                setAddedAdmins((prevState) => {
                     return {
                         ...prevState, [contact.username]: {
                             contact, progress: "done"
                         }
                     }
                 });
-                if (contact.username.startsWith(contactFilter)) {
-                    setContacts((prevState) => [...prevState, contact]);
+                if (contact.username.startsWith(adminFilter)) {
+                    setAdmins((prevState) => [...prevState, contact]);
                 }
             }
         ).catch((err) => {
             console.log(err);
-            openAlert(`Adding of contact "${contact.username}" failed.`, "error");
-            setAddedContacts((prevState) => {
+            openAlert(`Adding of admin "${contact.username}" failed.`, "error");
+            setAddedAdmins((prevState) => {
                 delete prevState[contact.username];
                 return {
                     ...prevState
@@ -47,16 +48,16 @@ export function AddContactsDialog() {
         });
     }
 
-    return <DraggableDialog title={"Add new contact"}
-                            Content={<UsersList handleOnAddUser={handleOnAddContact}
+    return <DraggableDialog title={"Add new admin"}
+                            Content={<UsersList handleOnAddUser={handleOnAddAdmin}
                                                 className={"h-128 max-h-screen"}
-                                                addedUsers={addedContacts}
-                                                userIsAddedFunction={(user) => user.alreadyAdded}
+                                                addedUsers={addedAdmins}
+                                                userIsAddedFunction={(user) => AuthorizationHelper.userIsAuthorities(user.claims ?? [])}
                             />}
-                            dialogButtonContent={"Add new contact"}
+                            dialogButtonContent={"Add new admin"}
                             OpenDialogButton={Button}
                             className={"h-128 max-h-screen"}
                             buttonOptions={{variant: "outlined"}}
-                            onClose={() => setAddedContacts({})}
+                            onClose={() => setAddedAdmins({})}
     />
 }

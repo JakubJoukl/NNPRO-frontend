@@ -11,7 +11,8 @@ export const UserContext = React.createContext({
         token: null,
         username: null,
         publicKey: null,
-        privateKey: null
+        privateKey: null,
+        userRoles: []
     },
     // eslint-disable-next-line no-unused-vars
     setUserContext: (prevState) => {

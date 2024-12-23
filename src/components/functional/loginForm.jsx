@@ -3,6 +3,7 @@ import * as Calls from "../../constants/calls.js";
 import {useContext, useState} from "react";
 import {GlobalAlertContext} from "../../context/globalAlertContext.js";
 import MailCodeVerificationUI from "../visual/mailCodeVerificationUI.jsx";
+import {jwtDecode} from "jwt-decode";
 
 function LoginForm({setLoggedUser}) {
     const [callInProgress, setCallInProgress] = useState(false);
@@ -49,8 +50,14 @@ function LoginForm({setLoggedUser}) {
             try {
                 const tokenDtoOut = await Calls.verify2fa({username, verificationCode: otp, captchaToken})
                 const token = tokenDtoOut?.jwtToken;
+                const decodedToken = jwtDecode(token);
                 const currentUserProfile = await Calls.getCurrentUserProfile({}, {}, token);
-                setLoggedUser({username: currentUserProfile.username, token, publicKey: currentUserProfile.publicKey});
+                setLoggedUser({
+                    username: currentUserProfile.username,
+                    token,
+                    publicKey: currentUserProfile.publicKey,
+                    userRoles: decodedToken?.authorities ?? [] //FIXME default array should be empty
+                });
                 closeAlert();
                 setCallInProgress(false);
             } catch (err) {

@@ -12,6 +12,7 @@ import {ContactsRoute} from "./routes/contactsRoute.jsx";
 import {NewConversationRoute} from "./routes/newConversationRoute.jsx";
 import {ConversationRoute} from "./routes/conversationRoute.jsx";
 import {ResetPasswordRoute} from "./routes/resetPasswordRoute.jsx";
+import {AdminPanelRoute} from "./routes/AdminPanelRoute.jsx";
 
 function RouterRoot({openAlert, closeAlert}) {
 
@@ -39,6 +40,11 @@ function RouterRoot({openAlert, closeAlert}) {
                 {
                     path: "/conversation/:id",
                     element: <ConversationRoute/>,
+                    errorElement: <ErrorPage/>,
+                },
+                {
+                    path: "/adminPanel",
+                    element: <AdminPanelRoute/>,
                     errorElement: <ErrorPage/>,
                 }
             ],

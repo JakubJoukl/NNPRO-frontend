@@ -14,10 +14,15 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import {useTheme} from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import {ConversationList} from "../functional/conversationList.jsx";
+import {useContext} from "react";
+import {UserContext} from "../../context/userContext.js";
+import AuthorizationHelper from "../helpers/authorizationHelper.js";
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 export default function DrawerListBar({drawerWidth, handleDrawerClose, open}) {
     const theme = useTheme();
     const navigate = useNavigate();
+    const userContext = useContext(UserContext);
 
     return (<Drawer
         sx={{
@@ -63,6 +68,14 @@ export default function DrawerListBar({drawerWidth, handleDrawerClose, open}) {
                     <ListItemText primary={"Account management"}/>
                 </ListItemButton>
             </ListItem>
+            {AuthorizationHelper.userIsAuthorities(userContext.userContext.userRoles) &&  <ListItem disablePadding>
+                <ListItemButton onClick={() => navigate("/adminPanel")}>
+                    <ListItemIcon>
+                        <AdminPanelSettingsIcon color={"secondary"}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Administrator panel"}/>
+                </ListItemButton>
+            </ListItem>}
         </List>
         <Divider/>
         <ConversationList/>
