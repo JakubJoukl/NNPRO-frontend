@@ -1,4 +1,4 @@
-import {useContext, useEffect, useRef, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import * as Calls from "../constants/calls.js";
 import {UserContext} from "../context/userContext.js";
 
@@ -19,14 +19,12 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo, callback) {
     }
 
     function fetch() {
-        if(isError){
-            return;
-        }
         setCallFinished(false);
         if (!callInProgress) {
             setCallInProgress(true);
             Calls[calledMethod](calledDtoIn, calledPageInfo, token).then((response) => {
                 setCallInProgress(false);
+                setIsError(false);
                 setCallFinished(true);
                 setDtoOut(response);
                 if (typeof callback === "function") {
@@ -36,7 +34,7 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo, callback) {
                 console.error(err);
                 setDtoOut({});
                 setCallInProgress(false);
-                setIsError(false);
+                setIsError(true);
                 setCallFinished(false);
             });
         }
@@ -47,7 +45,7 @@ export function useFetchCall(calledMethod, dtoIn, pageInfo, callback) {
     }, [dtoIn, pageInfo]);
     return {
         dtoOut,
-        status: {callInProgress, isError: isError.current, callFinished: callFinished},
+        status: {callInProgress, isError: isError, callFinished: callFinished},
         // (dtoOut.itemList) - check if item is array
         hasMore: dtoOut.itemList && dtoOut?.total > ((pageInfo.pageIndex + 1) * pageInfo.pageSize),
         resetErr,

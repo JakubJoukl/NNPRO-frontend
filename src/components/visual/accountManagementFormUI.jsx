@@ -7,7 +7,7 @@ import {FormContext} from "../../context/formContext.js";
 
 export function AccountManagementFormUI({status, resetError, callInProgress}) {
     const {formRef, onSubmit} = useContext(FormContext);
-    if (status.isError) {
+    if (status.isError && !status.callInProgress) {
         return <><Alert
             severity={"error"}
             variant="filled"

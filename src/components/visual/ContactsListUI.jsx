@@ -12,6 +12,7 @@ import {useSubmitCall} from "../../hooks/useSubmitCall.js";
 import {ContactsContext} from "../../context/contactsContext.js";
 
 export function ContactsListUI({contacts, status, handleOnLoadMore, setFilteredName, deleteEnabled, handleOnClick}) {
+    console.log(status,"status");
     const timeoutRef = useRef();
     const [currentlyDeletedContact, setCurrentlyDeletedContact] = useState(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);

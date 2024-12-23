@@ -4,11 +4,11 @@ import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {useState} from "react";
 import {ControlledDraggableDialog} from "./ControlledDraggableDialog.jsx";
-import {FingerprintDialogContentUI} from "./FingerprintDialogContentUI.jsx";
 import {AddUserToConversationBody} from "../functional/addUserToConversationBody.jsx";
 import {LeaveConversationBody} from "../functional/leaveConversationBody.jsx";
 import {ShowConversationParticipants} from "./showConversationParticipants.jsx";
 import {RotateSymmetricKey} from "../functional/RotateSymmetricKey.jsx";
+import {FingerPrintDialogContent} from "../functional/FingerPrintDialogContent.jsx";
 
 export function ConversationToolBar({conversation, decryptedKey, fetchConversation}) {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -60,7 +60,7 @@ export function ConversationToolBar({conversation, decryptedKey, fetchConversati
 
     function renderKeyFingerprintDialog() {
         return <ControlledDraggableDialog title={"Current fingerprints"}
-                                          Content={<FingerprintDialogContentUI conversation={conversation}
+                                          Content={<FingerPrintDialogContent conversation={conversation}
                                                                                className={"min-h-128 max-h-screen"}
                                                                                decryptedKey={decryptedKey}/>}
                                           dialogButtonContent={"Fingerprints"}

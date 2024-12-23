@@ -16,7 +16,7 @@ export function ConversationListUI({conversations, status, handleOnLoadMore}) {
                     variant="filled"
                     sx={{width: '100%'}}
                 >
-                    Error occurred during loading of contacts.
+                    Error occurred during loading of conversations.
                 </Alert>
             </ListItem>
             <ListItem disablePadding key={"reloadButton"} className={"flex !justify-center mt-3 flex-row"}>
@@ -31,7 +31,7 @@ export function ConversationListUI({conversations, status, handleOnLoadMore}) {
             </ListItem>
         </>)
         }
-        {(!status.isError && conversations && Array.isArray(conversations)) && <>
+        {(!status.isError && !status.callInProgress && conversations && Array.isArray(conversations)) && <>
             {conversations.map((conversation) => {
                 return (<ListItem disablePadding key={conversation.id}>
                     <ListItemButton onClick={() => {

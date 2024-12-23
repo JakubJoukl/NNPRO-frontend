@@ -1,8 +1,7 @@
 import {Button, Typography} from "@mui/material";
-import * as React from "react";
-import {FingerprintDialogContentUI} from "./FingerprintDialogContentUI.jsx";
 import {useContext, useRef, useState} from "react";
 import {UserContext} from "../../context/userContext.js";
+import {FingerPrintDialogContent} from "../functional/FingerPrintDialogContent.jsx";
 
 export function RotateSymmetricKeyUI({conversation, className, decryptedKey, onSubmit, encryptInProgress}) {
     const [inConfirmation, setInConfirmation] = useState(false);
@@ -51,7 +50,7 @@ export function RotateSymmetricKeyUI({conversation, className, decryptedKey, onS
                 </Typography>
             }
             <div>
-                <FingerprintDialogContentUI conversation={conversation} className={className}
+                <FingerPrintDialogContent conversation={conversation} className={className}
                                             decryptedKey={decryptedKey}/>
             </div>
         </div>
