@@ -13,6 +13,7 @@ import {Button} from "@mui/material";
 import {useContext} from "react";
 import {UserContext} from "../../context/userContext.js";
 import FormManagementDialogContent from "../functional/formManagementDialog.jsx";
+import {LogoutButton} from "./LogoutButton.jsx";
 
 const drawerWidth = 240;
 
@@ -96,7 +97,7 @@ export default function MainMenuBar({children, routeHeader}) {
         <Box sx={{display: 'flex'}}>
             <CssBaseline/>
             <AppBar position="fixed" open={open}>
-                <Toolbar>
+                <Toolbar className={"space-x-3"}>
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
@@ -112,11 +113,12 @@ export default function MainMenuBar({children, routeHeader}) {
                         <MenuIcon/>
                     </IconButton>
                     <Typography variant="span" noWrap className={"flex-grow"}>
-                        Logged user: {userContext.username}
+                        {userContext.username}
                     </Typography>
                     {
                         renderKeyManagementDialog()
                     }
+                    <LogoutButton/>
                 </Toolbar>
             </AppBar>
             <DrawerListBar drawerWidth={drawerWidth} handleDrawerClose={handleDrawerClose} open={open}/>

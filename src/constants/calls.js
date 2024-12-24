@@ -102,6 +102,10 @@ async function resetPassword(dtoIn, pageInfo) {
     return await callPost(`${BASE_URI}/resetPassword`, dtoIn, pageInfo);
 }
 
+async function logout(dtoIn, pageInfo, token) {
+    return await callPost(`${BASE_URI}/tokenLogout`, dtoIn, pageInfo, token);
+}
+
 async function deleteMessage(dtoIn, pageInfo, token) {
     return await callDelete(`${BASE_URI}/deleteMessage`, dtoIn, pageInfo, token);
 }
@@ -252,5 +256,6 @@ export {
     banUser,
     unbanUser,
     addAdmin,
-    removeAdmin
+    removeAdmin,
+    logout
 }
