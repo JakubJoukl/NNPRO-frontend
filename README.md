@@ -1,8 +1,9 @@
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+HOW TO RUN:
+install modules:    npm install
+run:    npm run dev
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+After installing BE certs (see BE), browser might be blocking requests to BE. 
+In this case you need to enable unsafe certificate.
+In CHROME, go to some BE endpoint - for example: https://localhost:8080/login and click on allow.
